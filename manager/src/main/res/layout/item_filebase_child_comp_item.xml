@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="@dimen/margin_normal"
+        android:paddingEnd="@dimen/margin_normal"
+        android:paddingLeft="80dp"
+        android:paddingRight="@dimen/margin_normal"
+        android:paddingStart="80dp"
+        android:paddingTop="@dimen/margin_normal">
+
+        <ImageView
+            android:id="@+id/iv_ifbcci_dot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_dot" />
+
+        <TextView
+            android:id="@+id/tv_ifbcci_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_card"
+            android:layout_marginStart="@dimen/margin_card"
+            android:layout_toEndOf="@+id/iv_ifbcci_dot"
+            android:layout_toLeftOf="@+id/iv_ifbcci_arrow"
+            android:layout_toRightOf="@+id/iv_ifbcci_dot"
+            android:layout_toStartOf="@+id/iv_ifbcci_arrow"
+            android:gravity="center_vertical"
+            android:textColor="@color/color_font_high"
+            android:textSize="@dimen/dimens_sp_14" />
+
+        <ImageView
+            android:id="@+id/iv_ifbcci_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_arrow_right_gary" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/v_ifbcci_line"
+        style="@style/horizontal_view"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="94dp"
+        android:layout_marginStart="94dp" />
+</RelativeLayout>

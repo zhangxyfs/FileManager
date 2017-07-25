@@ -1,0 +1,113 @@
+<resources>
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <!--临时-->
+    <dimen name="dimens_sp_3">3sp</dimen>
+    <dimen name="dimens_sp_8">8sp</dimen>
+    <dimen name="dimens_sp_9">9sp</dimen>
+    <dimen name="dimens_sp_10">10sp</dimen>
+    <dimen name="dimens_sp_11">11sp</dimen>
+    <!--小字提示-->
+    <dimen name="dimens_sp_12">12sp</dimen>
+    <!--正文/按钮文字-->
+    <dimen name="dimens_sp_13">13sp</dimen>
+    <dimen name="dimens_sp_14">14sp</dimen>
+    <!--小标题-->
+    <dimen name="dimens_sp_15">15sp</dimen>
+    <dimen name="dimens_sp_16">16sp</dimen>
+    <dimen name="dimens_sp_18">18sp</dimen>
+    <!--Appbar文字-->
+    <dimen name="dimens_sp_20">20sp</dimen>
+
+    <dimen name="dimens_sp_22">22sp</dimen>
+    <!--大标题-->
+    <dimen name="dimens_sp_24">24sp</dimen>
+    <!--超大号文字-->
+    <dimen name="dimens_sp_34">34sp</dimen>
+    <dimen name="dimens_sp_36">36sp</dimen>
+    <dimen name="dimens_sp_45">45sp</dimen>
+    <dimen name="dimens_sp_56">56sp</dimen>
+    <dimen name="dimens_sp_112">112sp</dimen>
+
+    <!--临时-->
+    <dimen name="item_size_1">1dp</dimen>
+    <dimen name="item_size_4">4dp</dimen>
+
+    <!--卡片间距 分隔线上下留白 -->
+    <dimen name="size_card_margin">8dp</dimen>
+    <dimen name="size_divider_margin">8dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
+    <!--文字到图标的留白-->
+    <dimen name="size_icon_margin">1dp</dimen>
+
+    <!--大多元素的留白距离 屏幕左右对齐基线-->
+    <dimen name="margin_normal">16dp</dimen>
+    <!--顶部状态栏高度-->
+    <dimen name="size_top_status">24dp</dimen>
+
+    <dimen name="size_navigation_icon">22dp</dimen>
+
+    <dimen name="size_chat_icon">24dp</dimen>
+    <!--导航栏厚度-->
+    <dimen name="elevation_navigation">5dp</dimen>
+    <!--悬浮按钮尺寸 用户头像尺寸 -->
+    <dimen name="item_size_40">40dp</dimen>
+
+    <!--底部导航栏高度 小图标点击区域 -->
+    <dimen name="item_size_48">48dp</dimen>
+
+    <dimen name="item_size_52">53dp</dimen>
+
+    <!--Appbar最小高度 悬浮按钮尺寸 侧边抽屉到屏幕右边的距离-->
+    <dimen name="item_size_56">56dp</dimen>
+    <!--用户头像尺寸-->
+    <dimen name="size_photo_small">35dp</dimen>
+
+    <dimen name="size_photo_small_1">40dp</dimen>
+
+    <dimen name="size_photo_middle">50dp</dimen>
+
+    <dimen name="size_photo_big">64dp</dimen>
+
+    <dimen name="size_photo_big_1">70dp</dimen>
+
+    <!--文字左侧对齐基线-->
+    <dimen name="item_size_72">72dp</dimen>
+    <!--提示图标大小-->
+    <dimen name="size_tip_small">16dp</dimen>
+    <dimen name="size_line">0.3dp</dimen>
+    <dimen name="size_line_1">1dp</dimen>
+
+    <!-- 小按鈕宽高-->
+    <dimen name="width_small_button">40dp</dimen>
+    <dimen name="height_small_button">24dp</dimen>
+    <!-- 中按钮宽高-->
+    <dimen name="height_button">32dp</dimen>
+    <dimen name="width_button">68dp</dimen>
+
+
+    <!-- 大按钮高度-->
+    <dimen name="height_big_button">48dp</dimen>
+    <!-- 大按钮MarginTop-->
+    <dimen name="martin_top_big_button">20dp</dimen>
+    <!-- 条目高度-->
+    <dimen name="height_item">70dp</dimen>
+
+    <!--PU_IM 聊天导航栏高度-->
+    <dimen name="height_chat_navigation">46dp</dimen>
+    <!--PU_IM 聊天语音按钮高度-->
+    <dimen name="height_size_chat_voice">35dp</dimen>
+    <!--更多面板item 大小-->
+    <dimen name="size_more_item">45dp</dimen>
+
+    <!--图标到文字的距离-->
+    <dimen name="margin_icon_text">10dp</dimen>
+    <!-- 元素间距-->
+    <dimen name="margin_card">10dp</dimen>
+
+    <dimen name="margin_notice_item">50dp</dimen>
+</resources>

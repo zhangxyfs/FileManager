@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">lib</string>
+    <string name="nav_back_again_finish">再按一次退出程序</string>
+    <string name="file_pic_title_str">图片</string>
+    <string name="file_audio_title_str">音频</string>
+    <string name="file_video_title_str">视频</string>
+    <string name="file_txt_title_str">TXT</string>
+    <string name="file_excel_title_str">EXCEL</string>
+    <string name="file_ppt_title_str">PPT</string>
+    <string name="file_word_title_str">WORD</string>
+    <string name="file_pdf_title_str">PDF</string>
+    <string name="file_zip_title_str">压缩</string>
+    <string name="file_other_title_str">其他</string>
 </resources>

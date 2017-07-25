@@ -27,6 +27,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 repositories {
@@ -39,7 +45,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:26.+'
+    compile "com.android.support:appcompat-v7:${android_need_version}"
     testCompile 'junit:junit:4.12'
 
     //编译时注解，用于减少代码量
@@ -54,4 +60,10 @@ dependencies {
     compile "com.trello.rxlifecycle2:rxlifecycle:${rxlifecycle_need_version}"
     compile "com.trello.rxlifecycle2:rxlifecycle-android:${rxlifecycle_need_version}"
     compile "com.trello.rxlifecycle2:rxlifecycle-components:${rxlifecycle_need_version}"
+
+    compile "com.android.support:appcompat-v7:${android_need_version}"
+    compile "com.android.support:design:${android_need_version}"
+    compile "com.android.support:support-v4:${support_v4_version}"
+    compile "com.android.support:percent:${android_need_version}"
+    compile "com.android.support:recyclerview-v7:${android_need_version}"
 }

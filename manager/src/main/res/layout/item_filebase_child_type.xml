@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:orientation="horizontal"
+    android:shrinkColumns="1,3"
+    android:stretchColumns="0,2,4">
+
+    <TableRow
+        android:id="@+id/tr_ifbct_1"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/ll_ifbct_pic"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_file_pic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:text="@string/file_pic_title_str"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifbct_pic_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+
+        <View style="@style/vertical_view" />
+
+        <LinearLayout
+            android:id="@+id/ll_ifbct_voice"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_file_audio" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:text="@string/file_audio_title_str"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifbct_voice_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+
+        <View style="@style/vertical_view" />
+
+        <LinearLayout
+            android:id="@+id/ll_ifbct_video"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_file_video" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:text="@string/file_video_title_str"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifbct_video_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+    </TableRow>
+
+    <View style="@style/horizontal_view" />
+
+    <TableRow
+        android:id="@+id/tr_ifbct_2"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/ll_ifbct_txt"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_file_txt" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:text="@string/file_txt_title_str"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifbct_txt_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+
+        <View style="@style/vertical_view" />
+
+        <LinearLayout
+            android:id="@+id/ll_ifbct_excel"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_file_excel" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:text="@string/file_excel_title_str"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifbct_excel_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+
+        <View style="@style/vertical_view" />
+
+        <LinearLayout
+            android:id="@+id/ll_ifbct_ppt"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_file_ppt" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:text="@string/file_ppt_title_str"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifbct_ppt_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+    </TableRow>
+
+    <View style="@style/horizontal_view" />
+
+    <TableRow
+        android:id="@+id/tr_ifbct_3"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/ll_ifbct_word"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_file_word" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:text="@string/file_word_title_str"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifbct_word_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+
+        <View style="@style/vertical_view" />
+
+        <LinearLayout
+            android:id="@+id/ll_ifbct_pdf"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_file_pdf" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:text="@string/file_pdf_title_str"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifbct_pdf_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+
+        <View style="@style/vertical_view" />
+
+        <LinearLayout
+            android:id="@+id/ll_ifbct_other"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:src="@drawable/ic_file_other" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:text="@string/file_other_title_str"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifbct_other_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_size_4"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_font_high"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+    </TableRow>
+
+    <View
+        style="@style/horizontal_view"
+        android:layout_height="@dimen/margin_card"
+        android:background="@color/color_background" />
+</TableLayout>

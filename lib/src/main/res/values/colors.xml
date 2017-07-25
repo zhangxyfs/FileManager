@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_background">#F5F6F7</color>
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_font_high">#1A1A1C</color>
+    <!--分割线-->
+    <color name="color_divider">#D8D8D8</color>
+</resources>

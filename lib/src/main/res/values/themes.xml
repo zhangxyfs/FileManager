@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--去掉Toolbar leftMargin-->
+    <style name="ActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="contentInsetStartWithNavigation">0dp</item><!--最重要的参数-->
+    </style>
+
+    <style name="horizontal_view">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.1dp</item>
+        <item name="android:background">@color/color_divider</item>
+    </style>
+
+    <style name="vertical_view">
+        <item name="android:layout_width">0.1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/color_divider</item>
+    </style>
+</resources>
