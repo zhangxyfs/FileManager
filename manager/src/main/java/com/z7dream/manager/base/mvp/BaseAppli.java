@@ -5,6 +5,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.z7dream.lib.service.FileUpdatingService;
 
+
 /**
  * Created by Z7Dream on 2017/7/25 14:36.
  * Email:zhangxyfs@126.com

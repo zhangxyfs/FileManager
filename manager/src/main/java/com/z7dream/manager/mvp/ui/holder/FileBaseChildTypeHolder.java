@@ -6,8 +6,8 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.z7dream.lib.tool.Utils;
-import com.z7dream.lib.tool.recycler.BaseHolder;
+import com.z7dream.manager.tool.Utils;
+import com.z7dream.manager.tool.recycler.BaseHolder;
 import com.z7dream.manager.R2;
 import com.z7dream.manager.mvp.ui.listener.FileBaseListListener;
 

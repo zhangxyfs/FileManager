@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.z7dream.lib.tool.recycler.BaseHolder;
+import com.z7dream.manager.tool.recycler.BaseHolder;
 import com.z7dream.manager.R2;
 import com.z7dream.manager.mvp.ui.listener.FileBaseListListener;
 

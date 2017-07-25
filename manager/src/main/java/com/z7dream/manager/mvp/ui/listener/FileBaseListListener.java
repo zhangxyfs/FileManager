@@ -4,7 +4,7 @@ package com.z7dream.manager.mvp.ui.listener;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.z7dream.lib.tool.recycler.OnBaseListener;
+import com.z7dream.manager.tool.recycler.OnBaseListener;
 
 public interface FileBaseListListener extends OnBaseListener {
     void onChildTypeClickListener(int viewId);

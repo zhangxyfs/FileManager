@@ -1,4 +1,4 @@
-package com.z7dream.lib.tool.recycler;
+package com.z7dream.manager.tool.recycler;
 
 
 import android.content.Context;

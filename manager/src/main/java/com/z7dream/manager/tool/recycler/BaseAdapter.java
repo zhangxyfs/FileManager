@@ -1,4 +1,4 @@
-package com.z7dream.lib.tool.recycler;
+package com.z7dream.manager.tool.recycler;
 
 
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by xiaoyu.zhang on 2016/6/28.
  */
-public abstract class BaseAdapter<MODEL extends BaseModel, LISTENER extends OnBaseListener, HOLDER extends RecyclerView.ViewHolder>
+public abstract class BaseAdapter<MODEL extends com.z7dream.manager.tool.recycler.BaseModel, LISTENER extends com.z7dream.manager.tool.recycler.OnBaseListener, HOLDER extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<HOLDER> {
 
     protected List<MODEL> list;
@@ -100,7 +100,7 @@ public abstract class BaseAdapter<MODEL extends BaseModel, LISTENER extends OnBa
      */
     public void appendError(MODEL model, int errorMinNum) {
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).type == BaseModel.ERROR) {
+            if (list.get(i).type == com.z7dream.manager.tool.recycler.BaseModel.ERROR) {
                 list.remove(i);
             }
         }
@@ -112,7 +112,7 @@ public abstract class BaseAdapter<MODEL extends BaseModel, LISTENER extends OnBa
 
     public boolean isHasError() {
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).type == BaseModel.ERROR) {
+            if (list.get(i).type == com.z7dream.manager.tool.recycler.BaseModel.ERROR) {
                 return true;
             }
         }
@@ -140,7 +140,7 @@ public abstract class BaseAdapter<MODEL extends BaseModel, LISTENER extends OnBa
     public void removeError() {
         int pos = -1;
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).type == BaseModel.ERROR) {
+            if (list.get(i).type == com.z7dream.manager.tool.recycler.BaseModel.ERROR) {
                 list.remove(i);
                 pos = i;
             }

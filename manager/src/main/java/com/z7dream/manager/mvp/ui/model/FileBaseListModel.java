@@ -3,7 +3,7 @@ package com.z7dream.manager.mvp.ui.model;
 
 import android.text.TextUtils;
 
-import com.z7dream.lib.tool.recycler.BaseModel;
+import com.z7dream.manager.tool.recycler.BaseModel;
 
 public class FileBaseListModel extends BaseModel {
     public static final int PARENT = 1;

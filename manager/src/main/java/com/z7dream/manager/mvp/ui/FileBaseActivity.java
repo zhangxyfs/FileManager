@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.z7dream.lib.tool.recycler.RecyclerControl;
+import com.z7dream.manager.tool.recycler.RecyclerControl;
 import com.z7dream.manager.R;
 import com.z7dream.manager.R2;
 import com.z7dream.manager.base.mvp.BaseActivity;
@@ -29,7 +29,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-import static com.z7dream.lib.tool.Utils.expandOCollapseAnim;
 
 /**
  * 文件管理器
@@ -86,7 +85,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
 
     @Override
     protected int layoutID() {
-        return R2.layout.activity_filebase;
+        return R.layout.activity_filebase;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.z7dream.lib.tool.recycler;
+package com.z7dream.manager.tool.recycler;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import com.z7dream.lib.base.mvp.BaseAppli;
+import com.z7dream.manager.base.mvp.BaseAppli;
 
 import java.util.concurrent.TimeUnit;
 

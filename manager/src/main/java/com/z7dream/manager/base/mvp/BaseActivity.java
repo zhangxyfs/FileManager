@@ -19,10 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-import com.z7dream.lib.R;
 import com.z7dream.lib.tool.Utils;
 import com.z7dream.lib.tool.WeakHandler;
 import com.z7dream.lib.tool.rx.RxBus;
+import com.z7dream.manager.R;
 import com.z7dream.manager.base.mvp.presenter.BasePresenter;
 
 import java.lang.reflect.Field;
