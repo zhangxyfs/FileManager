@@ -1,0 +1,57 @@
+apply plugin: 'com.android.library'
+apply plugin: 'io.objectbox'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'me.tatarka.retrolambda'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+repositories {
+    jcenter()
+    maven { url "http://objectbox.net/beta-repo/" }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.+'
+    testCompile 'junit:junit:4.12'
+
+    //编译时注解，用于减少代码量
+    annotationProcessor "com.jakewharton:butterknife-compiler:${butterknife_need_version}"
+    compile "com.jakewharton:butterknife:${butterknife_need_version}"
+
+    compile "io.objectbox:objectbox-android:${ojectbox_need_version}"
+
+    compile "io.reactivex.rxjava2:rxjava:${rxjava_need_version}"
+    compile "io.reactivex.rxjava2:rxandroid:${rxandroid_need_version}"
+
+    compile "com.trello.rxlifecycle2:rxlifecycle:${rxlifecycle_need_version}"
+    compile "com.trello.rxlifecycle2:rxlifecycle-android:${rxlifecycle_need_version}"
+    compile "com.trello.rxlifecycle2:rxlifecycle-components:${rxlifecycle_need_version}"
+}

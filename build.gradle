@@ -1,0 +1,36 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "http://objectbox.net/beta-repo/" }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'me.tatarka:gradle-retrolambda:3.3.1'
+        classpath 'io.objectbox:objectbox-gradle-plugin:0.9.13'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+        jcenter()
+        maven { url "http://objectbox.net/beta-repo/" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    ojectbox_need_version = '0.9.13'
+    butterknife_need_version = '8.6.0'
+    rxjava_need_version = '2.x.y'
+    rxandroid_need_version = '2.0.1'
+    rxlifecycle_need_version = '2.1.0'//1.0
+}
+
