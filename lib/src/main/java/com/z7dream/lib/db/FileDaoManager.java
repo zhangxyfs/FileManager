@@ -29,6 +29,7 @@ import io.objectbox.query.QueryBuilder;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 
+import static com.z7dream.lib.db.bean.FileInfo_.filePath;
 import static com.z7dream.lib.tool.MagicExplorer.HW_SCREEN_SAVER_PATH;
 import static com.z7dream.lib.tool.MagicExplorer.QQ_FILE_PATH;
 import static com.z7dream.lib.tool.MagicExplorer.QQ_PIC_PATH;
@@ -268,7 +269,7 @@ public class FileDaoManager implements FileDaoImpl {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
         }
         if (!TextUtils.isEmpty(likeStr)) {
-            queryBuilder.contains(FileInfo_.filePath, likeStr);
+            queryBuilder.contains(filePath, likeStr);
         }
 
         return queryBuilder.build().find();
@@ -284,7 +285,7 @@ public class FileDaoManager implements FileDaoImpl {
     public List<FileInfo> getQQFileInfoList(EnumFileType enumFileType) {
         QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
                 .equal(FileInfo_.isFile, true)
-                .contains(FileInfo_.filePath, QQ_PIC_PATH)
+                .contains(filePath, QQ_PIC_PATH)
                 .orderDesc(FileInfo_.lastModifyTime);
 
         if (enumFileType != EnumFileType.ALL) {
@@ -304,7 +305,7 @@ public class FileDaoManager implements FileDaoImpl {
     public List<FileInfo> getWXFileInfoList(EnumFileType enumFileType) {
         QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
                 .equal(FileInfo_.isFile, true)
-                .contains(FileInfo_.filePath, WX_PIC_PATH)
+                .contains(filePath, WX_PIC_PATH)
                 .orderDesc(FileInfo_.lastModifyTime);
 
         if (enumFileType != EnumFileType.ALL) {
@@ -449,7 +450,6 @@ public class FileDaoManager implements FileDaoImpl {
                 }, error -> {
                 });
     }
-
 
     @Override
     public void destory() {
@@ -597,10 +597,10 @@ public class FileDaoManager implements FileDaoImpl {
         boolean isHidden = fileName.startsWith("_") || fileName.startsWith(".");
         boolean isSystem = path.startsWith(START_PATH + "Android") || path.startsWith(START_PATH + "backup") || path.startsWith(START_PATH + "backups") || path.startsWith(START_PATH + "CloudDrive")
                 || path.startsWith(START_PATH + "huawei") || path.startsWith(START_PATH + "HuaweiBackup") || path.startsWith(START_PATH + "HWThemes") || path.startsWith(START_PATH + "msc") || path.startsWith(START_PATH + "Musiclrc");
-        boolean isRxCache = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "rxCache");
-        boolean isSmiley = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "smiley");
-        boolean isGlide = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "glide");
-        boolean isOSS = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "oss_record");
+//        boolean isRxCache = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "rxCache");
+//        boolean isSmiley = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "smiley");
+//        boolean isGlide = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "glide");
+//        boolean isOSS = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "oss_record");
 
         //以下返回必须为true
         boolean isQQ = path.startsWith(QQ_PIC_PATH) || path.startsWith(QQ_FILE_PATH);
@@ -611,7 +611,7 @@ public class FileDaoManager implements FileDaoImpl {
         boolean isTencentPath = path.startsWith(START_PATH + "tencent" + File.separator);
 
         boolean isNeedFile;
-        if (isHidden || isSystem || isRxCache || isSmiley || isGlide || isOSS)
+        if (isHidden || isSystem)//|| isRxCache || isSmiley || isGlide || isOSS)
             isNeedFile = false;
         else if (isTencentPath)
             isNeedFile = isQQ || isWX;

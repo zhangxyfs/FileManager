@@ -96,7 +96,7 @@ public interface FileDaoImpl {
      * 根据文件类型查找
      *
      * @param enumFileType 文件类型枚举
-     * @param likeStr  模糊查询
+     * @param likeStr      模糊查询
      * @return
      */
     List<FileInfo> getFileInfoList(EnumFileType enumFileType, String likeStr);

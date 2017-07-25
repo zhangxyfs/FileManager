@@ -51,6 +51,13 @@ public class FileUpdatingService extends Service {
             fileDaoImpl.destory();
     }
 
+    public void toUpdateFileInfos() {
+        if (fileDaoImpl == null) return;
+        if (fileDaoImpl.isPutFileInStorageSucc()) {
+
+        }
+    }
+
     public static void startService(BoxStore boxStore, Context context) {
         if (mBoxStore == null && boxStore != null) {
             mBoxStore = boxStore;
