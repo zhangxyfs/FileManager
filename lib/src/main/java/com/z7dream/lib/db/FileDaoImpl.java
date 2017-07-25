@@ -84,15 +84,6 @@ public interface FileDaoImpl {
     boolean isNeedFile(String exc);
 
     /**
-     * 获取文件数据量
-     *
-     * @param companyId 公司id
-     * @param enumFileType  文件类型
-     * @return
-     */
-    long getFileInfoCount(Long companyId, EnumFileType enumFileType);
-
-    /**
      * 根据文件类型查找
      *
      * @param enumFileType 文件类型枚举
@@ -109,15 +100,6 @@ public interface FileDaoImpl {
      * @return
      */
     List<FileInfo> getFileInfoList(EnumFileType enumFileType, String likeStr);
-
-    /**
-     * 根据文件类型查找
-     *
-     * @param enumFileType  文件类型枚举
-     * @param companyId 公司id
-     * @return
-     */
-    List<FileInfo> getEsFileInfoList(EnumFileType enumFileType, Long companyId);
 
     /**
      * 获取qq文件列表

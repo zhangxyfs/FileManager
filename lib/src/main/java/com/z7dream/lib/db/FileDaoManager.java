@@ -237,36 +237,6 @@ public class FileDaoManager implements FileDaoImpl {
     }
 
     /**
-     * 获取文件数据量
-     *
-     * @param companyId    公司id
-     * @param enumFileType 文件类型
-     * @return
-     */
-    @Override
-    public long getFileInfoCount(Long companyId, EnumFileType enumFileType) {
-        long count;
-        if (enumFileType != EnumFileType.ALL) {
-            if (companyId != null && companyId > 0) {
-                count = fileInfoBox.query().equal(FileInfo_.isFile, true).equal(FileInfo_.fileType, enumFileType.name())
-                        .contains(FileInfo_.filePath, CacheManager.getEsCompanyPath(EnumFileType.getCacheWhich(enumFileType), companyId)).build().count();
-            } else {
-                count = fileInfoBox.query().equal(FileInfo_.isFile, true).equal(FileInfo_.fileType, enumFileType.name()).build().count();
-            }
-        } else {
-            if (companyId != null && companyId > 0) {
-                count = fileInfoBox.query().equal(FileInfo_.isFile, true)
-                        .contains(FileInfo_.filePath, CacheManager.getEsCompanyPath(EnumFileType.getCacheWhich(enumFileType), companyId)).build().count();
-            } else {
-                count = fileInfoBox.query().equal(FileInfo_.isFile, true).build().count();
-            }
-        }
-
-        return count;
-    }
-
-
-    /**
      * 根据文件类型查找
      *
      * @param enumFileType
@@ -300,29 +270,6 @@ public class FileDaoManager implements FileDaoImpl {
         if (!TextUtils.isEmpty(likeStr)) {
             queryBuilder.contains(FileInfo_.filePath, likeStr);
         }
-
-        return queryBuilder.build().find();
-    }
-
-    /**
-     * 根据文件类型查找
-     *
-     * @param enumFileType 文件类型枚举
-     * @param companyId    公司id
-     * @return
-     */
-    @Override
-    public List<FileInfo> getEsFileInfoList(EnumFileType enumFileType, Long companyId) {
-        String path;
-        if (enumFileType == EnumFileType.ALL) {
-            path = CacheManager.getCachePath(null, CacheManager.ES);
-        } else {
-            path = CacheManager.getEsCompanyPath(EnumFileType.getCacheWhich(enumFileType), companyId);
-        }
-
-        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
-                .contains(FileInfo_.filePath, path)
-                .equal(FileInfo_.isFile, true);
 
         return queryBuilder.build().find();
     }

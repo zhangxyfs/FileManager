@@ -2,18 +2,9 @@ package com.z7dream.lib.tool;
 
 import android.content.Context;
 import android.os.Environment;
-import android.text.TextUtils;
-
-import com.eblog.lib.Appli;
-import com.eblog.lib.utils.rxjava.RxSchedulersHelper;
+import android.support.annotation.NonNull;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 
 /**
  * 缓存目录控制
@@ -84,26 +75,6 @@ public class CacheManager {
     private static final String NOMEDIA = ".nomedia";
 
 
-    public static String getSystemPicCachePath() {
-        File file = Appli.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (file != null) {
-            return file.getAbsolutePath() + File.separator;
-        }
-        return "Android" + File.separator + "data" + File.separator + "com.eblog" + File.separator + "files" + File.separator + "Pictures" + File.separator;
-    }
-
-    public static File getSystemPicCachePathFile() {
-        File file = Appli.getContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        if (file != null) {
-            return file;
-        }
-        file = new File("Android" + File.separator + "data" + File.separator + "com.eblog" + File.separator + "files" + File.separator + "Pictures");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        return file;
-    }
-
     /**
      * 获取缓存路径
      */
@@ -127,25 +98,6 @@ public class CacheManager {
         return relatviePath;
     }
 
-    public static String getCachePath() {
-        String savePath = getSaveFilePath() + File.separator + "com.eblog" + File.separator + "cache";
-        File fDir = new File(savePath);
-        if (!fDir.exists()) {
-            fDir.mkdirs();
-        }
-        return savePath;
-    }
-
-    public static String getRelativePath() {
-        String savePath = getSaveFilePath() + File.separator + "com.eblog" + File.separator + "cache";
-        String relatviePath = File.separator + "com.eblog" + File.separator + "cache";
-        File fDir = new File(savePath);
-        if (!fDir.exists()) {
-            fDir.mkdirs();
-        }
-        return relatviePath;
-    }
-
     public static String getCachePath(int which) {
         return getCachePath(null, which);
     }
@@ -158,13 +110,9 @@ public class CacheManager {
         return path;
     }
 
-    public static String getCachePath(Context context, int which) {
+    public static String getCachePath(@NonNull Context context, int which) {
         String savePath = "";
-        if (context == null) {
-            savePath = getCachePath();
-        } else {
-            savePath = getCachePath(context);
-        }
+        savePath = getCachePath(context);
         savePath = getSavePath(savePath, which);
         String nomediaPath = savePath + NOMEDIA;
 
@@ -184,31 +132,9 @@ public class CacheManager {
         return savePath;
     }
 
-    public static void toHiddenFolder() {
-        Flowable.create((FlowableOnSubscribe<File>) flowableEmitter -> {
-            List<String> list = new ArrayList<>();
-            MagicExplorer.getFolderList(getCachePath(), list);
-            for (int i = 0; i < list.size(); i++) {
-                flowableEmitter.onNext(new File(list.get(i)));
-            }
-        }, BackpressureStrategy.BUFFER).compose(RxSchedulersHelper.fio())
-                .filter(f -> !f.isHidden())
-                .subscribe(file -> {
-                    if (!file.getPath().contains(STR_EB_PHOTO)) {
-
-                    }
-                }, error -> {
-                });
-
-    }
-
-    public static String getRelativePath(Context context, int which) {
+    public static String getRelativePath(@NonNull Context context, int which) {
         String savePath = "";
-        if (context == null) {
-            savePath = getRelativePath();
-        } else {
-            savePath = getRelativePath(context);
-        }
+        savePath = getRelativePath(context);
         savePath = getSavePath(savePath, which);
         File fDir = new File(savePath);
         if (!fDir.exists()) {
@@ -281,91 +207,6 @@ public class CacheManager {
     }
 
     /**
-     * 帮你创建个目录
-     *
-     * @param which           父目录
-     * @param childFolderName 子目录名
-     * @return
-     */
-    public static String getPath(int which, String childFolderName) {
-        String path = getCachePath(Appli.getContext(), which);
-        String needPath = path + childFolderName + File.separator;
-        String nomediaPath = needPath + NOMEDIA;
-
-        File fDir = new File(needPath);
-        if (!fDir.exists()) {
-            fDir.mkdirs();
-        }
-        File npDir = new File(nomediaPath);
-        if (!npDir.exists()) {
-            npDir.mkdir();
-        }
-        return needPath;
-    }
-
-    /**
-     * 获得 es 下的目录
-     *
-     * @param which
-     * @param companyId
-     * @return
-     */
-    public static String getEsCompanyPath(int which, Long companyId) {
-        String rootPath = getPath(ES, String.valueOf(companyId));
-        if (rootPath.endsWith(File.separator)) {
-            rootPath = rootPath.substring(0, rootPath.length() - 1);
-        }
-        rootPath = getSavePath(rootPath, which);
-        String nomediaPath = rootPath + NOMEDIA;
-
-        File fDir = new File(rootPath);
-        if (!fDir.exists()) {
-            fDir.mkdirs();
-        }
-        File npDir = new File(nomediaPath);
-        if (!npDir.exists()) {
-            npDir.mkdir();
-        }
-
-        return rootPath;
-    }
-
-    /**
-     * 获取im路径
-     *
-     * @param which
-     * @return
-     */
-    public static String getIMPath(int which) {
-        String rootPath = getCachePath(Appli.getContext(), IM);
-        if (rootPath.endsWith(File.separator)) {
-            rootPath = rootPath.substring(0, rootPath.length() - 1);
-        }
-        rootPath = getSavePath(rootPath, which);
-        String nomediaPath = rootPath + NOMEDIA;
-
-        File fDir = new File(rootPath);
-        if (!fDir.exists()) {
-            fDir.mkdirs();
-        }
-        File npDir = new File(nomediaPath);
-        if (!npDir.exists()) {
-            npDir.mkdir();
-        }
-
-        return rootPath;
-    }
-
-    private static String getAppCacheRoot(Context context) {
-        String status = Environment.getExternalStorageState();
-        if (TextUtils.equals(status, Environment.MEDIA_MOUNTED)) {
-            return context.getExternalFilesDir("").getAbsolutePath();
-        } else {
-            return getSaveFilePath();
-        }
-    }
-
-    /**
      * 生成下载文件保存路径
      *
      * @return
@@ -377,68 +218,7 @@ public class CacheManager {
         if (status.equals(Environment.MEDIA_MOUNTED)) {
             file = Environment.getExternalStorageDirectory();//获取跟目录
             rootPath = file.getPath();
-        } else {
-            Dev_MountInfo dev = Dev_MountInfo.getInstance();
-            Dev_MountInfo.DevInfo info = dev.getInternalInfo();
-            if (info != null) {
-                rootPath = info.getPath();
-            } else {
-                return "";
-            }
         }
         return rootPath;
     }
-
-    public static String getDownloadFile(String downloadUrl, int which) {
-        String[] strs = downloadUrl.split("/");
-        String fileName = strs[strs.length - 1];
-        if (fileName.split("\\.").length > 1) {
-            String filePath = getCachePath(Appli.getContext(), which) + fileName;
-            File file = new File(filePath);
-            if (file.isFile()) {
-                return filePath;
-            }
-        }
-        return "";
-    }
-
-    /**
-     * 获取离线路径
-     *
-     * @param which
-     * @return
-     */
-    public static String getOffLineCachePath(int which) {
-        String rootPath = getCachePath(Appli.getContext(), OFF_LINE_CACHE);
-        if (rootPath.endsWith(File.separator)) {
-            rootPath = rootPath.substring(0, rootPath.length() - 1);
-        }
-//        rootPath = getSavePath(rootPath, which);
-//        String nomediaPath = rootPath + NOMEDIA;
-//
-//        File fDir = new File(rootPath);
-//        if (!fDir.exists()) {
-//            fDir.mkdirs();
-//        }
-//        File npDir = new File(nomediaPath);
-//        if (!npDir.exists()) {
-//            npDir.mkdir();
-//        }
-
-        return rootPath;
-    }
-
-    public static void mkDir(File file) {
-        if (file.getParentFile().exists()) {
-            file.mkdir();
-        } else {
-            mkDir(file.getParentFile());
-            file.mkdir();
-        }
-    }
-
-    public static String getParent(String child) {
-        return new File(child).getParentFile().getAbsolutePath();
-    }
-
 }
