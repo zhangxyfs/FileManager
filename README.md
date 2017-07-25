@@ -8,13 +8,13 @@
 #### 使用了第三方库：
 ```
 dependencies {
-		'com.jakewharton:butterknife:8.6.0'
-		'io.objectbox:objectbox-android:0.9.13'
-		'io.reactivex.rxjava2:rxjava:2.x.y'
-		'io.reactivex.rxjava2:rxandroid:2.0.1'
-		'com.trello.rxlifecycle2:rxlifecycle:2.1.0'
-		'com.trello.rxlifecycle2:rxlifecycle-android:2.1.0'
-		'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
+	'com.jakewharton:butterknife:8.6.0'
+	'io.objectbox:objectbox-android:0.9.13'
+	'io.reactivex.rxjava2:rxjava:2.x.y'
+	'io.reactivex.rxjava2:rxandroid:2.0.1'
+	'com.trello.rxlifecycle2:rxlifecycle:2.1.0'
+	'com.trello.rxlifecycle2:rxlifecycle-android:2.1.0'
+	'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
 }
 ```
 ##### 调用：
