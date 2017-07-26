@@ -60,6 +60,16 @@ public class FileDaoManager implements FileDaoImpl {
         this.boxStore = boxStore;
     }
 
+    @Override
+    public void addStar(List<String> filePathList) {
+        
+    }
+
+    @Override
+    public void removeStar(List<String> filePathList) {
+
+    }
+
     /**
      * 添加文件类型
      *

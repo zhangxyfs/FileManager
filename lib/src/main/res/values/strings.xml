@@ -11,4 +11,6 @@
     <string name="file_pdf_title_str">PDF</string>
     <string name="file_zip_title_str">压缩</string>
     <string name="file_other_title_str">其他</string>
+
+    <string name="search_str">搜索</string>
 </resources>

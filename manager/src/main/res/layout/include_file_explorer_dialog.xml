@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_background" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@color/color_white"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/file_dialog_send"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/size_icon_margin"
+            android:drawableTop="@drawable/ic_button_send"
+            android:gravity="center"
+            android:text="@string/send_str"
+            android:textColor="@color/color_font_high"
+            android:textSize="@dimen/dimens_sp_12" />
+
+        <TextView
+            android:id="@+id/file_dialog_forward"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/size_icon_margin"
+            android:drawableTop="@drawable/ic_button_forward"
+            android:gravity="center"
+            android:text="@string/forward_str"
+            android:textColor="@color/color_font_high"
+            android:textSize="@dimen/dimens_sp_12"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/file_dialog_download"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/size_icon_margin"
+            android:drawableTop="@drawable/ic_button_download"
+            android:gravity="center"
+            android:text="@string/download_str"
+            android:textColor="@color/color_font_high"
+            android:textSize="@dimen/dimens_sp_12"
+            android:visibility="gone" />
+
+
+        <TextView
+            android:id="@+id/file_dialog_rename"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/size_icon_margin"
+            android:drawableTop="@drawable/ic_button_rename_true"
+            android:gravity="center"
+            android:text="@string/rename_str"
+            android:textColor="@color/color_font_high"
+            android:textSize="@dimen/dimens_sp_12" />
+
+        <TextView
+            android:id="@+id/file_dialog_star"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/size_icon_margin"
+            android:drawableTop="@drawable/ic_button_star"
+            android:gravity="center"
+            android:text="@string/star_file_str"
+            android:textColor="@color/color_font_high"
+            android:textSize="@dimen/dimens_sp_12" />
+
+        <TextView
+            android:id="@+id/file_dialog_delete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/size_icon_margin"
+            android:drawableTop="@drawable/ic_button_delete"
+            android:gravity="center"
+            android:text="@string/delete_str"
+            android:textColor="@color/color_font_high"
+            android:textSize="@dimen/dimens_sp_12" />
+    </LinearLayout>
+</LinearLayout>

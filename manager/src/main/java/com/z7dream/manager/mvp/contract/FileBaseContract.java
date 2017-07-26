@@ -6,7 +6,6 @@ import com.z7dream.manager.base.mvp.view.BaseView;
 import com.z7dream.manager.mvp.ui.model.FileBaseListModel;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Z7Dream on 2017/7/25 14:58.
@@ -18,8 +17,6 @@ public interface FileBaseContract {
         void getDataList(boolean isRef);
 
         FileBaseListModel getChildTypeData();
-
-        List<FileBaseListModel> getCompanyList();
     }
 
 
@@ -29,7 +26,5 @@ public interface FileBaseContract {
         void getDataListFail(String errorStr, boolean isRef);
 
         void setChildTypeData(FileBaseListModel childTypeModel);
-
-        void setChildCompMap(Map<Integer, List<FileBaseListModel>> companyChildMap);
     }
 }

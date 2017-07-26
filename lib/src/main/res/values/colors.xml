@@ -2,7 +2,15 @@
 <resources>
     <color name="color_background">#F5F6F7</color>
     <color name="color_white">#FFFFFF</color>
+    <color name="color_black">#000000</color>
+
     <color name="color_font_high">#1A1A1C</color>
+    <color name="color_font_middle">#999999</color>
+    <color name="color_font_low">#b2b2b2</color>
+    <color name="color_font_hint">#8B1a1a1c</color>
+    <color name="color_font_blue">#2196F3</color>
+    <color name="color_font_gray">#666666</color>
+
     <!--分割线-->
     <color name="color_divider">#D8D8D8</color>
 </resources>

@@ -13,7 +13,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.z7dream.manager.tool.recycler.RecyclerControl;
+import com.z7dream.lib.tool.FileType;
+import com.z7dream.lib.tool.Utils;
 import com.z7dream.manager.R;
 import com.z7dream.manager.R2;
 import com.z7dream.manager.base.mvp.BaseActivity;
@@ -22,12 +23,15 @@ import com.z7dream.manager.mvp.presenter.FileBasePresenter;
 import com.z7dream.manager.mvp.ui.adapter.FileBaseListAdapter;
 import com.z7dream.manager.mvp.ui.listener.FileBaseListListener;
 import com.z7dream.manager.mvp.ui.model.FileBaseListModel;
+import com.z7dream.manager.tool.recycler.RecyclerControl;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+
+import static com.z7dream.lib.tool.Utils.expandOCollapseAnim;
 
 
 /**
@@ -232,26 +236,26 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
         } else {
             switch (model.realPos) {
                 case 1://本机文件（目录）
-                    FileManagerOtherActivity.openFolder(this, getString(R.string.mine_file_sdcardfolder_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
+                    FileManagerActivity.openFolder(this, getString(R.string.mine_file_sdcardfolder_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
                 case 2://星标
-                    FileManagerOtherActivity.openCollection(this, getString(R.string.mine_file_collectfile_str), picMaxSize, fileMaxSize,
+                    FileManagerActivity.openCollection(this, getString(R.string.mine_file_collectfile_str), picMaxSize, fileMaxSize,
                             allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
                 case 3://聊天及下载文件
                     ChatRoomFileActivity.openAllChat(this, picMaxSize, fileMaxSize, allMaxSize, isToForward, false, requestCode);
                     break;
                 case 4://30天
-                    FileManagerOtherActivity.open30Days(this, getString(R.string.mine_file_near30day_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
+                    FileManagerActivity.open30Days(this, getString(R.string.mine_file_near30day_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
                 case 6://qq
-                    FileManagerOtherActivity.openQQ(this, getString(R.string.mine_file_qq_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
+                    FileManagerActivity.openQQ(this, getString(R.string.mine_file_qq_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
                 case 7://wps
-                    FileManagerOtherActivity.openWPS(this, getString(R.string.mine_file_wps_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
+                    FileManagerActivity.openWPS(this, getString(R.string.mine_file_wps_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
                 case 8://wx
-                    FileManagerOtherActivity.openWX(this, getString(R.string.mine_file_wx_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
+                    FileManagerActivity.openWX(this, getString(R.string.mine_file_wx_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
             }
         }
@@ -266,22 +270,12 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
             } else {
                 mFileBaseListAdapter.expandCompanyItem(position);
             }
-            expandOCollapseAnim(model.isExpand, rightArrow);
+            Utils.expandOCollapseAnim(model.isExpand, rightArrow);
         }
     }
 
     @Override
     public void onChildCompanyItemClickListener(int position) {
-        FileBaseListModel companyItemModel = mFileBaseListAdapter.getList().get(position);
-        FileBaseListModel companyModel = getPresenter().getCompanyList().get(companyItemModel.parentPos);
-        if (companyItemModel.id == 0L) {//统计导出文件
-            FileManagerOtherActivity.openStatistical(this, companyModel.id, getString(R.string.mine_file_statistical_str1, companyModel.titleName),
-                    picMaxSize, fileMaxSize, isToForward, isNeedZip, requestCode);
-        } else if (companyItemModel.id == 1L) {//该公司的其他文件
-            FileManagerActivity.openEs(this, getString(R.string.mine_file_comotherfile_str_1, companyModel.titleName), companyModel.id
-                    , picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip
-                    , requestCode);
-        }
     }
 
     @Override
@@ -336,11 +330,6 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
             mFileBaseListAdapter.getList().get(1).titleName = childTypeModel.titleName;
             mFileBaseListAdapter.notifyItemChanged(1);
         });
-    }
-
-    @Override
-    public void setChildCompMap(Map<Integer, List<FileBaseListModel>> companyChildMap) {
-        getHandler().post(() -> mFileBaseListAdapter.setChildData(companyChildMap));
     }
 
     @Override

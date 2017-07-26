@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">manager</string>
+    <string name="mine_file_collectfile_str">星标的文件</string>
+    <string name="mine_file_systemfile_str">系统文件</string>
+    <string name="mine_file_near30day_str">最近30天的文件</string>
+    <string name="mine_file_sdcardfolder_str">本机文件（目录）</string>
+    <string name="mine_file_sdcardtype_str">本机文件（类型）</string>
+    <string name="mine_file_qq_str">QQ文件</string>
+    <string name="mine_file_wps_str">WPS文件</string>
+    <string name="mine_file_wx_str">微信文件</string>
+
+    <string name="send_str">发送</string>
+    <string name="ensure_str">确定</string>
+    <string name="rename_str">重命名</string>
+    <string name="delete_str">删除</string>
+    <string name="star_file_str">星标文件</string>
+    <string name="star_str">星标</string>
+    <string name="star_cancel_str">取消星标</string>
+    <string name="download_str">下载</string>
+    <string name="forward_str">转发</string>
+
+    <string name="widget_alert_edit_new_name_str">请输入新的名称</string>
+    <string name="widget_alert_edit_title_str">重命名</string>
+    <string name="choice_str">选择</string>
+    <string name="confirm_str">确认</string>
+    <string name="cancel_str">取消</string>
+    <string name="exit_str">退出</string>
+
+    <string name="file_manager_already_num_str">已选择%1$d个</string>
+    <string name="select_all_str">全选</string>
+    <string name="clear_select_all_str">全不选</string>
+    <string name="olny_choice_n_pic_str">您只能选择%1$d个图片</string>
+    <string name="olny_choice_n_file_str">您只能选择%1$d个文件</string>
 </resources>

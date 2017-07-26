@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white">
+
+    <RelativeLayout
+        android:id="@+id/rl_ifopl"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:paddingLeft="@dimen/margin_normal"
+        android:paddingStart="@dimen/margin_normal">
+
+        <FrameLayout
+            android:id="@+id/fl_ifopl_ico"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:id="@+id/iv_ifopl_ico"
+                android:layout_width="@dimen/size_photo_small_1"
+                android:layout_height="@dimen/size_photo_small_1"
+                android:layout_gravity="center" />
+
+            <ImageView
+                android:id="@+id/iv_ifopl_collect"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_collection" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/fl_ifopl_ico"
+            android:layout_alignTop="@+id/fl_ifopl_ico"
+            android:layout_marginLeft="@dimen/size_divider_margin"
+            android:layout_toEndOf="@+id/fl_ifopl_ico"
+            android:layout_toLeftOf="@+id/fl_ifopl_right"
+            android:layout_toRightOf="@+id/fl_ifopl_ico"
+            android:layout_toStartOf="@+id/fl_ifopl_right"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_ifopl_title"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_black"
+                android:textSize="@dimen/dimens_sp_14" />
+
+            <TextView
+                android:id="@+id/tv_ifopl_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:textColor="@color/color_font_middle"
+                android:textSize="@dimen/dimens_sp_14" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_ifopl_right"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:minWidth="32dp"
+            android:paddingEnd="@dimen/margin_normal"
+            android:paddingRight="@dimen/margin_normal">
+
+            <TextView
+                android:id="@+id/tv_ifopl_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right" />
+
+            <com.eblog.lib.widget.TCheckBox
+                android:id="@+id/cb_ifopl_check"
+                android:layout_width="@dimen/margin_normal"
+                android:layout_height="@dimen/margin_normal"
+                android:layout_gravity="center_vertical|right"
+                android:visibility="gone"
+                app:color_background="@color/color_font_blue"
+                app:color_border="@color/color_font_middle"
+                app:size="16dp" />
+
+            <RelativeLayout
+                android:id="@+id/rl_ifopl_check"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical|right" />
+        </FrameLayout>
+    </RelativeLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/rl_ifopl"
+        android:layout_marginLeft="74dp"
+        android:layout_marginStart="74dp"
+        android:background="@color/color_divider" />
+
+</RelativeLayout>

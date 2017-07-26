@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="22dp"
+        android:text="@string/widget_alert_edit_title_str"
+        android:textColor="@color/color_font_high"
+        android:textSize="@dimen/dimens_sp_16" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="21dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="22dp"
+        android:text="@string/widget_alert_edit_new_name_str"
+        android:textColor="@color/color_font_blue"
+        android:textSize="@dimen/dimens_sp_10" />
+
+    <EditText
+        android:id="@+id/et_wae"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginStart="18dp"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/color_font_high"
+        android:textSize="@dimen/dimens_sp_16" />
+</LinearLayout>

@@ -16,6 +16,11 @@ import java.util.List;
  */
 
 public interface FileDaoImpl {
+
+    void addStar(List<String> filePathList);
+
+    void removeStar(List<String> filePathList);
+
     /**
      * 添加文件类型
      *
