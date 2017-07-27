@@ -244,19 +244,16 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
                     FileManagerActivity.openCollection(this, getString(R.string.mine_file_collectfile_str), picMaxSize, fileMaxSize,
                             allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
-                case 3://聊天及下载文件
-//                    ChatRoomFileActivity.openAllChat(this, picMaxSize, fileMaxSize, allMaxSize, isToForward, false, requestCode);
+                case 3://30天
+                   FileManagerActivity.open30Days(this, getString(R.string.mine_file_near30day_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
                 case 4://30天
-                    FileManagerActivity.open30Days(this, getString(R.string.mine_file_near30day_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
-                    break;
-                case 6://qq
                     FileManagerActivity.openQQ(this, getString(R.string.mine_file_qq_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
-                case 7://wps
+                case 5://qq
                     FileManagerActivity.openWPS(this, getString(R.string.mine_file_wps_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
-                case 8://wx
+                case 6://wps
                     FileManagerActivity.openWX(this, getString(R.string.mine_file_wx_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
             }
