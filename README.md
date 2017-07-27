@@ -18,12 +18,46 @@ dependencies {
 }
 ```
 ##### 调用：
+###### 只使用文件监听：
 ```java
 public class Application extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
         FileUpdatingService.startService(this);
+    }
+}
+```
+###### 使用文件管理器：
+需要extends BaseAppli.class
+
+```java
+public class Application extends BaseAppli {
+    private FileConfig fileConfig;
+
+    private FileConfigCallback configCallback = new FileConfigCallback() {
+        @Override
+        public FileConfig getConfig() {
+            fileConfig.userToken = "123";
+            fileConfig.fileBaseTitle = getString(R.string.mine_file_str);
+            return fileConfig;
+        }
+    };
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        fileConfig = new FileConfig();
+    }
+
+    @Override
+    public boolean isStartFileUpdating() {
+        return true;
+    }
+
+    @Override
+    public FileConfigCallback getFileConfigCallback() {
+        return configCallback;
     }
 }
 ```
