@@ -52,7 +52,6 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.z7dream.lib.db.bean.FileInfo_.fileType;
 import static com.z7dream.manager.mvp.ui.FileBaseActivity.FILE_ALL_MAX;
 import static com.z7dream.manager.mvp.ui.FileBaseActivity.FILE_FILE_MAX;
 import static com.z7dream.manager.mvp.ui.FileBaseActivity.FILE_INTENT_SELECT_DATA;
@@ -96,8 +95,6 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     private String rootPath, nowPath;
     private boolean isNeedForward;
 
-    public static final String FUNCTION_VALUE = "function_value";
-
     private Map<Integer, Integer> checkPicMap, checkFileMap, checkMap;
     private MenuItem choiceItem;
     private boolean isOpenCheck = false;
@@ -112,6 +109,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     private boolean isWX = false;//是否显示wx数据
     private boolean isFolder = false;//是否显示带目录的数据列表
     private boolean isStatistical = false;//是否为统计导出文件
+    private int fileType = FileType.ALL;//文件类型
 
     private boolean isNeedZip;//是否压缩
 
@@ -121,6 +119,19 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
     private AlertDialog.Builder alertDialogBuilder;
     private ProgressDialog progressDialog;
+
+    public static final String FUNCTION_VALUE = "function_value";
+    public static final String FILE_TYPE = "file_type";
+
+    public static final int FUN_PIC = -1;
+    public static final int FUN_NORMAL = 0;
+    public static final int FUN_COLLECTION = 1;
+    public static final int FUN_NEAR30DAY = 2;
+    public static final int FUN_QQ = 3;
+    public static final int FUN_WPS = 4;
+    public static final int FUN_WX = 5;
+    public static final int FUN_FOLDER = 6;
+    public static final int FUN_STATISTICAL = 7;
 
     @Override
     protected void after() {
@@ -139,6 +150,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     protected void init(Bundle savedInstanceState) {
         if (getIntent() != null) {
             titleName = getIntent().getStringExtra(FILE_TITLE_NAME);
+            fileType = getIntent().getIntExtra(FILE_TYPE, FileType.ALL);
             maxPicNum = getIntent().getIntExtra(FILE_PIC_MAX, 9);
             maxFileNum = getIntent().getIntExtra(FILE_FILE_MAX, 9);
             allMaxNum = getIntent().getIntExtra(FILE_ALL_MAX, 18);
@@ -157,6 +169,10 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         isStatistical = function == 7;
 
         needPicList = new ArrayList<>();
+
+        if (TextUtils.isEmpty(titleName)) {
+            titleName = getString(R.string.mine_file_sdcardfolder_str);
+        }
 
         userToolbar(mToolbar, titleName, v -> {
             setResult(RESULT_CANCELED);
@@ -426,7 +442,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
     @OnClick(R2.id.ll_search)
     void ll_search_click() {
-        FileManagerSearchActivity.openActivity(this, companyId, fileType, function);
+//        FileManagerSearchActivity.openActivity(this, companyId, fileType, function);
     }
 
     @Override
@@ -720,7 +736,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     public static void openCollection(Activity context, String titleName
             , int picMax, int fileMax, int allMax
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
-        open(context, titleName
+        open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
                 , 1, isOpenForward, isNeedZip, requestCode);
     }
@@ -728,7 +744,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     public static void open30Days(Activity context, String titleName
             , int picMax, int fileMax, int allMax
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
-        open(context, titleName
+        open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
                 , 2, isOpenForward, isNeedZip, requestCode);
     }
@@ -736,7 +752,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     public static void openQQ(Activity context, String titleName
             , int picMax, int fileMax, int allMax
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
-        open(context, titleName
+        open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
                 , 3, isOpenForward, isNeedZip, requestCode);
     }
@@ -744,7 +760,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     public static void openWPS(Activity context, String titleName
             , int picMax, int fileMax, int allMax
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
-        open(context, titleName
+        open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
                 , 4, isOpenForward, isNeedZip, requestCode);
     }
@@ -752,7 +768,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     public static void openWX(Activity context, String titleName
             , int picMax, int fileMax, int allMax
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
-        open(context, titleName
+        open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
                 , 5, isOpenForward, isNeedZip, requestCode);
     }
@@ -760,7 +776,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     public static void openFolder(Activity context, String titleName
             , int picMax, int fileMax, int allMax
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
-        open(context, titleName
+        open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax, 6
                 , isOpenForward, isNeedZip, requestCode);
     }
@@ -769,6 +785,8 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
      * 文件管理器
      *
      * @param activity
+     * @param title       标题
+     * @param fileType    文件类型
      * @param picMax      图片最大值
      * @param fileMax     文件最大值
      * @param allMax      所有最大值
@@ -777,9 +795,10 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
      * @param isNeedZip   是否压缩
      * @param requestCode
      */
-    public static void open(Activity activity, String title, int picMax, int fileMax, int allMax, int function, boolean isToForward, boolean isNeedZip, int requestCode) {
+    public static void open(Activity activity, String title, int fileType, int picMax, int fileMax, int allMax, int function, boolean isToForward, boolean isNeedZip, int requestCode) {
         Intent intent = new Intent(activity, FileManagerActivity.class);
         intent.putExtra(FILE_TITLE_NAME, title);
+        intent.putExtra(FILE_TYPE, fileType);
         intent.putExtra(FILE_PIC_MAX, picMax);
         intent.putExtra(FILE_FILE_MAX, fileMax);
         intent.putExtra(FILE_ALL_MAX, allMax);

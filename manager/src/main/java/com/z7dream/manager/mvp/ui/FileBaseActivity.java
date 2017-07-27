@@ -27,7 +27,6 @@ import com.z7dream.manager.tool.recycler.RecyclerControl;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 
@@ -143,7 +142,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
         super.onDestroy();
         mRecyclerControl.destory();
     }
-    
+
     @Override
     public void onChildTypeClickListener(int viewId) {
         FileBaseListModel model = mFileBaseListAdapter.getList().get(1);
@@ -152,44 +151,45 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
         String titleName = "";
         switch (viewId) {
             case R2.id.ll_ifbct_pic:
-                FileManagerPicActivity.open(this, null, picMaxSize, "/", isToForward, isNeedZip, null, requestCode);
+                fileType = FileType.PIC;
+                titleName = getString(R.string.file_pic_title_str);
                 return;
             case R2.id.ll_ifbct_voice:
                 fileType = FileType.AUDIO;
-                titleName = getString(R2.string.file_audio_title_str);
+                titleName = getString(R.string.file_audio_title_str);
                 break;
             case R2.id.ll_ifbct_video:
                 fileType = FileType.VIDEO;
-                titleName = getString(R2.string.file_video_title_str);
+                titleName = getString(R.string.file_video_title_str);
                 break;
             case R2.id.ll_ifbct_txt:
                 fileType = FileType.TXT;
-                titleName = getString(R2.string.file_txt_title_str);
+                titleName = getString(R.string.file_txt_title_str);
                 break;
             case R2.id.ll_ifbct_excel:
                 fileType = FileType.EXCEL;
-                titleName = getString(R2.string.file_excel_title_str);
+                titleName = getString(R.string.file_excel_title_str);
                 break;
             case R2.id.ll_ifbct_ppt:
                 fileType = FileType.PPT;
-                titleName = getString(R2.string.file_ppt_title_str);
+                titleName = getString(R.string.file_ppt_title_str);
                 break;
             case R2.id.ll_ifbct_word:
                 fileType = FileType.WORD;
-                titleName = getString(R2.string.file_word_title_str);
+                titleName = getString(R.string.file_word_title_str);
                 break;
             case R2.id.ll_ifbct_pdf:
                 fileType = FileType.PDF;
-                titleName = getString(R2.string.file_pdf_title_str);
+                titleName = getString(R.string.file_pdf_title_str);
                 break;
             case R2.id.ll_ifbct_other:
                 fileType = FileType.OTHER;
-                titleName = getString(R2.string.file_other_title_str);
+                titleName = getString(R.string.file_other_title_str);
                 break;
         }
         if (fileType >= 0)
-            FileManagerOtherActivity.open(this, null, "/", fileType, titleName,
-                    fileMaxSize, picMaxSize, allMaxSize, 0, isToForward, isNeedZip, null, requestCode);
+            FileManagerActivity.open(this, titleName, fileType, picMaxSize, fileMaxSize, allMaxSize, FileManagerActivity.FUN_NORMAL, isToForward, isNeedZip, requestCode);
+
     }
 
     @Override
@@ -210,8 +210,8 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
             } else {
                 if (model.type == FileBaseListModel.PARENT_COMP) {
                     if (!isExpand) {
-                        mFileBaseListAdapter.getList().addAll(position + 1, getPresenter().getCompanyList());
-                        mFileBaseListAdapter.notifyItemRangeInserted(position + 1, getPresenter().getCompanyList().size());
+//                        mFileBaseListAdapter.getList().addAll(position + 1, getPresenter().getCompanyList());
+//                        mFileBaseListAdapter.notifyItemRangeInserted(position + 1, getPresenter().getCompanyList().size());
                     } else {
                         int size = 0;
                         for (Iterator it = mFileBaseListAdapter.getList().iterator(); it.hasNext(); ) {
@@ -224,9 +224,9 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
                                 it.remove();
                             }
                         }
-                        for (int i = 0; i < getPresenter().getCompanyList().size(); i++) {
-                            getPresenter().getCompanyList().get(i).isExpand = false;
-                        }
+//                        for (int i = 0; i < getPresenter().getCompanyList().size(); i++) {
+//                            getPresenter().getCompanyList().get(i).isExpand = false;
+//                        }
                         mFileBaseListAdapter.notifyItemRangeRemoved(position + 1, size);
                     }
                 }
@@ -243,7 +243,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
                             allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
                 case 3://聊天及下载文件
-                    ChatRoomFileActivity.openAllChat(this, picMaxSize, fileMaxSize, allMaxSize, isToForward, false, requestCode);
+//                    ChatRoomFileActivity.openAllChat(this, picMaxSize, fileMaxSize, allMaxSize, isToForward, false, requestCode);
                     break;
                 case 4://30天
                     FileManagerActivity.open30Days(this, getString(R.string.mine_file_near30day_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);

@@ -6,11 +6,13 @@ import com.z7dream.lib.callback.Callback;
 import com.z7dream.lib.db.bean.FileInfo;
 import com.z7dream.lib.db.bean.FileInfo_;
 import com.z7dream.lib.db.bean.FileStarInfo;
+import com.z7dream.lib.db.bean.FileStarInfo_;
 import com.z7dream.lib.db.bean.FileTypeInfo;
 import com.z7dream.lib.db.bean.FileTypeInfo_;
 import com.z7dream.lib.model.Extension;
 import com.z7dream.lib.model.MagicFileEntity;
 import com.z7dream.lib.model.MagicPicEntity1;
+import com.z7dream.lib.service.FileUpdatingService;
 import com.z7dream.lib.tool.CacheManager;
 import com.z7dream.lib.tool.EnumFileType;
 import com.z7dream.lib.tool.FileUtils;
@@ -60,14 +62,47 @@ public class FileDaoManager implements FileDaoImpl {
         this.boxStore = boxStore;
     }
 
+    /**
+     * 添加星标
+     *
+     * @param filePathList
+     */
     @Override
     public void addStar(List<String> filePathList) {
-        
+        List<String> newFilePathList = new ArrayList<>();
+        newFilePathList.addAll(filePathList);
+        List<FileStarInfo> list = fileStarInfoBox.query().build().find();
+        List<String> tempList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            tempList.add(list.get(i).getFilePath());
+        }
+        newFilePathList.removeAll(tempList);
+        List<FileStarInfo> newInstertList = new ArrayList<>();
+        for (int i = 0; i < newFilePathList.size(); i++) {
+            FileStarInfo info = new FileStarInfo();
+            info.setUserToken(FileUpdatingService.getConfigCallback().getConfig().userToken);
+            info.setFilePath(newFilePathList.get(i));
+            newInstertList.add(info);
+        }
+        boxStore.runInTx(() -> fileStarInfoBox.put(newInstertList));
     }
 
+    /**
+     * 删除星标
+     *
+     * @param filePathList
+     */
     @Override
     public void removeStar(List<String> filePathList) {
-
+        QueryBuilder<FileStarInfo> queryBuilder = fileStarInfoBox.query();
+        for (int i = 0; i < filePathList.size(); i++) {
+            queryBuilder.equal(FileStarInfo_.filePath, filePathList.get(i));
+            if (i < filePathList.size() - 1) {
+                queryBuilder.or();
+            }
+        }
+        List<FileStarInfo> list = queryBuilder.build().find();
+        boxStore.runInTx(() -> fileStarInfoBox.remove(list));
     }
 
     /**
