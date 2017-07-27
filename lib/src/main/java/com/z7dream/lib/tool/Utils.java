@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -103,5 +105,18 @@ public class Utils {
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(iv, View.ROTATION, start, target);
         objectAnimator.setDuration(duration);
         objectAnimator.start();
+    }
+
+    /**
+     * 是否为中文系统
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isSystemZh(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return TextUtils.equals(context.getResources().getConfiguration().getLocales().get(0).getLanguage(), "zh");
+        } else
+            return TextUtils.equals(context.getResources().getConfiguration().locale.getLanguage(), "zh");
     }
 }

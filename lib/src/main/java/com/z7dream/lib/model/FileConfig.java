@@ -11,8 +11,14 @@ public class FileConfig {
      */
     public String userToken;
 
+    /**
+     * 文件管理器入口标题
+     */
+    public String fileBaseTitle;
 
-    public FileConfig(){
+
+    public FileConfig() {
         userToken = "";
+        fileBaseTitle = "我的文件";
     }
 }

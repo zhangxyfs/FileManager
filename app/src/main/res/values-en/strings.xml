@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">FileManager</string>
 
-    <string name="mine_file_str">我的文件</string>
+    <string name="mine_file_str">my files</string>
 </resources>

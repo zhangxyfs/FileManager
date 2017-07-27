@@ -22,6 +22,7 @@ public class Application extends BaseAppli {
             @Override
             public FileConfig getConfig() {
                 fileConfig.userToken = "123";
+                fileConfig.fileBaseTitle = getString(R.string.mine_file_str);
                 return fileConfig;
             }
         };
