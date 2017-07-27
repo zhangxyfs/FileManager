@@ -39,7 +39,8 @@ import static com.z7dream.lib.tool.Utils.expandOCollapseAnim;
  * Email:zhangxyfs@126.com
  */
 
-public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> implements FileBaseContract.View, SwipeRefreshLayout.OnRefreshListener, RecyclerControl.OnControlGetDataListListener, FileBaseListListener {
+public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> implements FileBaseContract.View, SwipeRefreshLayout.OnRefreshListener,
+        RecyclerControl.OnControlGetDataListListener, FileBaseListListener {
     @BindView(R2.id.toolbar)
     Toolbar mToolbar;
 
@@ -93,7 +94,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        userToolbar(mToolbar, R2.string.filebase_toolbar_title);
+        userToolbar(mToolbar, R.string.filebase_toolbar_title);
         if (getIntent() != null) {
             picMaxSize = getIntent().getIntExtra(FILE_PIC_MAX, 9);
             fileMaxSize = getIntent().getIntExtra(FILE_FILE_MAX, 5);
@@ -153,7 +154,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
             case R2.id.ll_ifbct_pic:
                 fileType = FileType.PIC;
                 titleName = getString(R.string.file_pic_title_str);
-                return;
+                break;
             case R2.id.ll_ifbct_voice:
                 fileType = FileType.AUDIO;
                 titleName = getString(R.string.file_audio_title_str);

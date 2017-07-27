@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.trello.rxlifecycle2.components.support.RxFragment;
+import com.z7dream.lib.tool.WeakHandler;
 import com.z7dream.manager.base.mvp.presenter.BasePresenter;
-import com.z7dream.manager.tool.WeakHandler;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;

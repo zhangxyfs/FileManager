@@ -2,9 +2,18 @@
 
     package="com.z7dream.manager">
 
-    <application android:allowBackup="true" android:label="@string/app_name"
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
         android:supportsRtl="true">
 
+        <activity
+            android:name=".mvp.ui.FileBaseActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".mvp.ui.FileManagerActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -1,11 +1,27 @@
 <resources>
 
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!--导航栏底色-->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <!--状态栏底色-->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
 
+        <!--各控件选中的颜色-->
+        <item name="colorAccent">@color/colorPrimary</item>
+        <!--各控件默认的颜色-->
+        <item name="colorControlNormal">@color/color_white</item>
+
+        <!--导航栏上的标题颜色-->
+        <item name="android:textColorPrimary">@android:color/black</item>
+
+        <!--Activity窗口的颜色-->
+        <item name="android:windowBackground">@android:color/white</item>
+
+        <!--设置标题栏上按钮颜色-->
+        <item name="android:textColorSecondary">@color/color_white</item>
+
+        <item name="actionMenuTextColor">@android:color/white</item>
+    </style>
 </resources>

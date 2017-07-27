@@ -21,12 +21,12 @@ public class FileManagerPresenter extends BasePresenterImpl implements FileManag
 
     public FileManagerPresenter(@NonNull Context context, @NonNull BaseView view) {
         super(context, view);
-        fileDaoManager = new FileDaoManager(FileUpdatingService.getBoxStore());
+        fileDaoManager = new FileDaoManager(context, FileUpdatingService.getBoxStore());
     }
 
     @Override
     public void getDataList(boolean isRef) {
-        
+
     }
 
     @Override

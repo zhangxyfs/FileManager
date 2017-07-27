@@ -6,10 +6,10 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.z7dream.manager.tool.Utils;
-import com.z7dream.manager.tool.recycler.BaseHolder;
+import com.z7dream.lib.tool.Utils;
 import com.z7dream.manager.R2;
 import com.z7dream.manager.mvp.ui.listener.FileBaseListListener;
+import com.z7dream.manager.tool.recycler.BaseHolder;
 
 import butterknife.BindView;
 
@@ -81,15 +81,15 @@ public class FileBaseChildTypeHolder extends BaseHolder {
         super(itemView);
         int partSize = Utils.getScreenWidth(itemView.getContext()) / 3;
 
-        ll_ifbct_pic.setOnClickListener(v -> listener.onChildTypeClickListener(v.getId()));
-        ll_ifbct_voice.setOnClickListener(v -> listener.onChildTypeClickListener(v.getId()));
-        ll_ifbct_video.setOnClickListener(v -> listener.onChildTypeClickListener(v.getId()));
-        ll_ifbct_txt.setOnClickListener(v -> listener.onChildTypeClickListener(v.getId()));
-        ll_ifbct_excel.setOnClickListener(v -> listener.onChildTypeClickListener(v.getId()));
-        ll_ifbct_ppt.setOnClickListener(v -> listener.onChildTypeClickListener(v.getId()));
-        ll_ifbct_word.setOnClickListener(v -> listener.onChildTypeClickListener(v.getId()));
-        ll_ifbct_pdf.setOnClickListener(v -> listener.onChildTypeClickListener(v.getId()));
-        ll_ifbct_other.setOnClickListener(v -> listener.onChildTypeClickListener(v.getId()));
+        ll_ifbct_pic.setOnClickListener(v -> listener.onChildTypeClickListener(R2.id.ll_ifbct_pic));
+        ll_ifbct_voice.setOnClickListener(v -> listener.onChildTypeClickListener(R2.id.ll_ifbct_voice));
+        ll_ifbct_video.setOnClickListener(v -> listener.onChildTypeClickListener(R2.id.ll_ifbct_video));
+        ll_ifbct_txt.setOnClickListener(v -> listener.onChildTypeClickListener(R2.id.ll_ifbct_txt));
+        ll_ifbct_excel.setOnClickListener(v -> listener.onChildTypeClickListener(R2.id.ll_ifbct_excel));
+        ll_ifbct_ppt.setOnClickListener(v -> listener.onChildTypeClickListener(R2.id.ll_ifbct_ppt));
+        ll_ifbct_word.setOnClickListener(v -> listener.onChildTypeClickListener(R2.id.ll_ifbct_word));
+        ll_ifbct_pdf.setOnClickListener(v -> listener.onChildTypeClickListener(R2.id.ll_ifbct_pdf));
+        ll_ifbct_other.setOnClickListener(v -> listener.onChildTypeClickListener(R2.id.ll_ifbct_other));
 
         ll_ifbct_pic.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, partSize));
         ll_ifbct_voice.setLayoutParams(new TableRow.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, partSize));

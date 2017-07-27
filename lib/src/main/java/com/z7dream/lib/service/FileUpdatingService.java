@@ -35,9 +35,11 @@ public class FileUpdatingService extends Service {
     public void onCreate() {
         super.onCreate();
         if (mBoxStore != null)
-            fileDaoImpl = new FileDaoManager(mBoxStore);
-        else
-            fileDaoImpl = new FileDaoManager(MyObjectBox.builder().androidContext(getApplicationContext()).build());
+            fileDaoImpl = new FileDaoManager(this, mBoxStore);
+        else {
+            mBoxStore = MyObjectBox.builder().androidContext(getApplicationContext()).build();
+            fileDaoImpl = new FileDaoManager(this, mBoxStore);
+        }
         //全盘文件夹监听
         recursiveFileObserver = new RecursiveFileObserver(CacheManager.getSaveFilePath(), param -> {
             fileDaoImpl.toPutFileInStorage(param);
@@ -61,7 +63,7 @@ public class FileUpdatingService extends Service {
         }
     }
 
-    public static BoxStore getBoxStore(){
+    public static BoxStore getBoxStore() {
         return mBoxStore;
     }
 

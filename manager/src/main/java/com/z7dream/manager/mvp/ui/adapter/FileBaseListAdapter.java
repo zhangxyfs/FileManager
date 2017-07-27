@@ -9,8 +9,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.z7dream.manager.tool.Utils;
-import com.z7dream.manager.tool.recycler.BaseAdapter;
+import com.z7dream.lib.tool.Utils;
 import com.z7dream.manager.R;
 import com.z7dream.manager.mvp.ui.holder.FileBaseChildCompHolder;
 import com.z7dream.manager.mvp.ui.holder.FileBaseChildCompItemHolder;
@@ -18,6 +17,7 @@ import com.z7dream.manager.mvp.ui.holder.FileBaseChildTypeHolder;
 import com.z7dream.manager.mvp.ui.holder.FileBaseParentHolder;
 import com.z7dream.manager.mvp.ui.listener.FileBaseListListener;
 import com.z7dream.manager.mvp.ui.model.FileBaseListModel;
+import com.z7dream.manager.tool.recycler.BaseAdapter;
 
 import java.util.HashMap;
 import java.util.List;

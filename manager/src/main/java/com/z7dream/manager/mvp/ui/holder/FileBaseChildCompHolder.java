@@ -5,10 +5,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.z7dream.manager.tool.Utils;
-import com.z7dream.manager.tool.recycler.BaseHolder;
+import com.z7dream.lib.tool.Utils;
 import com.z7dream.manager.R2;
 import com.z7dream.manager.mvp.ui.listener.FileBaseListListener;
+import com.z7dream.manager.tool.recycler.BaseHolder;
 
 import butterknife.BindView;
 

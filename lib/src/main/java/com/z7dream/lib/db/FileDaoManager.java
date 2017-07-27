@@ -1,5 +1,6 @@
 package com.z7dream.lib.db;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.z7dream.lib.callback.Callback;
@@ -52,10 +53,11 @@ public class FileDaoManager implements FileDaoImpl {
     private Box<FileStarInfo> fileStarInfoBox;
     private BoxStore boxStore;
 
-    private static final String PUT_IN_STORAGE_PATH = CacheManager.getCachePath(null, CacheManager.CONFIG) + "addAllFile.succ";
+    private static String PUT_IN_STORAGE_PATH;
     private static final String START_PATH = CacheManager.getSaveFilePath() + File.separator;
 
-    public FileDaoManager(BoxStore boxStore) {
+    public FileDaoManager(Context context, BoxStore boxStore) {
+        PUT_IN_STORAGE_PATH = CacheManager.getCachePath(context, CacheManager.CONFIG) + "addAllFile.succ";
         fileInfoBox = boxStore.boxFor(FileInfo.class);
         fileTypeInfoBox = boxStore.boxFor(FileTypeInfo.class);
         fileStarInfoBox = boxStore.boxFor(FileStarInfo.class);
