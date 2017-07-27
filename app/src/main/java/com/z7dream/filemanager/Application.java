@@ -11,21 +11,21 @@ import com.z7dream.manager.base.mvp.BaseAppli;
  */
 
 public class Application extends BaseAppli {
-    private FileConfigCallback configCallback;
     private FileConfig fileConfig;
+
+    private FileConfigCallback configCallback = new FileConfigCallback() {
+        @Override
+        public FileConfig getConfig() {
+            fileConfig.userToken = "123";
+            fileConfig.fileBaseTitle = getString(R.string.mine_file_str);
+            return fileConfig;
+        }
+    };
 
     @Override
     public void onCreate() {
         super.onCreate();
         fileConfig = new FileConfig();
-        configCallback = new FileConfigCallback() {
-            @Override
-            public FileConfig getConfig() {
-                fileConfig.userToken = "123";
-                fileConfig.fileBaseTitle = getString(R.string.mine_file_str);
-                return fileConfig;
-            }
-        };
     }
 
     @Override

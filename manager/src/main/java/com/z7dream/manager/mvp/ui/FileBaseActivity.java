@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.z7dream.lib.service.FileUpdatingService;
 import com.z7dream.lib.tool.FileType;
 import com.z7dream.lib.tool.Utils;
 import com.z7dream.manager.R;
@@ -94,7 +95,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
 
     @Override
     protected void init(Bundle savedInstanceState) {
-        userToolbar(mToolbar, R.string.filebase_toolbar_title);
+        userToolbar(mToolbar, FileUpdatingService.getConfigCallback().getConfig().fileBaseTitle);
         if (getIntent() != null) {
             picMaxSize = getIntent().getIntExtra(FILE_PIC_MAX, 9);
             fileMaxSize = getIntent().getIntExtra(FILE_FILE_MAX, 5);

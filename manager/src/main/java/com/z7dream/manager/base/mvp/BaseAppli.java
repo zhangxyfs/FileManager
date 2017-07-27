@@ -21,8 +21,7 @@ public abstract class BaseAppli extends MultiDexApplication {
         mContext = this;
         if (isStartFileUpdating())
             FileUpdatingService.startService(this);
-        if (getFileConfigCallback() != null)
-            FileUpdatingService.setConfig(getFileConfigCallback());
+        FileUpdatingService.setConfig(getFileConfigCallback());
     }
 
     public static Context getContext() {

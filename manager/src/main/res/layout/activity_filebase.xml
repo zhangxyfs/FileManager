@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_background"
     android:fitsSystemWindows="true"
-    tools:context=".mvp.ui.FileBaseActivity">
+    tools:context="com.z7dream.manager.mvp.ui.FileBaseActivity">
 
     <include layout="@layout/include_toolbar" />
 
