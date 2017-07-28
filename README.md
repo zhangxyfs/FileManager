@@ -20,7 +20,7 @@ dependencies {
 ##### 截图：
 ![](https://github.com/zhangxyfs/FileManager/blob/1.0/screenshots/fileManager-1.0.gif)
 ##### 调用：
-###### 只使用文件监听：
+###### 使用文件监听：
 ```java
 public class Application extends MultiDexApplication {
     @Override
@@ -30,7 +30,7 @@ public class Application extends MultiDexApplication {
     }
 }
 ```
-###### 使用文件管理器：
+###### 使用文件管理器：（未完成）
 需要extends BaseAppli.class
 
 ```java
