@@ -30,7 +30,7 @@ public class Application extends MultiDexApplication {
     }
 }
 ```
-###### 使用文件管理器：（未完成）
+###### 使用文件管理器：（开发中）
 需要extends BaseAppli.class
 
 ```java
