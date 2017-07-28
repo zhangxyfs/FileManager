@@ -151,10 +151,12 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
         if (model.type != FileBaseListModel.CHILD_TYPE) return;
         int fileType = -1;
         String titleName = "";
+        int fileMax = fileMaxSize;
         switch (viewId) {
             case R2.id.ll_ifbct_pic:
                 fileType = FileType.PIC;
                 titleName = getString(R.string.file_pic_title_str);
+                fileMax = 0;
                 break;
             case R2.id.ll_ifbct_voice:
                 fileType = FileType.AUDIO;
@@ -190,7 +192,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
                 break;
         }
         if (fileType >= 0)
-            FileManagerActivity.open(this, titleName, fileType, picMaxSize, fileMaxSize, allMaxSize, FileManagerActivity.FUN_NORMAL, isToForward, isNeedZip, requestCode);
+            FileManagerActivity.open(this, titleName, fileType, picMaxSize, fileMax, picMaxSize + fileMax, FileManagerActivity.FUN_NORMAL, isToForward, isNeedZip, requestCode);
 
     }
 
@@ -245,7 +247,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
                             allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
                 case 3://30天
-                   FileManagerActivity.open30Days(this, getString(R.string.mine_file_near30day_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
+                    FileManagerActivity.open30Days(this, getString(R.string.mine_file_near30day_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);
                     break;
                 case 4://30天
                     FileManagerActivity.openQQ(this, getString(R.string.mine_file_qq_str), picMaxSize, fileMaxSize, allMaxSize, isToForward, isNeedZip, requestCode);

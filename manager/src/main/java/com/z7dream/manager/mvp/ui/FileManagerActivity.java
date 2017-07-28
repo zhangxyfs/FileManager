@@ -592,7 +592,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                 return;
             }
 
-            if (allMaxNum >= 0 && checkMap.size() > allMaxNum && isCheck) {
+            if (allMaxNum >= 0 && checkMap.size() >= allMaxNum && isCheck) {
                 if (cb instanceof SmoothCheckBox) {
                     ((SmoothCheckBox) cb).setChecked(false);
                 } else if (cb instanceof TCheckBox) {
@@ -603,7 +603,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                 return;
             }
             if (model.fileType == FileType.PIC) {
-                if (maxPicNum >= 0 && checkPicMap.size() > maxPicNum && isCheck) {
+                if (maxPicNum >= 0 && checkPicMap.size() >= maxPicNum && isCheck) {
                     if (cb instanceof SmoothCheckBox) {
                         ((SmoothCheckBox) cb).setChecked(false);
                     } else if (cb instanceof TCheckBox) {
@@ -614,7 +614,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                     return;
                 }
             } else {
-                if (maxFileNum >= 0 && checkFileMap.size() > maxFileNum && isCheck) {
+                if (maxFileNum >= 0 && checkFileMap.size() >= maxFileNum && isCheck) {
                     if (cb instanceof SmoothCheckBox) {
                         ((SmoothCheckBox) cb).setChecked(false);
                     } else if (cb instanceof TCheckBox) {

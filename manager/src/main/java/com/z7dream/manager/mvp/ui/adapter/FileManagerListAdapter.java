@@ -65,7 +65,7 @@ public class FileManagerListAdapter extends BaseAdapter<FileManagerListModel, Fi
             } else {
                 fpplh.rl_ifppl_cb.setVisibility(View.GONE);
             }
-            fpplh.cb_ifppl_check.setChecked(model.isSelect);
+            fpplh.cb_ifppl_check.setChecked(model.isSelect, true, false);
         } else if (model.type == FileManagerListModel.OTHER) {
             FileManagerOtherListHolder fpolh = (FileManagerOtherListHolder) holder;
             fpolh.iv_ifopl_ico.setImageResource(model.iconResId);
