@@ -40,6 +40,7 @@ import com.z7dream.manager.tool.WPSUtils;
 import com.z7dream.manager.tool.luban.Luban;
 import com.z7dream.manager.tool.luban.OnCompressListener;
 import com.z7dream.manager.tool.recycler.RecyclerControl;
+import com.z7dream.manager.tool.smoothCompound.SmoothCheckBox;
 import com.z7dream.manager.widget.FileManagerDialog;
 import com.z7dream.manager.widget.TCheckBox;
 
@@ -591,29 +592,41 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                 return;
             }
 
-            if (allMaxNum >= 0 && checkMap.size() >= allMaxNum && !isCheck) {
-                ((TCheckBox) cb).setChecked(false);
+            if (allMaxNum >= 0 && checkMap.size() > allMaxNum && isCheck) {
+                if (cb instanceof SmoothCheckBox) {
+                    ((SmoothCheckBox) cb).setChecked(false);
+                } else if (cb instanceof TCheckBox) {
+                    ((TCheckBox) cb).setChecked(false);
+                }
                 alertDialogBuilder.setMessage(getString(R.string.olny_choice_n_file_str, allMaxNum))
                         .setPositiveButton(R.string.ensure_str, (dialog, which) -> dialog.dismiss());
                 return;
             }
             if (model.fileType == FileType.PIC) {
-                if (maxPicNum >= 0 && checkPicMap.size() >= maxPicNum && !isCheck) {
-                    ((TCheckBox) cb).setChecked(false);
+                if (maxPicNum >= 0 && checkPicMap.size() > maxPicNum && isCheck) {
+                    if (cb instanceof SmoothCheckBox) {
+                        ((SmoothCheckBox) cb).setChecked(false);
+                    } else if (cb instanceof TCheckBox) {
+                        ((TCheckBox) cb).setChecked(false);
+                    }
                     alertDialogBuilder.setMessage(getString(R.string.olny_choice_n_file_str, maxPicNum))
                             .setPositiveButton(R.string.ensure_str, (dialog, which) -> dialog.dismiss());
                     return;
                 }
             } else {
-                if (maxFileNum >= 0 && checkFileMap.size() >= maxFileNum && !isCheck) {
-                    ((TCheckBox) cb).setChecked(false);
+                if (maxFileNum >= 0 && checkFileMap.size() > maxFileNum && isCheck) {
+                    if (cb instanceof SmoothCheckBox) {
+                        ((SmoothCheckBox) cb).setChecked(false);
+                    } else if (cb instanceof TCheckBox) {
+                        ((TCheckBox) cb).setChecked(false);
+                    }
                     alertDialogBuilder.setMessage(getString(R.string.olny_choice_n_file_str, maxFileNum))
                             .setPositiveButton(R.string.ensure_str, (dialog, which) -> dialog.dismiss());
                     return;
                 }
             }
 
-            if (!isCheck) {//处理选中状态
+            if (isCheck) {//处理选中状态
                 checkMap.put(position, position);
                 if (model.fileType == FileType.PIC) {
                     checkPicMap.put(position, position);

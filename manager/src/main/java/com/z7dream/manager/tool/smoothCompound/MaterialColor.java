@@ -1,7 +1,8 @@
 package com.z7dream.manager.tool.smoothCompound;
 
-import com.eblog.lib.Appli;
-import com.eblog.lib.R;
+
+import com.z7dream.manager.R;
+import com.z7dream.manager.base.mvp.BaseAppli;
 
 public class MaterialColor {
 
@@ -10,9 +11,9 @@ public class MaterialColor {
     //搬运自themes_material.java中的Theme.Material.Light
     public static final class DefaultLight {
         //我是分割线
-        public static final int colorPrimaryDark = Appli.getContext().getResources().getColor(R.color.colorPrimaryDark);//0xff757575;//@color/primary_dark_material_light
-        public static final int colorPrimary = Appli.getContext().getResources().getColor(R.color.colorPrimary);//0xffbdbdbd;//@color/primary_material_light
-        public static final int colorAccent = Appli.getContext().getResources().getColor(R.color.color_white);//material_deep_teal_500;//@color/accent_material_light
+        public static final int colorPrimaryDark = BaseAppli.getContext().getResources().getColor(R.color.colorPrimaryDark);//0xff757575;//@color/primary_dark_material_light
+        public static final int colorPrimary = BaseAppli.getContext().getResources().getColor(R.color.colorPrimary);//0xffbdbdbd;//@color/primary_material_light
+        public static final int colorAccent = BaseAppli.getContext().getResources().getColor(R.color.color_white);//material_deep_teal_500;//@color/accent_material_light
         //我是分割线
         //public static final int colorControlNormal = 0;//?attr/textColorSecondary
         //public static final int colorControlActivated = 0;//?attr/colorAccent

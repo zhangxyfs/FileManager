@@ -13,4 +13,8 @@
 
     <!--分割线-->
     <color name="color_divider">#D8D8D8</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
 </resources>
