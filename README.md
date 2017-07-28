@@ -17,6 +17,8 @@ dependencies {
 	'com.trello.rxlifecycle2:rxlifecycle-components:2.1.0'
 }
 ```
+##### 截图：
+![](https://github.com/zhangxyfs/FileManager/blob/1.0/screenshots/fileManager-1.0.gif)
 ##### 调用：
 ###### 只使用文件监听：
 ```java
