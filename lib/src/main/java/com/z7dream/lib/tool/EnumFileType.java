@@ -23,39 +23,39 @@ public enum EnumFileType {
     OTHER,
     ALL;
 
-//    public static EnumFileType getType(int oldFileType) {
-//        EnumFileType enumFileType;
-//        switch (oldFileType) {
-//            case com.eblog.lib.utils.explorer.FileType.PIC:
-//                enumFileType = PIC;
-//                break;
-//            case com.eblog.lib.utils.explorer.FileType.AUDIO:
-//                enumFileType = AUDIO;
-//                break;
-//            case com.eblog.lib.utils.explorer.FileType.VIDEO:
-//                enumFileType = VIDEO;
-//                break;
-//            case com.eblog.lib.utils.explorer.FileType.TXT:
-//                enumFileType = TXT;
-//                break;
-//            case com.eblog.lib.utils.explorer.FileType.EXCEL:
-//                enumFileType = EXCEL;
-//                break;
-//            case com.eblog.lib.utils.explorer.FileType.PPT:
-//                enumFileType = PPT;
-//                break;
-//            case com.eblog.lib.utils.explorer.FileType.WORD:
-//                enumFileType = WORD;
-//                break;
-//            case com.eblog.lib.utils.explorer.FileType.PDF:
-//                enumFileType = PDF;
-//                break;
-//            default:
-//                enumFileType = OTHER;
-//                break;
-//        }
-//        return enumFileType;
-//    }
+    public static EnumFileType getType(int oldFileType) {
+        EnumFileType enumFileType;
+        switch (oldFileType) {
+            case FileType.PIC:
+                enumFileType = PIC;
+                break;
+            case FileType.AUDIO:
+                enumFileType = AUDIO;
+                break;
+            case FileType.VIDEO:
+                enumFileType = VIDEO;
+                break;
+            case FileType.TXT:
+                enumFileType = TXT;
+                break;
+            case FileType.EXCEL:
+                enumFileType = EXCEL;
+                break;
+            case FileType.PPT:
+                enumFileType = PPT;
+                break;
+            case FileType.WORD:
+                enumFileType = WORD;
+                break;
+            case FileType.PDF:
+                enumFileType = PDF;
+                break;
+            default:
+                enumFileType = OTHER;
+                break;
+        }
+        return enumFileType;
+    }
 
     public static int getCacheWhich(EnumFileType type) {
         int fileType = CacheManager.OTHER;

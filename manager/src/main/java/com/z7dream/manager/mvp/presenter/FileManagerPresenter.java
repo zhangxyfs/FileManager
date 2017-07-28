@@ -42,23 +42,21 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
         if (!isRef) {
             page++;
         }
-        if (getView().getType() == FileType.PIC) {
-            if (fileDaoManager.isPutFileInStorageSucc()) {
-                List<FileInfo> list = fileDaoManager.getFileInfoList(EnumFileType.PIC, page, SIZE);
+        if (fileDaoManager.isPutFileInStorageSucc()) {
+            List<FileInfo> list = fileDaoManager.getFileInfoList(EnumFileType.getType(getView().getType()), page, SIZE);
 
-                for (int i = 0; i < list.size(); i++) {
-                    FileManagerListModel model = new FileManagerListModel();
-                    model.type = FileManagerListModel.PIC;
-                    model.fileType = FileType.PIC;
-                    model.picPath = list.get(i).getFilePath();
-                    model.fileName = list.get(i).getFileName();
-                    model.isStar = starMap.get(model.picPath) != null;
-                    model.isSelect = false;
-                    model.iconResId = FileType.createIconResId(FileType.PIC);
-                    model.modifyStr = DateUtils.formatDate(list.get(i).getLastModifyTime(), "yyyy-MM-dd HH:mm:ss");
-                    model.sizeStr = Formatter.formatFileSize(getContext(), list.get(i).getFileSize());
-                    newList.add(model);
-                }
+            for (int i = 0; i < list.size(); i++) {
+                FileManagerListModel model = new FileManagerListModel();
+                model.type = getView().getType() == FileType.PIC ? FileManagerListModel.PIC : FileManagerListModel.OTHER;
+                model.fileType = getView().getType();
+                model.picPath = list.get(i).getFilePath();
+                model.fileName = list.get(i).getFileName();
+                model.isStar = starMap.get(model.picPath) != null;
+                model.isSelect = false;
+                model.iconResId = FileType.createIconResId(getView().getType());
+                model.modifyStr = DateUtils.formatDate(list.get(i).getLastModifyTime(), "yyyy-MM-dd HH:mm:ss");
+                model.sizeStr = Formatter.formatFileSize(getContext(), list.get(i).getFileSize());
+                newList.add(model);
             }
         }
 
