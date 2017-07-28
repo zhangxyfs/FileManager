@@ -75,6 +75,21 @@ public class CacheManager {
     private static final String NOMEDIA = ".nomedia";
 
 
+    public static String getSystemPicCachePath(Context context) {
+        String path = "";
+        File file = context.getExternalFilesDir("");
+        if (file != null) {
+            path = file.getAbsolutePath() + File.separator;
+        } else
+            path = "Android" + File.separator + "data" + File.separator + context.getPackageName() + File.separator + "files" + File.separator;
+
+        File fDir = new File(path);
+        if (!fDir.exists()) {
+            fDir.mkdirs();
+        }
+        return path;
+    }
+
     /**
      * 获取缓存路径
      */
@@ -220,5 +235,9 @@ public class CacheManager {
             rootPath = file.getPath();
         }
         return rootPath;
+    }
+
+    public static String getStartPath(){
+        return CacheManager.getSaveFilePath() + File.separator;
     }
 }

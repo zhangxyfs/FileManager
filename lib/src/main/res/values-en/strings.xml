@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">FileManager</string>
+    <string name="mine_file_str">my files</string>
+
+    <string name="n_hour_m_min">%1$d/%2$d</string>
+    <string name="n_hour_m_min_1">%1$s/%2$s</string>
+    <string name="n_min">%1$dmin</string>
+    <string name="n_hour">%1$dhour</string>
+</resources>

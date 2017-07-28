@@ -3,12 +3,14 @@ package com.z7dream.lib.db;
 
 import com.z7dream.lib.callback.Callback;
 import com.z7dream.lib.db.bean.FileInfo;
+import com.z7dream.lib.db.bean.FileStarInfo;
 import com.z7dream.lib.model.MagicPicEntity1;
 import com.z7dream.lib.tool.EnumFileType;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Z7Dream on 2017/7/5 16:22.
@@ -17,8 +19,32 @@ import java.util.List;
 
 public interface FileDaoImpl {
 
+    /**
+     * 获取星标文件map
+     *
+     * @return
+     */
+    Map<String, String> getStarMap();
+
+    /**
+     * 获取星标文件列表
+     *
+     * @return
+     */
+    List<FileStarInfo> getStarList();
+
+    /**
+     * 添加星标文件
+     *
+     * @param filePathList
+     */
     void addStar(List<String> filePathList);
 
+    /**
+     * 删除星标文件
+     *
+     * @param filePathList
+     */
     void removeStar(List<String> filePathList);
 
     /**
@@ -81,6 +107,13 @@ public interface FileDaoImpl {
     String getFileType(String exc);
 
     /**
+     * 获取文件类型 列表
+     *
+     * @return
+     */
+    Map<String, String> getFileTypeMap();
+
+    /**
      * 是否为需要的文件
      *
      * @param exc 文件扩展名
@@ -96,6 +129,16 @@ public interface FileDaoImpl {
      */
     List<FileInfo> getFileInfoList(EnumFileType enumFileType);
 
+    /**
+     * 根据文件类型查找
+     *
+     * @param enumFileType 文件类型枚举
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> getFileInfoList(EnumFileType enumFileType, int page, int size);
+
 
     /**
      * 根据文件类型查找
@@ -105,6 +148,17 @@ public interface FileDaoImpl {
      * @return
      */
     List<FileInfo> getFileInfoList(EnumFileType enumFileType, String likeStr);
+
+    /**
+     * 根据文件类型查找
+     *
+     * @param enumFileType 文件类型枚举
+     * @param likeStr      模糊查询
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> getFileInfoList(EnumFileType enumFileType, String likeStr, int page, int size);
 
     /**
      * 获取qq文件列表

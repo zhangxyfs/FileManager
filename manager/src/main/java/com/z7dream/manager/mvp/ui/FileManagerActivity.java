@@ -187,20 +187,22 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         });
         mToolbar.setOnMenuItemClickListener(this);
         fileManagerListAdapter = new FileManagerListAdapter(this);
-        mGridLayoutManager = new GridLayoutManager(this, 1);
+        mGridLayoutManager = new GridLayoutManager(this, fileType == FileType.PIC ? 3 : 1);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.setAdapter(fileManagerListAdapter);
         mRecyclerView.setHasFixedSize(true);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRecyclerControl = new RecyclerControl(mSwipeRefreshLayout, mGridLayoutManager, this);
+        mRecyclerControl.setSwipeRefreshLayoutEnable(false);
+        mRecyclerView.addOnScrollListener(mRecyclerControl.getOnScrollListener());
+
         checkPicMap = new HashMap<>();
         checkFileMap = new HashMap<>();
         checkMap = new HashMap<>();
 
         fileManagerDialog = new FileManagerDialog(this, 0);
         fileManagerDialog.setRenameFocus(false);
-        mRecyclerControl.setSwipeRefreshLayoutEnable(false);
 
         rootPath = CacheManager.getSaveFilePath();
         nowPath = rootPath;
@@ -382,7 +384,9 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     private void createRenameDialog(int position) {
         FileManagerListModel model = fileManagerListAdapter.getList().get(position);
         View renameChildView = LayoutInflater.from(this).inflate(R.layout.widget_alert_edit, null);
-        EditText renameEt = (EditText) renameChildView.findViewById(R.id.et_wae);
+        EditText renameEt = renameChildView.findViewById(R.id.et_wae);
+        renameEt.setText(model.fileName);
+        renameEt.setSelection(0, model.fileName.length());
         AlertDialog.Builder renameDialogBuilder = new AlertDialog.Builder(this).setView(renameChildView)
                 .setPositiveButton(R.string.confirm_str, (dialog, which) -> {
                     getPresenter().renameFile(position, renameEt.getText().toString().trim());
@@ -521,6 +525,30 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                     checkMap.putAll(checkFileMap);
                 }
             }
+            if (checkMap.size() > 0) {
+                if (allMaxNum < Integer.MAX_VALUE)
+                    setToolbarTitle(getString(R.string.file_manager_already_num_str, checkMap.size()));
+                fileManagerDialog.setRenameFocus(checkMap.size() == 1);
+            } else {
+                setToolbarTitle(titleName);
+                fileManagerDialog.setRenameFocus(false);
+            }
+            fileManagerListAdapter.notifyDataSetChanged();
+
+            if (checkMap.size() > 0) {
+                for (Integer key : checkMap.keySet()) {
+                    FileManagerListModel model = fileManagerListAdapter.getList().get(key);
+                    isCheckAllStar = model.isStar;
+                    if (!isCheckAllStar) {
+                        break;
+                    }
+                }
+                if (!isCheckAllStar) {
+                    fileManagerDialog.setStarState(true);
+                } else {
+                    fileManagerDialog.setStarState(false);
+                }
+            }
         }
         return false;
     }
@@ -537,106 +565,108 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
     @Override
     public void onCheckClickListener(View cb, int position, boolean isCheck) {
-        FileManagerListModel model = fileManagerListAdapter.getList().get(position);
-        if (!model.isFile) {
-            nowPath = model.picPath;
-            onRefresh();
-            return;
-        }
-        if (!isOpenCheck) {
-            switch (model.fileType) {
-                case FileType.PIC:
+        getHandler().post(() -> {
+            FileManagerListModel model = fileManagerListAdapter.getList().get(position);
+            if (!model.isFile) {
+                nowPath = model.picPath;
+                onRefresh();
+                return;
+            }
+            if (!isOpenCheck) {
+                switch (model.fileType) {
+                    case FileType.PIC:
 //                    FilePicDisplayActivity.onlyDisplay(this, 1, 0, model.picPath);
-                    break;
-                case FileType.TXT:
-                case FileType.EXCEL:
-                case FileType.PPT:
-                case FileType.WORD:
-                case FileType.PDF:
-                    WPSUtils.openWpsFile(this, model.picPath);
-                    break;
-                default:
-                    OpenFileUtils.openFile(model.picPath);
-                    break;
+                        break;
+                    case FileType.TXT:
+                    case FileType.EXCEL:
+                    case FileType.PPT:
+                    case FileType.WORD:
+                    case FileType.PDF:
+                        WPSUtils.openWpsFile(this, model.picPath);
+                        break;
+                    default:
+                        OpenFileUtils.openFile(model.picPath);
+                        break;
+                }
+                return;
             }
-            return;
-        }
 
-        if (allMaxNum >= 0 && checkMap.size() >= allMaxNum && !isCheck) {
-            ((TCheckBox) cb).setChecked(false);
-            alertDialogBuilder.setMessage(getString(R.string.olny_choice_n_file_str, allMaxNum))
-                    .setPositiveButton(R.string.ensure_str, (dialog, which) -> dialog.dismiss());
-            return;
-        }
-        if (model.fileType == FileType.PIC) {
-            if (maxPicNum >= 0 && checkPicMap.size() >= maxPicNum && !isCheck) {
+            if (allMaxNum >= 0 && checkMap.size() >= allMaxNum && !isCheck) {
                 ((TCheckBox) cb).setChecked(false);
-                alertDialogBuilder.setMessage(getString(R.string.olny_choice_n_file_str, maxPicNum))
+                alertDialogBuilder.setMessage(getString(R.string.olny_choice_n_file_str, allMaxNum))
                         .setPositiveButton(R.string.ensure_str, (dialog, which) -> dialog.dismiss());
                 return;
             }
-        } else {
-            if (maxFileNum >= 0 && checkFileMap.size() >= maxFileNum && !isCheck) {
-                ((TCheckBox) cb).setChecked(false);
-                alertDialogBuilder.setMessage(getString(R.string.olny_choice_n_file_str, maxFileNum))
-                        .setPositiveButton(R.string.ensure_str, (dialog, which) -> dialog.dismiss());
-                return;
-            }
-        }
-
-        if (!isCheck) {//处理选中状态
-            checkMap.put(position, position);
             if (model.fileType == FileType.PIC) {
-                checkPicMap.put(position, position);
+                if (maxPicNum >= 0 && checkPicMap.size() >= maxPicNum && !isCheck) {
+                    ((TCheckBox) cb).setChecked(false);
+                    alertDialogBuilder.setMessage(getString(R.string.olny_choice_n_file_str, maxPicNum))
+                            .setPositiveButton(R.string.ensure_str, (dialog, which) -> dialog.dismiss());
+                    return;
+                }
             } else {
-                checkFileMap.put(position, position);
-            }
-            fileManagerListAdapter.getList().get(position).isSelect = true;
-            if (checkMap.size() == allMaxNum) {
-                choiceItem.setTitle(R.string.clear_select_all_str);
-                isAllCheckClick = true;
-            }
-        } else {
-            checkMap.remove(position);
-            if (model.fileType == FileType.PIC) {
-                checkPicMap.remove(position);
-            } else {
-                checkFileMap.remove(position);
-            }
-            fileManagerListAdapter.getList().get(position).isSelect = false;
-            if (checkMap.size() == 0) {
-                choiceItem.setTitle(R.string.select_all_str);
-                isAllCheckClick = false;
-            }
-        }
-
-
-        if (checkMap.size() > 0) {
-            if (allMaxNum < Integer.MAX_VALUE)
-                setToolbarTitle(getString(R.string.file_manager_already_num_str, checkMap.size()));
-            fileManagerDialog.setRenameFocus(checkMap.size() == 1);
-        } else {
-            setToolbarTitle(titleName);
-            fileManagerDialog.setRenameFocus(true);
-            fileManagerDialog.setStarState(true);
-        }
-        fileManagerListAdapter.notifyItemChanged(position);
-
-        if (checkMap.size() > 0) {
-            for (Integer key : checkMap.keySet()) {
-                isCheckAllStar = fileManagerListAdapter.getList().get(key).isStar;
-                if (!isCheckAllStar) {
-                    break;
+                if (maxFileNum >= 0 && checkFileMap.size() >= maxFileNum && !isCheck) {
+                    ((TCheckBox) cb).setChecked(false);
+                    alertDialogBuilder.setMessage(getString(R.string.olny_choice_n_file_str, maxFileNum))
+                            .setPositiveButton(R.string.ensure_str, (dialog, which) -> dialog.dismiss());
+                    return;
                 }
             }
-            if (!isCheckAllStar) {
-                fileManagerDialog.setStarState(true);
+
+            if (!isCheck) {//处理选中状态
+                checkMap.put(position, position);
+                if (model.fileType == FileType.PIC) {
+                    checkPicMap.put(position, position);
+                } else {
+                    checkFileMap.put(position, position);
+                }
+                fileManagerListAdapter.getList().get(position).isSelect = true;
+                if (checkMap.size() == allMaxNum) {
+                    choiceItem.setTitle(R.string.clear_select_all_str);
+                    isAllCheckClick = true;
+                }
             } else {
-                fileManagerDialog.setStarState(false);
+                checkMap.remove(position);
+                if (model.fileType == FileType.PIC) {
+                    checkPicMap.remove(position);
+                } else {
+                    checkFileMap.remove(position);
+                }
+                fileManagerListAdapter.getList().get(position).isSelect = false;
+                if (checkMap.size() == 0) {
+                    choiceItem.setTitle(R.string.select_all_str);
+                    isAllCheckClick = false;
+                }
             }
-        } else {
-            fileManagerDialog.setStarState(true);
-        }
+
+
+            if (checkMap.size() > 0) {
+                if (allMaxNum < Integer.MAX_VALUE)
+                    setToolbarTitle(getString(R.string.file_manager_already_num_str, checkMap.size()));
+                fileManagerDialog.setRenameFocus(checkMap.size() == 1);
+            } else {
+                setToolbarTitle(titleName);
+                fileManagerDialog.setRenameFocus(true);
+                fileManagerDialog.setStarState(true);
+            }
+            fileManagerListAdapter.notifyItemChanged(position);
+
+            if (checkMap.size() > 0) {
+                for (Integer key : checkMap.keySet()) {
+                    isCheckAllStar = fileManagerListAdapter.getList().get(key).isStar;
+                    if (!isCheckAllStar) {
+                        break;
+                    }
+                }
+                if (!isCheckAllStar) {
+                    fileManagerDialog.setStarState(true);
+                } else {
+                    fileManagerDialog.setStarState(false);
+                }
+            } else {
+                fileManagerDialog.setStarState(true);
+            }
+        });
     }
 
 
@@ -676,8 +706,9 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     public void getDataListSucc(List<FileManagerListModel> dataList, boolean isRef) {
         getHandler().post(() -> {
             if (isRef) {
-                fileManagerListAdapter.deleteAllData();
-                fileManagerListAdapter.refAllData(dataList);
+                fileManagerListAdapter.getList().clear();
+                fileManagerListAdapter.getList().addAll(dataList);
+                fileManagerListAdapter.notifyDataSetChanged();
             } else {
                 fileManagerListAdapter.appendToList(dataList);
             }
@@ -741,6 +772,11 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     @Override
     public void notifyItemChanged(int position) {
         fileManagerListAdapter.notifyItemChanged(position);
+    }
+
+    @Override
+    public int getType() {
+        return fileType;
     }
 
     @Override

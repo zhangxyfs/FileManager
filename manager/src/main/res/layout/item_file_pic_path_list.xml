@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -28,7 +29,7 @@
         android:layout_alignParentTop="true"
         android:visibility="gone">
 
-        <View
+<!--        <View
             android:id="@+id/v_ifpsl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,16 +40,27 @@
             android:layout_alignStart="@+id/cb_ifppl_check"
             android:layout_alignTop="@+id/cb_ifppl_check"
             android:layout_marginBottom="1.5dp"
-            android:layout_marginTop="1.5dp"
-            android:layout_marginRight="1dp"
             android:layout_marginLeft="0.5dp"
-            android:background="@color/color_font_gray" />
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="1.5dp"
+            android:background="@color/color_font_gray" />-->
 
-        <CheckBox
+        <com.z7dream.manager.widget.TCheckBox
             android:id="@+id/cb_ifppl_check"
-            style="@style/customCheckbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/margin_normal"
+            android:layout_height="@dimen/margin_normal"
+            android:layout_centerInParent="true"
+            android:checked="false"
+            android:gravity="center"
+            android:visibility="gone"
+            app:color_background="@color/color_font_blue"
+            app:color_border="@color/color_font_middle"
+            app:size="16dp" />
+
+        <RelativeLayout
+            android:id="@+id/rl_ifppl_check"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:checked="false"
             android:gravity="center" />

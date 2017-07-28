@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">FileManager</string>
+    <string name="mine_file_str">我的文件</string>
+
+    <string name="n_hour_m_min">%1$d小时%2$d分</string>
+    <string name="n_hour_m_min_1">%1$s小时%2$s分</string>
+    <string name="n_min">%1$d分钟</string>
+    <string name="n_hour">%1$d小时</string>
+    <string name="time_moment_str">刚刚</string>
+    <string name="time_min_ago_str">分钟前</string>
+    <string name="time_hour_ago_str">小时前</string>
+    <string name="yestday_str">昨天</string>
+    <string name="thisweek_st">本周内</string>
+    <string name="lastweek_st">一周前</string>
+    <string name="yestday_2_str">昨天 %1$s</string>
+</resources>

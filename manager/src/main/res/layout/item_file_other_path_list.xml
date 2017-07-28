@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right" />
 
-            <com.eblog.lib.widget.TCheckBox
+            <com.z7dream.manager.widget.TCheckBox
                 android:id="@+id/cb_ifopl_check"
                 android:layout_width="@dimen/margin_normal"
                 android:layout_height="@dimen/margin_normal"

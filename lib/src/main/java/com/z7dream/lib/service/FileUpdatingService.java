@@ -1,9 +1,12 @@
 package com.z7dream.lib.service;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.IBinder;
+import android.support.v4.content.ContextCompat;
 
 import com.z7dream.lib.db.FileDaoImpl;
 import com.z7dream.lib.db.FileDaoManager;
@@ -17,8 +20,8 @@ import com.z7dream.lib.tool.Utils;
 import io.objectbox.BoxStore;
 
 public class FileUpdatingService extends Service {
-    private RecursiveFileObserver recursiveFileObserver;
-    private FileDaoImpl fileDaoImpl;
+    private static RecursiveFileObserver recursiveFileObserver;
+    private static FileDaoImpl fileDaoImpl;
     private static BoxStore mBoxStore;
     private static FileConfigCallback mFileConfigCallback;
 
@@ -34,17 +37,7 @@ public class FileUpdatingService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (mBoxStore != null)
-            fileDaoImpl = new FileDaoManager(this, mBoxStore);
-        else {
-            mBoxStore = MyObjectBox.builder().androidContext(getApplicationContext()).build();
-            fileDaoImpl = new FileDaoManager(this, mBoxStore);
-        }
-        //全盘文件夹监听
-        recursiveFileObserver = new RecursiveFileObserver(CacheManager.getSaveFilePath(), param -> {
-            fileDaoImpl.toPutFileInStorage(param);
-        }, fileDaoImpl);
-        recursiveFileObserver.startWatching();
+        startObserver(getApplicationContext());
     }
 
     @Override
@@ -63,10 +56,41 @@ public class FileUpdatingService extends Service {
         }
     }
 
+    /**
+     * 开始监听（调用前需要开启权限，如果权限已开启，再打开应用时就不用再次调用）
+     *
+     * @param applicationContext
+     */
+    public static void startObserver(Context applicationContext) {
+        boolean isNeedPermission = ContextCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+        if (isNeedPermission) return;
+
+        if (fileDaoImpl == null)
+            if (mBoxStore != null)
+                fileDaoImpl = new FileDaoManager(applicationContext, mBoxStore);
+            else {
+                mBoxStore = MyObjectBox.builder().androidContext(applicationContext).build();
+                fileDaoImpl = new FileDaoManager(applicationContext, mBoxStore);
+            }
+        //全盘文件夹监听
+        if (recursiveFileObserver == null) {
+            recursiveFileObserver = new RecursiveFileObserver(CacheManager.getSaveFilePath(), param -> {
+                fileDaoImpl.toPutFileInStorage(param);
+            }, fileDaoImpl);
+            recursiveFileObserver.startWatching();
+        }
+    }
+
     public static BoxStore getBoxStore() {
         return mBoxStore;
     }
 
+    /**
+     * 打开服务
+     *
+     * @param boxStore
+     * @param context
+     */
     public static void startService(BoxStore boxStore, Context context) {
         if (mBoxStore == null && boxStore != null) {
             mBoxStore = boxStore;

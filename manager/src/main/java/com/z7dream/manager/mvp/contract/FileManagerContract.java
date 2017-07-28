@@ -52,6 +52,8 @@ public interface FileManagerContract {
 
         void notifyItemChanged(int position);
 
+        int getType();
+
         boolean getIsNormal();
 
         boolean getIsCollection();

@@ -2,6 +2,7 @@ package com.z7dream.lib.db;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.z7dream.lib.callback.Callback;
 import com.z7dream.lib.db.bean.FileInfo;
@@ -33,12 +34,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 
 import static com.z7dream.lib.db.bean.FileInfo_.filePath;
-import static com.z7dream.lib.tool.MagicExplorer.HW_SCREEN_SAVER_PATH;
-import static com.z7dream.lib.tool.MagicExplorer.QQ_FILE_PATH;
 import static com.z7dream.lib.tool.MagicExplorer.QQ_PIC_PATH;
-import static com.z7dream.lib.tool.MagicExplorer.SCREENSHOTS_PATH;
-import static com.z7dream.lib.tool.MagicExplorer.SYS_CAMERA_PATH;
-import static com.z7dream.lib.tool.MagicExplorer.WX_FILE_PATH;
 import static com.z7dream.lib.tool.MagicExplorer.WX_PIC_PATH;
 
 
@@ -54,14 +50,32 @@ public class FileDaoManager implements FileDaoImpl {
     private BoxStore boxStore;
 
     private static String PUT_IN_STORAGE_PATH;
-    private static final String START_PATH = CacheManager.getSaveFilePath() + File.separator;
 
     public FileDaoManager(Context context, BoxStore boxStore) {
-        PUT_IN_STORAGE_PATH = CacheManager.getCachePath(context, CacheManager.CONFIG) + "addAllFile.succ";
+        PUT_IN_STORAGE_PATH = CacheManager.getSystemPicCachePath(context) + "addAllFile.succ";
         fileInfoBox = boxStore.boxFor(FileInfo.class);
         fileTypeInfoBox = boxStore.boxFor(FileTypeInfo.class);
         fileStarInfoBox = boxStore.boxFor(FileStarInfo.class);
         this.boxStore = boxStore;
+    }
+
+    private String getUserToken() {
+        return FileUpdatingService.getConfigCallback().getConfig().userToken;
+    }
+
+    @Override
+    public Map<String, String> getStarMap() {
+        Map<String, String> map = new HashMap<>();
+        List<FileStarInfo> list = getStarList();
+        for (int i = 0; i < list.size(); i++) {
+            map.put(list.get(i).getFilePath(), list.get(i).getFilePath());
+        }
+        return map;
+    }
+
+    @Override
+    public List<FileStarInfo> getStarList() {
+        return fileStarInfoBox.query().equal(FileStarInfo_.userToken, getUserToken()).build().find();
     }
 
     /**
@@ -82,7 +96,7 @@ public class FileDaoManager implements FileDaoImpl {
         List<FileStarInfo> newInstertList = new ArrayList<>();
         for (int i = 0; i < newFilePathList.size(); i++) {
             FileStarInfo info = new FileStarInfo();
-            info.setUserToken(FileUpdatingService.getConfigCallback().getConfig().userToken);
+            info.setUserToken(getUserToken());
             info.setFilePath(newFilePathList.get(i));
             newInstertList.add(info);
         }
@@ -123,7 +137,6 @@ public class FileDaoManager implements FileDaoImpl {
      */
     @Override
     public void toPutFileInStorage(int folderSize) {
-        initFileType();
         File check = new File(PUT_IN_STORAGE_PATH);
         long count = fileInfoBox.query().build().count();
         if (check.exists()) {
@@ -134,6 +147,9 @@ public class FileDaoManager implements FileDaoImpl {
             check.delete();
         }
         fileInfoBox.removeAll();
+        fileTypeInfoBox.removeAll();
+
+        Map<String, String> typeMap = initFileType();
         Observable.create((ObservableOnSubscribe<List<FileInfo>>) e -> {
             File folder = new File(CacheManager.getSaveFilePath());
             Stack<String> stack = new Stack<>();
@@ -148,7 +164,7 @@ public class FileDaoManager implements FileDaoImpl {
                     continue;
                 for (File f : files) {
                     // 递归监听目录
-                    if (isNeedToListener(f)) {
+                    if (FileUtils.isNeedToListener(f)) {
                         if (f.isDirectory()) {
                             stack.push(f.getAbsolutePath());
                         }
@@ -160,7 +176,9 @@ public class FileDaoManager implements FileDaoImpl {
                         fileInfo.setLastModifyTime(f.lastModified());
                         fileInfo.setFileSize(f.length());
                         fileInfo.setIsFile(f.isFile());
-                        fileInfo.setFileType(getFileType(fileInfo.getExtension()));
+
+                        String fileType = typeMap.get(fileInfo.getExtension());
+                        fileInfo.setFileType(fileType == null ? EnumFileType.OTHER.name() : fileType);
                         tempFileList.add(fileInfo);
                     }
                 }
@@ -168,7 +186,10 @@ public class FileDaoManager implements FileDaoImpl {
             e.onNext(tempFileList);
             e.onComplete();
         }).compose(RxSchedulersHelper.io())
-                .doOnComplete(check::createNewFile)
+                .doOnComplete(() -> {
+                    Log.d(getClass().getName(), "insert file succ");
+                    check.createNewFile();
+                })
                 .subscribe(list -> boxStore.runInTxAsync(() -> fileInfoBox.put(list), (aVoid, throwable) -> list.clear())
                         , Throwable::printStackTrace);
     }
@@ -273,6 +294,16 @@ public class FileDaoManager implements FileDaoImpl {
         return EnumFileType.OTHER.name();
     }
 
+    @Override
+    public Map<String, String> getFileTypeMap() {
+        Map<String, String> map = new HashMap<>();
+        List<FileTypeInfo> list = fileTypeInfoBox.query().build().find();
+        for (int i = 0; i < list.size(); i++) {
+            map.put(list.get(i).getFormat(), list.get(i).getTypeName());
+        }
+        return map;
+    }
+
     /**
      * 是否为需要的文件
      *
@@ -298,7 +329,32 @@ public class FileDaoManager implements FileDaoImpl {
         if (enumFileType != EnumFileType.ALL) {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
         }
+        if (enumFileType == EnumFileType.PIC) {
+            queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
+        }
         return queryBuilder.build().find();
+    }
+
+    /**
+     * 根据文件类型查找
+     *
+     * @param enumFileType 文件类型枚举
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    @Override
+    public List<FileInfo> getFileInfoList(EnumFileType enumFileType, int page, int size) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.isFile, true);
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+        if (enumFileType == EnumFileType.PIC) {
+            queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
+        }
+        return queryBuilder.build().find(page * size, size);
     }
 
     /**
@@ -318,8 +374,36 @@ public class FileDaoManager implements FileDaoImpl {
         if (!TextUtils.isEmpty(likeStr)) {
             queryBuilder.contains(filePath, likeStr);
         }
-
+        if (enumFileType == EnumFileType.PIC) {
+            queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
+        }
         return queryBuilder.build().find();
+    }
+
+    /**
+     * 根据文件类型查找
+     *
+     * @param enumFileType 文件类型枚举
+     * @param likeStr      模糊查询
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    @Override
+    public List<FileInfo> getFileInfoList(EnumFileType enumFileType, String likeStr, int page, int size) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.isFile, true);
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+        if (!TextUtils.isEmpty(likeStr)) {
+            queryBuilder.contains(filePath, likeStr);
+        }
+        if (enumFileType == EnumFileType.PIC) {
+            queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
+        }
+        return queryBuilder.build().find(page, size);
     }
 
     /**
@@ -510,71 +594,93 @@ public class FileDaoManager implements FileDaoImpl {
     /**
      * 初始化 文件类型数据
      */
-    private void initFileType() {
+    private Map<String, String> initFileType() {
+        Map<String, String> map = new HashMap<>();
         FileTypeInfo first = fileTypeInfoBox.query().build().findFirst();
         if (first == null) {
             List<FileTypeInfo> list = new ArrayList<>();
             for (int i = 0; i < Extension.PIC.length; i++) {
                 FileTypeInfo info = new FileTypeInfo();
+                info.setId(list.size());
                 info.setTypeName(EnumFileType.PIC.name());
                 info.setFormat(Extension.PIC[i]);
                 list.add(info);
+                map.put(Extension.PIC[i], EnumFileType.PIC.name());
             }
             for (int i = 0; i < Extension.TXT.length; i++) {
                 FileTypeInfo info = new FileTypeInfo();
+                info.setId(list.size());
                 info.setTypeName(EnumFileType.TXT.name());
                 info.setFormat(Extension.TXT[i]);
                 list.add(info);
+                map.put(Extension.TXT[i], EnumFileType.TXT.name());
             }
             for (int i = 0; i < Extension.EXCEL.length; i++) {
                 FileTypeInfo info = new FileTypeInfo();
+                info.setId(list.size());
                 info.setTypeName(EnumFileType.EXCEL.name());
                 info.setFormat(Extension.EXCEL[i]);
                 list.add(info);
+                map.put(Extension.EXCEL[i], EnumFileType.EXCEL.name());
             }
             for (int i = 0; i < Extension.PPT.length; i++) {
                 FileTypeInfo info = new FileTypeInfo();
+                info.setId(list.size());
                 info.setTypeName(EnumFileType.PPT.name());
                 info.setFormat(Extension.PPT[i]);
                 list.add(info);
+                map.put(Extension.PPT[i], EnumFileType.PPT.name());
             }
             for (int i = 0; i < Extension.WORD.length; i++) {
                 FileTypeInfo info = new FileTypeInfo();
+                info.setId(list.size());
                 info.setTypeName(EnumFileType.WORD.name());
                 info.setFormat(Extension.WORD[i]);
                 list.add(info);
+                map.put(Extension.WORD[i], EnumFileType.WORD.name());
             }
             for (int i = 0; i < Extension.PDF.length; i++) {
                 FileTypeInfo info = new FileTypeInfo();
+                info.setId(list.size());
                 info.setTypeName(EnumFileType.PDF.name());
                 info.setFormat(Extension.PDF[i]);
                 list.add(info);
+                map.put(Extension.PDF[i], EnumFileType.PDF.name());
             }
             for (int i = 0; i < Extension.AUDIO.length; i++) {
                 FileTypeInfo info = new FileTypeInfo();
+                info.setId(list.size());
                 info.setTypeName(EnumFileType.AUDIO.name());
                 info.setFormat(Extension.AUDIO[i]);
                 list.add(info);
+                map.put(Extension.AUDIO[i], EnumFileType.AUDIO.name());
             }
             for (int i = 0; i < Extension.VIDEO.length; i++) {
                 FileTypeInfo info = new FileTypeInfo();
+                info.setId(list.size());
                 info.setTypeName(EnumFileType.VIDEO.name());
                 info.setFormat(Extension.VIDEO[i]);
                 list.add(info);
+                map.put(Extension.VIDEO[i], EnumFileType.VIDEO.name());
             }
             for (int i = 0; i < Extension.ZIP.length; i++) {
                 FileTypeInfo info = new FileTypeInfo();
+                info.setId(list.size());
                 info.setTypeName(EnumFileType.ZIP.name());
                 info.setFormat(Extension.ZIP[i]);
                 list.add(info);
+                map.put(Extension.ZIP[i], EnumFileType.ZIP.name());
             }
             FileTypeInfo info = new FileTypeInfo();
+            info.setId(list.size());
             info.setTypeName(EnumFileType.OTHER.name());
             info.setFormat("");
             list.add(info);
+            map.put("", EnumFileType.OTHER.name());
 
             fileTypeInfoBox.put(list);
         }
+        return map;
     }
 
     /**
@@ -634,44 +740,5 @@ public class FileDaoManager implements FileDaoImpl {
                 }
             }
         }
-    }
-
-    private boolean isNeedToListener(File f) {
-        if (f == null) return false;
-        String path = f.getAbsolutePath();
-        //以下返回必须为false
-        String fileName = FileUtils.getFolderName(path);
-        boolean isHidden = fileName.startsWith("_") || fileName.startsWith(".");
-        boolean isSystem = path.startsWith(START_PATH + "Android") || path.startsWith(START_PATH + "backup") || path.startsWith(START_PATH + "backups") || path.startsWith(START_PATH + "CloudDrive")
-                || path.startsWith(START_PATH + "huawei") || path.startsWith(START_PATH + "HuaweiBackup") || path.startsWith(START_PATH + "HWThemes") || path.startsWith(START_PATH + "msc") || path.startsWith(START_PATH + "Musiclrc");
-//        boolean isRxCache = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "rxCache");
-//        boolean isSmiley = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "smiley");
-//        boolean isGlide = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "glide");
-//        boolean isOSS = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "oss_record");
-
-        //以下返回必须为true
-        boolean isQQ = path.startsWith(QQ_PIC_PATH) || path.startsWith(QQ_FILE_PATH);
-        boolean isWX = path.startsWith(WX_PIC_PATH) || path.startsWith(WX_FILE_PATH);
-        boolean isSysPic = path.startsWith(SYS_CAMERA_PATH) || path.startsWith(SCREENSHOTS_PATH) || path.startsWith(HW_SCREEN_SAVER_PATH);
-
-        //以下部分返回为true
-        boolean isTencentPath = path.startsWith(START_PATH + "tencent" + File.separator);
-
-        boolean isNeedFile;
-        if (isHidden || isSystem)//|| isRxCache || isSmiley || isGlide || isOSS)
-            isNeedFile = false;
-        else if (isTencentPath)
-            isNeedFile = isQQ || isWX;
-        else if (isSysPic)
-            isNeedFile = true;
-        else
-            isNeedFile = true;
-
-        if (isNeedFile && f.isFile()) {
-            String exc = FileUtils.getExtensionName(f.getName());
-            isNeedFile = isNeedFile(exc);
-        }
-
-        return isNeedFile;
     }
 }
