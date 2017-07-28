@@ -18,12 +18,19 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <include layout="@layout/include_search" />
-
-        <View
+        <LinearLayout
+            android:id="@+id/ll_afm_search"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_card"
-            android:background="@color/color_background" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/include_search" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_card"
+                android:background="@color/color_background" />
+        </LinearLayout>
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"

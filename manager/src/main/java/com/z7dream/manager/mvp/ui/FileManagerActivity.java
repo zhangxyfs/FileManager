@@ -71,6 +71,9 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     @BindView(R2.id.toolbar)
     Toolbar mToolbar;
 
+    @BindView(R2.id.ll_afm_search)
+    LinearLayout ll_afm_search;
+
     @BindView(R2.id.ll_search)
     LinearLayout ll_search;
 
@@ -167,6 +170,10 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         isWX = function == 5;
         isFolder = function == 6;
         isStatistical = function == 7;
+
+        if (fileType == FileType.PIC) {
+            ll_afm_search.setVisibility(View.GONE);
+        }
 
         needPicList = new ArrayList<>();
 
@@ -452,6 +459,69 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
+        if (!isOpenCheck) {
+            choiceItem.setTitle(R.string.select_all_str);
+            isOpenCheck = true;
+            fileManagerListAdapter.setCheck(true);
+            fileManagerDialog.showPopup();
+            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) ll_afmo.getLayoutParams();
+            lp.setMargins(0, 0, 0, marginBottom);
+            ll_afmo.setLayoutParams(lp);
+        } else {
+            List<FileManagerListModel> list = fileManagerListAdapter.getList();
+            if (isAllCheckClick) {
+                choiceItem.setTitle(R.string.select_all_str);
+                isAllCheckClick = false;
+                checkMap.clear();
+                checkPicMap.clear();
+                checkFileMap.clear();
+                for (int i = 0; i < list.size(); i++) {//取消全选
+                    if (list.get(i).isSelect)
+                        list.get(i).isSelect = false;
+                }
+            } else {//全选
+                choiceItem.setTitle(R.string.clear_select_all_str);
+                isAllCheckClick = true;
+
+                if (allMaxNum == 1) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).isFile) {
+                            checkMap.put(i, i);
+                            if (list.get(i).fileType == FileType.PIC) {
+                                checkPicMap.put(i, i);
+                            } else {
+                                checkFileMap.put(i, i);
+                            }
+                            list.get(i).isSelect = true;
+                            break;
+                        }
+                    }
+                } else {
+                    int alreadySelectPicNum = checkPicMap.size(), alreadySelectFileNum = checkFileMap.size();
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).isFile) {
+                            if (list.get(i).fileType == FileType.PIC) {
+                                if (alreadySelectPicNum < maxPicNum) {
+                                    list.get(i).isSelect = true;
+                                    checkPicMap.put(i, i);
+                                    alreadySelectPicNum++;
+                                }
+                            } else {
+                                if (alreadySelectFileNum < maxFileNum) {
+                                    list.get(i).isSelect = true;
+                                    checkFileMap.put(i, i);
+                                    alreadySelectFileNum++;
+                                }
+                            }
+                        }
+                        if (alreadySelectFileNum + alreadySelectPicNum == maxPicNum + maxFileNum)
+                            break;
+                    }
+                    checkMap.putAll(checkPicMap);
+                    checkMap.putAll(checkFileMap);
+                }
+            }
+        }
         return false;
     }
 
@@ -732,13 +802,12 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         fileManagerDialog.destory();
     }
 
-
     public static void openCollection(Activity context, String titleName
             , int picMax, int fileMax, int allMax
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , 1, isOpenForward, isNeedZip, requestCode);
+                , FUN_COLLECTION, isOpenForward, isNeedZip, requestCode);
     }
 
     public static void open30Days(Activity context, String titleName
@@ -746,7 +815,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , 2, isOpenForward, isNeedZip, requestCode);
+                , FUN_NEAR30DAY, isOpenForward, isNeedZip, requestCode);
     }
 
     public static void openQQ(Activity context, String titleName
@@ -754,7 +823,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , 3, isOpenForward, isNeedZip, requestCode);
+                , FUN_QQ, isOpenForward, isNeedZip, requestCode);
     }
 
     public static void openWPS(Activity context, String titleName
@@ -762,7 +831,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , 4, isOpenForward, isNeedZip, requestCode);
+                , FUN_WPS, isOpenForward, isNeedZip, requestCode);
     }
 
     public static void openWX(Activity context, String titleName
@@ -770,14 +839,14 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , 5, isOpenForward, isNeedZip, requestCode);
+                , FUN_WX, isOpenForward, isNeedZip, requestCode);
     }
 
     public static void openFolder(Activity context, String titleName
             , int picMax, int fileMax, int allMax
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
-                , picMax, fileMax, allMax, 6
+                , picMax, fileMax, allMax, FUN_FOLDER
                 , isOpenForward, isNeedZip, requestCode);
     }
 
