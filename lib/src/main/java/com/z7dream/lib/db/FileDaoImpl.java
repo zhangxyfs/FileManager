@@ -108,7 +108,6 @@ public interface FileDaoImpl {
 
     /**
      * 获取文件类型 列表
-     *
      * @return
      */
     Map<String, String> getFileTypeMap();

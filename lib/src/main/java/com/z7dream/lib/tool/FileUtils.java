@@ -27,12 +27,8 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 import static com.z7dream.lib.tool.MagicExplorer.HW_SCREEN_SAVER_PATH;
-import static com.z7dream.lib.tool.MagicExplorer.QQ_FILE_PATH;
-import static com.z7dream.lib.tool.MagicExplorer.QQ_PIC_PATH;
 import static com.z7dream.lib.tool.MagicExplorer.SCREENSHOTS_PATH;
 import static com.z7dream.lib.tool.MagicExplorer.SYS_CAMERA_PATH;
-import static com.z7dream.lib.tool.MagicExplorer.WX_FILE_PATH;
-import static com.z7dream.lib.tool.MagicExplorer.WX_PIC_PATH;
 
 /**
  * Created by Z7Dream on 2017/3/7 9:57.
@@ -356,6 +352,7 @@ public class FileUtils {
 
     public static boolean isNeedToListener(File f) {
         if (f == null) return false;
+        if (f.getName().lastIndexOf('.') == -1 && f.isFile()) return false;
         return isNeedToListener(f.getAbsolutePath());
     }
 
@@ -365,31 +362,28 @@ public class FileUtils {
         String START_PATH = CacheManager.getStartPath();
 
         String fileName = FileUtils.getFolderName(path);
-        boolean isHidden = fileName.startsWith("_") || fileName.startsWith(".");
-        boolean isSystem = path.equals(START_PATH + "Android") || path.equals(START_PATH + "backup") || path.equals(START_PATH + "backups") || path.equals(START_PATH + "CloudDrive")
-                || path.equals(START_PATH + "huawei") || path.equals(START_PATH + "HuaweiBackup") || path.equals(START_PATH + "HWThemes") || path.equals(START_PATH + "msc") || path.endsWith(START_PATH + "Musiclrc");
-//        boolean isRxCache = path.equals(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "rxCache");
-//        boolean isSmiley = path.equals(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "smiley");
-//        boolean isGlide = path.equals(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "glide");
-//        boolean isOSS = path.equals(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "oss_record");
+        boolean isHidden = fileName.startsWith("_") || fileName.startsWith(".") || fileName.endsWith(".0") || fileName.endsWith(".1") || fileName.endsWith(".2");
+        boolean isSystem = path.startsWith(START_PATH + "Android") || path.startsWith(START_PATH + "backup") || path.startsWith(START_PATH + "backups") || path.startsWith(START_PATH + "CloudDrive")
+                || path.startsWith(START_PATH + "huawei") || path.startsWith(START_PATH + "HuaweiBackup") || path.startsWith(START_PATH + "HWThemes") || path.startsWith(START_PATH + "msc") || path.startsWith(START_PATH + "Musiclrc");
+        boolean isRxCache = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "rxCache");
+        boolean isSmiley = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "smiley");
+        boolean isGlide = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "glide");
+        boolean isOSS = path.startsWith(START_PATH + "com.eblog" + File.separator + "cache" + File.separator + "oss_record");
         boolean isMoji = path.startsWith(START_PATH + "moji");
 
         //以下返回必须为true
-        boolean isQQ = path.startsWith(QQ_PIC_PATH) || path.startsWith(QQ_FILE_PATH);
-        boolean isWX = path.startsWith(WX_PIC_PATH) || path.startsWith(WX_FILE_PATH);
+        boolean isQQ = path.contains(File.separator + "tencent" + File.separator + "QQ_Images") || path.contains(File.separator + "tencent" + File.separator + "QQfile_recv");
+        boolean isWX = path.contains(File.separator + "tencent" + File.separator + "MicroMsg" + File.separator + "WeiXin") || path.contains(File.separator + "tencent" + File.separator + "MicroMsg" + File.separator + "Download");
         boolean isSysPic = path.equals(SYS_CAMERA_PATH) || path.equals(SCREENSHOTS_PATH) || path.equals(HW_SCREEN_SAVER_PATH);
 
         //以下部分返回为true
-        boolean isTencentPath = path.startsWith(START_PATH + "tencent" + File.separator);
+        boolean isTencentPath = path.contains("tencent" + File.separator);
+        boolean isWXRoot = path.endsWith(File.separator + "tencent" + File.separator + "MicroMsg");
 
-        if (isHidden || isSystem || isMoji)//|| isRxCache || isSmiley || isGlide || isOSS
+        if (isHidden || isSystem || isMoji || isRxCache || isSmiley || isGlide || isOSS)
             return false;
         else if (isTencentPath)
-            if (isQQ || isWX)
-                return true;
-            else
-                return false;
-
+            return isQQ || isWXRoot || isWX;
         else if (isSysPic)
             return true;
         else

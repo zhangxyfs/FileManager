@@ -62,7 +62,7 @@ public class RecursiveFileObserver extends FileObserver {
                         continue;
                     for (File f : files) {
                         // 递归监听目录
-                        if (f.isDirectory() && FileUtils.isNeedToListener(f.getPath())) {
+                        if (f.isDirectory() && FileUtils.isNeedToListener(f)) {
                             stack.push(f.getAbsolutePath());
                         }
                     }
@@ -135,7 +135,7 @@ public class RecursiveFileObserver extends FileObserver {
                                 continue;
                             for (File f : files) {
                                 // 递归监听目录
-                                if (f.isDirectory() && FileUtils.isNeedToListener(f.getPath())) {
+                                if (f.isDirectory() && FileUtils.isNeedToListener(f)) {
                                     stack.push(f.getAbsolutePath());
                                 }
                             }

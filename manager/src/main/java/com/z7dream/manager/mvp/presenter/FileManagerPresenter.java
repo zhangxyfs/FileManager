@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.View> implements FileManagerContract.Presenter {
     private FileDaoImpl fileDaoManager;
-    private int page = 1;
+    private int page = 0;
     private final int SIZE = 100;
 
     public FileManagerPresenter(@NonNull Context context, @NonNull FileManagerContract.View view) {

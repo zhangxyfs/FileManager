@@ -354,7 +354,7 @@ public class FileDaoManager implements FileDaoImpl {
         if (enumFileType == EnumFileType.PIC) {
             queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
         }
-        return queryBuilder.build().find(page * size, size);
+        return queryBuilder.build().find(page, size);
     }
 
     /**
