@@ -108,8 +108,8 @@ public class FileBaseListAdapter extends BaseAdapter<FileBaseListModel, FileBase
             fh.tv_ifbct_txt_num.setText(numbersStr[3]);
             fh.tv_ifbct_excel_num.setText(numbersStr[4]);
             fh.tv_ifbct_ppt_num.setText(numbersStr[5]);
-            fh.tv_ifbct_pdf_num.setText(numbersStr[6]);
-            fh.tv_ifbct_word_num.setText(numbersStr[7]);
+            fh.tv_ifbct_word_num.setText(numbersStr[6]);
+            fh.tv_ifbct_pdf_num.setText(numbersStr[7]);
             fh.tv_ifbct_other_num.setText(numbersStr[8]);
 
         } else if (model.type == FileBaseListModel.CHILD_COMP) {

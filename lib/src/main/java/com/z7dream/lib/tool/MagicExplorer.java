@@ -194,10 +194,10 @@ public class MagicExplorer {
                             case FileType.PPT:
                                 fileNumbers[2]++;
                                 break;
-                            case FileType.PDF:
+                            case FileType.WORD:
                                 fileNumbers[3]++;
                                 break;
-                            case FileType.WORD:
+                            case FileType.PDF:
                                 fileNumbers[4]++;
                                 break;
                             case FileType.OTHER:

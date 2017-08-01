@@ -6,6 +6,9 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.z7dream.lib.db.FileDaoImpl;
+import com.z7dream.lib.db.FileDaoManager;
+import com.z7dream.lib.service.FileUpdatingService;
 import com.z7dream.lib.tool.FileType;
 import com.z7dream.lib.tool.MagicExplorer;
 import com.z7dream.lib.tool.Utils;
@@ -28,6 +31,7 @@ public class FileBasePresenter extends BasePresenterImpl<FileBaseContract.View> 
     private List<FileBaseListModel> parentModelList;
     private List<Integer> childTypeList;
     private int icoSize;
+    private FileDaoImpl fileDao;
 
     public FileBasePresenter(@NonNull Context context, @NonNull FileBaseContract.View view) {
         super(context, view);
@@ -35,6 +39,7 @@ public class FileBasePresenter extends BasePresenterImpl<FileBaseContract.View> 
         parentModelList = new ArrayList<>();
         childTypeList = new ArrayList<>();
         icoSize = Utils.convertDipOrPx(context, 35);
+        fileDao = new FileDaoManager(context, FileUpdatingService.getBoxStore());
     }
 
     @Override
@@ -130,17 +135,30 @@ public class FileBasePresenter extends BasePresenterImpl<FileBaseContract.View> 
         }
 
         if (childTypeModel.isNull())
-            MagicExplorer.getAllCount(getContext(), param -> {
-                String[] strs = new String[param.length];
-                for (int i = 0; i < strs.length; i++) {
-                    strs[i] = "(" + param[i] + ")";
-                    SPreference.putString("other_" + childTypeList.get(i), strs[i]);
-                }
-                childTypeModel.dataJSON = new Gson().toJson(strs);
-                childTypeModel.titleName = "childType";
+            if (!fileDao.isPutFileInStorageSucc())
+                MagicExplorer.getAllCount(getContext(), param -> {
+                    String[] strs = new String[param.length];
+                    for (int i = 0; i < strs.length; i++) {
+                        strs[i] = "(" + param[i] + ")";
+                        SPreference.putString("other_" + childTypeList.get(i), strs[i]);
+                    }
+                    childTypeModel.dataJSON = new Gson().toJson(strs);
+                    childTypeModel.titleName = "childType";
 
-                getView().setChildTypeData(childTypeModel);
-            });
+                    getView().setChildTypeData(childTypeModel);
+                });
+            else
+                fileDao.getAllCount(param -> {
+                    String[] strs = new String[param.length];
+                    for (int i = 0; i < strs.length; i++) {
+                        strs[i] = "(" + param[i] + ")";
+                        SPreference.putString("other_" + childTypeList.get(i), strs[i]);
+                    }
+                    childTypeModel.dataJSON = new Gson().toJson(strs);
+                    childTypeModel.titleName = "childType";
+
+                    getView().setChildTypeData(childTypeModel);
+                });
     }
 
     private String getCacheChildTypeNumJSON() {
@@ -175,5 +193,11 @@ public class FileBasePresenter extends BasePresenterImpl<FileBaseContract.View> 
     @Override
     public FileBaseListModel getChildTypeData() {
         return childTypeModel;
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        fileDao = null;
     }
 }

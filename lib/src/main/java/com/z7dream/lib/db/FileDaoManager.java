@@ -354,7 +354,7 @@ public class FileDaoManager implements FileDaoImpl {
         if (enumFileType == EnumFileType.PIC) {
             queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
         }
-        return queryBuilder.build().find(page, size);
+        return queryBuilder.build().find(page * size, size);
     }
 
     /**
@@ -403,7 +403,7 @@ public class FileDaoManager implements FileDaoImpl {
         if (enumFileType == EnumFileType.PIC) {
             queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
         }
-        return queryBuilder.build().find(page, size);
+        return queryBuilder.build().find(page * size, size);
     }
 
     /**
@@ -580,6 +580,36 @@ public class FileDaoManager implements FileDaoImpl {
 
                 }, error -> {
                 });
+    }
+
+    @Override
+    public void getAllCount(Callback<long[]> callback) {
+        Observable.create((ObservableOnSubscribe<long[]>) e -> {
+            long[] newNumbers = new long[9];
+            newNumbers[0] = getCountByType(EnumFileType.PIC);
+            newNumbers[1] = getCountByType(EnumFileType.AUDIO);
+            newNumbers[2] = getCountByType(EnumFileType.VIDEO);
+            newNumbers[3] = getCountByType(EnumFileType.TXT);
+            newNumbers[4] = getCountByType(EnumFileType.EXCEL);
+            newNumbers[5] = getCountByType(EnumFileType.PPT);
+            newNumbers[6] = getCountByType(EnumFileType.WORD);
+            newNumbers[7] = getCountByType(EnumFileType.PDF);
+            newNumbers[8] = getCountByType(EnumFileType.OTHER);
+            e.onNext(newNumbers);
+            e.onComplete();
+        }).compose(RxSchedulersHelper.io())
+                .subscribe(callback::callListener, error -> callback.callListener(new long[9]));
+    }
+
+    @Override
+    public long getCountByType(EnumFileType enumFileType) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.isFile, true);
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+        return queryBuilder.build().count();
     }
 
     @Override

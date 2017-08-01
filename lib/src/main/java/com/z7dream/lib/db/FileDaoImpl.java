@@ -108,6 +108,7 @@ public interface FileDaoImpl {
 
     /**
      * 获取文件类型 列表
+     *
      * @return
      */
     Map<String, String> getFileTypeMap();
@@ -189,6 +190,21 @@ public interface FileDaoImpl {
      * @param callback
      */
     void getFilePicFolderList(Callback<ArrayList<MagicPicEntity1>> callback);
+
+    /**
+     * 获取所有格式文件的数量
+     *
+     * @param callback
+     */
+    void getAllCount(Callback<long[]> callback);
+
+    /**
+     * 根据类型查数量
+     *
+     * @param enumFileType 文件类型枚举
+     * @return
+     */
+    long getCountByType(EnumFileType enumFileType);
 
     void destory();
 }
