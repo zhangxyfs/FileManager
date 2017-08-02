@@ -1,5 +1,7 @@
 package com.z7dream.manager.tool;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.text.TextUtils;
 
@@ -15,11 +17,29 @@ public class MedaPlayUtil implements MediaPlayer.OnPreparedListener, MediaPlayer
     private boolean isPrepared;
     private String mediaUrl;
     private PlayVoiceListener mPlayVoiceListener;
+    private AudioManager mAudioManager;
 
     public MedaPlayUtil() {
+        init(null);
+    }
+
+    public MedaPlayUtil(Context context) {
+        init(context);
+    }
+
+    private void init(Context context) {
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
+
+        if (context != null) {
+            mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            int max = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            int current = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            if (current < max / 2) {
+                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, max / 2, 0);
+            }
+        }
     }
 
     @Override

@@ -346,7 +346,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
      */
     public static void open(Activity activity) {
         open(activity, activity.getString(R.string.filebase_toolbar_title),
-                3, 1, 4, true, true, false, FILE_MANAGER_SELECT_REQUEST_CODE);
+                9, 9, 18, true, true, false, FILE_MANAGER_SELECT_REQUEST_CODE);
     }
 
     /**

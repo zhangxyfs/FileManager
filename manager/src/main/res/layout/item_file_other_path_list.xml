@@ -84,21 +84,18 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right" />
 
-            <com.z7dream.manager.widget.TCheckBox
-                android:id="@+id/cb_ifopl_check"
-                android:layout_width="@dimen/margin_normal"
-                android:layout_height="@dimen/margin_normal"
-                android:layout_gravity="center_vertical|right"
-                android:visibility="gone"
-                app:color_background="@color/color_font_blue"
-                app:color_border="@color/color_font_middle"
-                app:size="16dp" />
 
-            <RelativeLayout
-                android:id="@+id/rl_ifopl_check"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical|right" />
+            <com.z7dream.manager.tool.smoothCompound.SmoothCheckBox
+                android:id="@+id/cb_ifopl_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|right"
+                android:tint="@color/cb_smooth_1" />
+            <!--            <RelativeLayout
+                            android:id="@+id/rl_ifopl_check"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical|right" />-->
         </FrameLayout>
     </RelativeLayout>
 

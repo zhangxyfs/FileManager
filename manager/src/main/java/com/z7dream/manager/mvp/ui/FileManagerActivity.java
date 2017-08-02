@@ -586,7 +586,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                         WPSUtils.openWpsFile(this, model.picPath);
                         break;
                     default:
-                        OpenFileUtils.openFile(model.picPath);
+                        OpenFileUtils.openFile(this, model.picPath);
                         break;
                 }
                 return;

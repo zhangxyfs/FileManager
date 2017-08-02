@@ -27,6 +27,8 @@ task clean(type: Delete) {
 }
 
 ext {
+    targetSdkVersion = 26
+
     ojectbox_need_version = '0.9.13'
     butterknife_need_version = '8.6.0'
     rxjava_need_version = '2.x.y'

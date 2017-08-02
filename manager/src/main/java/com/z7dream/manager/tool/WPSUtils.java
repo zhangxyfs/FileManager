@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -92,7 +91,7 @@ public class WPSUtils {
 
     public static boolean openWpsFile(Context context, String path) {
         if (!isHasWPS()) {
-            OpenFileUtils.openFile(path);
+            OpenFileUtils.openFile(context, path);
             return false;
         }
 
@@ -105,15 +104,15 @@ public class WPSUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(android.content.Intent.ACTION_VIEW);
         intent.setClassName(WpsModel.PackageName.NORMAL, WpsModel.ClassName.NORMAL);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
         File file = new File(path);
         if (!file.exists()) {
             System.out.println("文件为空或者不存在");
             return false;
         }
-        Uri uri;
-        uri = Uri.fromFile(file);
-        intent.setData(uri);
+        intent.setData(FileProvider7.getUriForFile(context, new File(path)));
         intent.putExtras(bundle);
         try {
             context.startActivity(intent);
@@ -122,7 +121,7 @@ public class WPSUtils {
             e.printStackTrace();
 
 //            EToast.get().showToast(context, "没有可以打开文件的软件！");
-            OpenFileUtils.openFile(path);
+            OpenFileUtils.openFile(context, path);
             return false;
         }
         return true;

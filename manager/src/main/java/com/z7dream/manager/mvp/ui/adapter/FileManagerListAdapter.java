@@ -75,15 +75,15 @@ public class FileManagerListAdapter extends BaseAdapter<FileManagerListModel, Fi
                 fpolh.iv_ifopl_collect.setVisibility(View.GONE);
             }
             if (openCheck && model.isFile) {
-                fpolh.rl_ifopl_check.setVisibility(View.VISIBLE);
+//                fpolh.rl_ifopl_check.setVisibility(View.VISIBLE);
                 fpolh.cb_ifopl_check.setVisibility(View.VISIBLE);
                 fpolh.tv_ifopl_date.setVisibility(View.GONE);
             } else {
-                fpolh.rl_ifopl_check.setVisibility(View.GONE);
+//                fpolh.rl_ifopl_check.setVisibility(View.GONE);
                 fpolh.cb_ifopl_check.setVisibility(View.GONE);
                 fpolh.tv_ifopl_date.setVisibility(View.VISIBLE);
             }
-            fpolh.cb_ifopl_check.setChecked(model.isSelect);
+            fpolh.cb_ifopl_check.setChecked(model.isSelect, true, false);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 fpolh.tv_ifopl_title.setText(Html.fromHtml(model.fileName, Html.FROM_HTML_MODE_LEGACY));
