@@ -73,9 +73,26 @@ public class FileDaoManager implements FileDaoImpl {
         return map;
     }
 
+    /**
+     * 获取星标文件列表
+     *
+     * @return
+     */
     @Override
     public List<FileStarInfo> getStarList() {
         return fileStarInfoBox.query().equal(FileStarInfo_.userToken, getUserToken()).build().find();
+    }
+
+    /**
+     * 获取星标文件列表
+     *
+     * @param page 页码(从0开始)
+     * @param size 数量
+     * @return
+     */
+    @Override
+    public List<FileStarInfo> getStarList(int page, int size) {
+        return fileStarInfoBox.query().equal(FileStarInfo_.userToken, getUserToken()).build().find(page * size, size);
     }
 
     /**
@@ -467,6 +484,31 @@ public class FileDaoManager implements FileDaoImpl {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
         }
         return queryBuilder.build().find();
+    }
+
+    /**
+     * 获取最近30天文件列表
+     *
+     * @param enumFileType 文件类型枚举
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    @Override
+    public List<FileInfo> get30DaysFileInfoList(EnumFileType enumFileType, int page, int size) {
+        long nowTime = System.currentTimeMillis();
+        long needTime = nowTime - (30 * 24 * 60 * 60) * 1000L;
+
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.isFile, true)
+                .greater(FileInfo_.lastModifyTime, needTime)
+                .notEqual(FileInfo_.extension, "")
+                .orderDesc(FileInfo_.lastModifyTime);
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+        return queryBuilder.build().find(page * size, size);
     }
 
     /**

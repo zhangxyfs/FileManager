@@ -3,17 +3,24 @@ package com.z7dream.lib.tool;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 
 import com.z7dream.lib.callback.Callback;
+import com.z7dream.lib.model.MagicFileInfo;
+import com.z7dream.lib.tool.collator.OrderingConstants;
 import com.z7dream.lib.tool.rx.RxSchedulersHelper;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Z7Dream on 2017/7/21 16:59.
@@ -209,5 +216,74 @@ public class MagicExplorer {
                     callback.callListener(fileNumbers);
                 }, error -> {
                 });
+    }
+
+
+    /**
+     * 获取本机文件（目录）
+     *
+     * @param rootPath
+     * @param callback
+     */
+    public static Disposable getFolderAndFileList(String rootPath, Callback<List<MagicFileInfo>> callback) {
+        if (TextUtils.isEmpty(rootPath)) {
+            rootPath = CacheManager.getSaveFilePath();
+        }
+        File fileFolder = new File(rootPath);
+
+        List<MagicFileInfo> folderList = new ArrayList<>();
+        List<MagicFileInfo> fileList = new ArrayList<>();
+        List<MagicFileInfo> retrunList = new ArrayList<>();
+        return Flowable.create((FlowableOnSubscribe<String>) e -> {
+            for (int i = 0; i < fileFolder.list().length; i++) {
+                e.onNext(fileFolder.getPath() + File.separator + fileFolder.list()[i]);
+            }
+            e.onComplete();
+        }, BackpressureStrategy.BUFFER)
+                .compose(RxSchedulersHelper.fio())
+                .flatMap(childFilePath -> {
+                    MagicFileInfo info = new MagicFileInfo();
+                    if (!childFilePath.contains("nomedia") && !childFilePath.startsWith(".")) {
+                        File childFile = new File(childFilePath);
+                        String exc = FileUtils.getExtensionName(childFile.getPath());
+                        if (!childFile.isHidden()) {
+                            info.fileName = childFile.getName();
+                            info.path = childFilePath;
+                            info.fileSize = childFile.length();
+                            info.modifyDate = childFile.lastModified();
+                            if (!TextUtils.isEmpty(exc)) {
+                                info.position = FileType.createFileType(exc);
+                            }
+                            info.isFile = !childFile.isDirectory();
+                            if (!info.isFile) {
+                                info.position = FileType.FOLDER;
+                            }
+                        }
+                    }
+                    return Flowable.just(info);
+                })
+                .compose(RxSchedulersHelper.fio())
+                .doOnComplete(() -> {
+                    try {
+                        Collections.sort(folderList, OrderingConstants.Model_NAME_ORDERING);
+                        Collections.sort(fileList, OrderingConstants.Model_NAME_ORDERING);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    retrunList.addAll(folderList);
+                    retrunList.addAll(fileList);
+                    callback.callListener(retrunList);
+                })
+                .subscribe(info -> {
+                    if (!TextUtils.isEmpty(info.path)) {
+                        if (info.isFile) {
+                            fileList.add(info);
+                        } else {
+                            folderList.add(info);
+                        }
+                    }
+                }, error -> {
+                });
+
     }
 }

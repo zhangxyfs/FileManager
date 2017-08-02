@@ -192,7 +192,7 @@ public class FileBaseActivity extends BaseActivity<FileBaseContract.Presenter> i
                 break;
         }
         if (fileType >= 0)
-            FileManagerActivity.open(this, titleName, fileType, picMaxSize, fileMax, picMaxSize + fileMax, FileManagerActivity.FUN_NORMAL, isToForward, isNeedZip, requestCode);
+            FileManagerActivity.open(this, titleName, fileType, picMaxSize, fileMax, picMaxSize + fileMax, FileManagerActivity.FUN_NORMAL, isToForward, isNeedZip, true, requestCode);
 
     }
 

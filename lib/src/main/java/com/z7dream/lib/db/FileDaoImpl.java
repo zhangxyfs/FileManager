@@ -34,6 +34,15 @@ public interface FileDaoImpl {
     List<FileStarInfo> getStarList();
 
     /**
+     * 获取星标文件列表
+     *
+     * @param page 页码(从0开始)
+     * @param size 数量
+     * @return
+     */
+    List<FileStarInfo> getStarList(int page, int size);
+
+    /**
      * 添加星标文件
      *
      * @param filePathList
@@ -183,6 +192,16 @@ public interface FileDaoImpl {
      * @return
      */
     List<FileInfo> get30DaysFileInfoList(EnumFileType enumFileType);
+
+    /**
+     * 获取最近30天文件列表
+     *
+     * @param enumFileType 文件类型枚举
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> get30DaysFileInfoList(EnumFileType enumFileType, int page, int size);
 
     /**
      * 获取图片文件夹列表

@@ -23,6 +23,30 @@ public enum EnumFileType {
     OTHER,
     ALL;
 
+    public static int getOldType(String type) {
+        int oldType = FileType.OTHER;
+        if (TextUtils.equals(type, EnumFileType.PIC.name())) {
+            oldType = FileType.PIC;
+        } else if (TextUtils.equals(type, EnumFileType.TXT.name())) {
+            oldType = FileType.TXT;
+        } else if (TextUtils.equals(type, EnumFileType.EXCEL.name())) {
+            oldType = FileType.EXCEL;
+        } else if (TextUtils.equals(type, EnumFileType.PPT.name())) {
+            oldType = FileType.PPT;
+        } else if (TextUtils.equals(type, EnumFileType.WORD.name())) {
+            oldType = FileType.WORD;
+        } else if (TextUtils.equals(type, EnumFileType.PDF.name())) {
+            oldType = FileType.PDF;
+        } else if (TextUtils.equals(type, EnumFileType.AUDIO.name())) {
+            oldType = FileType.AUDIO;
+        } else if (TextUtils.equals(type, EnumFileType.VIDEO.name())) {
+            oldType = FileType.VIDEO;
+        } else if (TextUtils.equals(type, EnumFileType.ZIP.name())) {
+            oldType = FileType.OTHER;
+        }
+        return oldType;
+    }
+
     public static EnumFileType getType(int oldFileType) {
         EnumFileType enumFileType;
         switch (oldFileType) {

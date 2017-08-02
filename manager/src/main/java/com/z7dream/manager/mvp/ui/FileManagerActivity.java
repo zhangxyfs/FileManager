@@ -114,6 +114,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     private boolean isFolder = false;//是否显示带目录的数据列表
     private boolean isStatistical = false;//是否为统计导出文件
     private int fileType = FileType.ALL;//文件类型
+    private boolean isNeedLoadMore = true;//是否要加载更多
 
     private boolean isNeedZip;//是否压缩
 
@@ -126,6 +127,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
     public static final String FUNCTION_VALUE = "function_value";
     public static final String FILE_TYPE = "file_type";
+    public static final String IS_NEED_LOADMORE = "is_need_loadmore";
 
     public static final int FUN_PIC = -1;
     public static final int FUN_NORMAL = 0;
@@ -161,6 +163,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             function = getIntent().getIntExtra(FUNCTION_VALUE, 0);
             isNeedForward = getIntent().getBooleanExtra(FILE_IS_TOFORWARD, false);
             isNeedZip = getIntent().getBooleanExtra(FILE_IS_NEEDZIP, true);
+            isNeedLoadMore = getIntent().getBooleanExtra(IS_NEED_LOADMORE, true);
         }
 
         isNormal = function == 0;
@@ -196,7 +199,8 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRecyclerControl = new RecyclerControl(mSwipeRefreshLayout, mGridLayoutManager, this);
         mRecyclerControl.setSwipeRefreshLayoutEnable(false);
-        mRecyclerView.addOnScrollListener(mRecyclerControl.getOnScrollListener());
+        if (isNeedLoadMore)
+            mRecyclerView.addOnScrollListener(mRecyclerControl.getOnScrollListener());
 
         checkPicMap = new HashMap<>();
         checkFileMap = new HashMap<>();
@@ -688,9 +692,9 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         if (isNormal) {
             getPresenter().getDataList(isRef);
         } else if (isCollection) {
-            getPresenter().getCollectionDataList();
+            getPresenter().getCollectionDataList(isRef);
         } else if (isNear30Days) {
-            getPresenter().getNear30DaysDataList();
+            getPresenter().getNear30DaysDataList(isRef);
         } else if (isQQ) {
             getPresenter().getQQDataList();
         } else if (isWPS) {
@@ -856,7 +860,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_COLLECTION, isOpenForward, isNeedZip, requestCode);
+                , FUN_COLLECTION, isOpenForward, isNeedZip, true, requestCode);
     }
 
     public static void open30Days(Activity context, String titleName
@@ -864,7 +868,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_NEAR30DAY, isOpenForward, isNeedZip, requestCode);
+                , FUN_NEAR30DAY, isOpenForward, isNeedZip, true, requestCode);
     }
 
     public static void openQQ(Activity context, String titleName
@@ -872,7 +876,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_QQ, isOpenForward, isNeedZip, requestCode);
+                , FUN_QQ, isOpenForward, isNeedZip, false, requestCode);
     }
 
     public static void openWPS(Activity context, String titleName
@@ -880,7 +884,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_WPS, isOpenForward, isNeedZip, requestCode);
+                , FUN_WPS, isOpenForward, isNeedZip, false, requestCode);
     }
 
     public static void openWX(Activity context, String titleName
@@ -888,7 +892,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_WX, isOpenForward, isNeedZip, requestCode);
+                , FUN_WX, isOpenForward, isNeedZip, false, requestCode);
     }
 
     public static void openFolder(Activity context, String titleName
@@ -896,24 +900,25 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax, FUN_FOLDER
-                , isOpenForward, isNeedZip, requestCode);
+                , isOpenForward, isNeedZip, false, requestCode);
     }
 
     /**
      * 文件管理器
      *
      * @param activity
-     * @param title       标题
-     * @param fileType    文件类型
-     * @param picMax      图片最大值
-     * @param fileMax     文件最大值
-     * @param allMax      所有最大值
-     * @param function    类别
-     * @param isToForward 是否转发
-     * @param isNeedZip   是否压缩
+     * @param title          标题
+     * @param fileType       文件类型
+     * @param picMax         图片最大值
+     * @param fileMax        文件最大值
+     * @param allMax         所有最大值
+     * @param function       类别
+     * @param isToForward    是否转发
+     * @param isNeedZip      是否压缩
+     * @param isNeedLoadMore 是否有加载更多
      * @param requestCode
      */
-    public static void open(Activity activity, String title, int fileType, int picMax, int fileMax, int allMax, int function, boolean isToForward, boolean isNeedZip, int requestCode) {
+    public static void open(Activity activity, String title, int fileType, int picMax, int fileMax, int allMax, int function, boolean isToForward, boolean isNeedZip, boolean isNeedLoadMore, int requestCode) {
         Intent intent = new Intent(activity, FileManagerActivity.class);
         intent.putExtra(FILE_TITLE_NAME, title);
         intent.putExtra(FILE_TYPE, fileType);
@@ -923,6 +928,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         intent.putExtra(FUNCTION_VALUE, function);
         intent.putExtra(FILE_IS_TOFORWARD, isToForward);
         intent.putExtra(FILE_IS_NEEDZIP, isNeedZip);
+        intent.putExtra(IS_NEED_LOADMORE, isNeedLoadMore);
         activity.startActivityForResult(intent, requestCode);
     }
 }

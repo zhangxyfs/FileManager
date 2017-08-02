@@ -23,9 +23,9 @@ public interface FileManagerContract {
 
         void deleteFiles(List<String> filePathList);
 
-        void getCollectionDataList();
+        void getCollectionDataList(boolean isRef);
 
-        void getNear30DaysDataList();
+        void getNear30DaysDataList(boolean isRef);
 
         void getQQDataList();
 
