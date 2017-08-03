@@ -1,4 +1,4 @@
-package com.z7dream.manager.tool;
+package com.z7dream.lib.tool;
 
 import android.content.Context;
 import android.media.AudioManager;

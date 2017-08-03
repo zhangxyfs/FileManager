@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 
+import com.z7dream.lib.callback.Callback1;
 import com.z7dream.lib.db.FileDaoImpl;
 import com.z7dream.lib.db.FileDaoManager;
 import com.z7dream.lib.db.bean.FileInfo;
@@ -50,20 +51,7 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
         }
         if (fileDaoManager.isPutFileInStorageSucc()) {
             List<FileInfo> list = fileDaoManager.getFileInfoList(EnumFileType.getType(getView().getType()), page, SIZE);
-
-            for (int i = 0; i < list.size(); i++) {
-                FileManagerListModel model = new FileManagerListModel();
-                model.type = getView().getType() == FileType.PIC ? FileManagerListModel.PIC : FileManagerListModel.OTHER;
-                model.fileType = getView().getType();
-                model.picPath = list.get(i).getFilePath();
-                model.fileName = list.get(i).getFileName();
-                model.isStar = starMap.get(model.picPath) != null;
-                model.isSelect = false;
-                model.iconResId = FileType.createIconResId(getView().getType());
-                model.modifyStr = DateUtils.formatDate(list.get(i).getLastModifyTime(), "yyyy-MM-dd HH:mm:ss");
-                model.sizeStr = Formatter.formatFileSize(getContext(), list.get(i).getFileSize());
-                newList.add(model);
-            }
+            newList.addAll(createFileModelList(list, starMap));
         }
 
         getView().getDataListSucc(newList, isRef);
@@ -155,42 +143,58 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
                 page++;
             }
             List<FileInfo> list = fileDaoManager.get30DaysFileInfoList(EnumFileType.ALL, page, SIZE);
-            for (int i = 0; i < list.size(); i++) {
-                FileManagerListModel model = new FileManagerListModel();
-                model.type = FileManagerListModel.OTHER;
-                model.fileType = EnumFileType.getOldType(list.get(i).getFileType());
-                model.picPath = list.get(i).getFilePath();
-                model.fileName = FileUtils.getFolderName(model.picPath);
-                model.isStar = starMap.get(model.picPath) != null;
-                model.isSelect = false;
-                model.iconResId = EnumFileType.createIconResId(list.get(i).getFileType(), model.isFile);
-                model.modifyStr = DateUtils.formatDate(list.get(i).getLastModifyTime(), "yyyy-MM-dd HH:mm:ss");
-                model.sizeStr = Formatter.formatFileSize(getContext(), list.get(i).getFileSize());
-                newList.add(model);
-            }
+            newList.addAll(createFileModelList(list, starMap));
         }
         getView().getDataListSucc(newList, isRef);
     }
 
     @Override
-    public void getQQDataList() {
-
+    public void getQQDataList(boolean isRef) {
+        Map<String, String> starMap = getStarMap();
+        List<FileManagerListModel> newList = new ArrayList<>();
+        if (fileDaoManager.isPutFileInStorageSucc()) {
+            if (!isRef) {
+                page++;
+            }
+            List<FileInfo> list = fileDaoManager.getQQFileInfoList(EnumFileType.ALL, page, SIZE);
+            newList.addAll(createFileModelList(list, starMap));
+        }
+        getView().getDataListSucc(newList, isRef);
     }
 
     @Override
-    public void getWPSDataList() {
+    public void getWPSDataList(boolean isRef) {
+        MagicExplorer.getWPSFileList(null, new Callback1<List<MagicFileInfo>>() {
+            @Override
+            public void callListener(List<MagicFileInfo> param) {
+                getView().getDataListSucc(createFileModelList(param), true);
+            }
 
+            @Override
+            public void callComplete() {
+
+            }
+        });
     }
 
     @Override
-    public void getWXDataList() {
-
+    public void getWXDataList(boolean isRef) {
+        Map<String, String> starMap = getStarMap();
+        List<FileManagerListModel> newList = new ArrayList<>();
+        if (fileDaoManager.isPutFileInStorageSucc()) {
+            if (!isRef) {
+                page++;
+            }
+            List<FileInfo> list = fileDaoManager.getWXFileInfoList(EnumFileType.ALL, page, SIZE);
+            newList.addAll(createFileModelList(list, starMap));
+        }
+        getView().getDataListSucc(newList, isRef);
     }
 
     @Override
     public void getFolderDataList(String rootPath) {
         MagicExplorer.getFolderAndFileList(rootPath, param -> {
-            getView().getDataListSucc(createFileModelList1(param), true);
+            getView().getDataListSucc(createFileModelList(param), true);
         });
     }
 
@@ -204,7 +208,7 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     }
 
 
-    private List<FileManagerListModel> createFileModelList1(List<MagicFileInfo> returnList) {
+    private List<FileManagerListModel> createFileModelList(List<MagicFileInfo> returnList) {
         Map<String, String> starMap = getStarMap();
         List<FileManagerListModel> list = new ArrayList<>();
         for (int i = 0; i < returnList.size(); i++) {
@@ -230,6 +234,25 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
             list.add(model);
         }
         return list;
+    }
+
+
+    private List<FileManagerListModel> createFileModelList(List<FileInfo> list, Map<String, String> starMap) {
+        List<FileManagerListModel> newList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            FileManagerListModel model = new FileManagerListModel();
+            model.type = getView().getType() == FileType.PIC ? FileManagerListModel.PIC : FileManagerListModel.OTHER;
+            model.fileType = EnumFileType.getOldType(list.get(i).getFileType());
+            model.picPath = list.get(i).getFilePath();
+            model.fileName = FileUtils.getFolderName(model.picPath);
+            model.isStar = starMap.get(model.picPath) != null;
+            model.isSelect = false;
+            model.iconResId = EnumFileType.createIconResId(list.get(i).getFileType(), model.isFile);
+            model.modifyStr = DateUtils.formatDate(list.get(i).getLastModifyTime(), "yyyy-MM-dd HH:mm:ss");
+            model.sizeStr = Formatter.formatFileSize(getContext(), list.get(i).getFileSize());
+            newList.add(model);
+        }
+        return newList;
     }
 
     @Override

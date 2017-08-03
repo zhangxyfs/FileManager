@@ -5,18 +5,26 @@ import android.database.Cursor;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.z7dream.lib.callback.Callback;
+import com.z7dream.lib.callback.Callback1;
 import com.z7dream.lib.model.MagicFileInfo;
 import com.z7dream.lib.tool.collator.OrderingConstants;
 import com.z7dream.lib.tool.rx.RxSchedulersHelper;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
@@ -285,5 +293,94 @@ public class MagicExplorer {
                 }, error -> {
                 });
 
+    }
+
+    /**
+     * 获取wps文件列表
+     *
+     * @param callback
+     */
+    public static Disposable getWPSFileList(String searchKey, Callback1<List<MagicFileInfo>> callback) {
+        boolean isHasSearch = !TextUtils.isEmpty(searchKey);
+        List<MagicFileInfo> returnList = new ArrayList<>();
+        return Flowable.create((FlowableEmitter<String> e) -> {
+            File file = new File(WPS_PATH);
+            if (file.isFile() && file.exists()) {
+                StringBuilder stringBuffer = new StringBuilder();
+                String line;
+                FileInputStream fileInputStream = null;
+                InputStreamReader inputStreamReader = null;
+                BufferedReader reader = null;
+                try {
+                    fileInputStream = new FileInputStream(file);
+                    inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
+                    reader = new BufferedReader(inputStreamReader);
+                    while ((line = reader.readLine()) != null) {
+                        stringBuffer.append(line);
+                    }
+                } catch (IOException exce) {
+                    exce.printStackTrace();
+                } finally {
+                    try {
+                        if (reader != null)
+                            reader.close();
+                        if (inputStreamReader != null)
+                            inputStreamReader.close();
+                        if (fileInputStream != null)
+                            fileInputStream.close();
+                    } catch (IOException exce) {
+                        exce.printStackTrace();
+                    }
+                }
+                e.onNext(stringBuffer.toString());
+            }
+            e.onComplete();
+
+        }, BackpressureStrategy.BUFFER).compose(RxSchedulersHelper.fio())
+                .flatMap(json -> {
+                    List<WPSUtils.WPSJSONBean> list = new Gson().fromJson(json, new TypeToken<List<WPSUtils.WPSJSONBean>>() {
+                    }.getType());
+                    if (list == null) {
+                        list = new ArrayList<>();
+                    }
+                    return Flowable.just(list);
+                })
+                .compose(RxSchedulersHelper.fio())
+                .doOnComplete(() -> {
+                    if (isHasSearch) {
+                        callback.callComplete();
+                    } else {
+                        callback.callListener(returnList);
+                    }
+                })
+                .subscribe(list -> {
+                    for (int i = 0; i < list.size(); i++) {
+                        WPSUtils.WPSJSONBean bean = list.get(i);
+                        File itemFile = new File(bean.filePath);
+                        if (itemFile.isFile()) {
+                            String fileName = FileUtils.getFolderName(bean.filePath);
+                            if (isHasSearch && !fileName.contains(searchKey)) {
+                                continue;
+                            }
+                            MagicFileInfo info = new MagicFileInfo();
+                            info.fileName = fileName;
+                            info.path = bean.filePath;
+                            String exc = FileUtils.getExtensionName(bean.filePath);
+                            if (!TextUtils.isEmpty(exc)) {
+                                info.position = FileType.createFileType(exc);
+                            }
+                            info.fileSize = itemFile.length();
+                            info.isFile = true;
+                            info.modifyDate = itemFile.lastModified();
+
+                            if (isHasSearch) {
+                                returnList.clear();
+                                returnList.add(info);
+                                callback.callListener(returnList);
+                            } else
+                                returnList.add(info);
+                        }
+                    }
+                });
     }
 }

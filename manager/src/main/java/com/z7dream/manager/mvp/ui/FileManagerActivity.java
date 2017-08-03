@@ -34,9 +34,9 @@ import com.z7dream.manager.mvp.presenter.FileManagerPresenter;
 import com.z7dream.manager.mvp.ui.adapter.FileManagerListAdapter;
 import com.z7dream.manager.mvp.ui.listener.FileManagerListListener;
 import com.z7dream.manager.mvp.ui.model.FileManagerListModel;
-import com.z7dream.manager.tool.MedaPlayUtil;
-import com.z7dream.manager.tool.OpenFileUtils;
-import com.z7dream.manager.tool.WPSUtils;
+import com.z7dream.lib.tool.MedaPlayUtil;
+import com.z7dream.lib.tool.OpenFileUtils;
+import com.z7dream.lib.tool.WPSUtils;
 import com.z7dream.manager.tool.luban.Luban;
 import com.z7dream.manager.tool.luban.OnCompressListener;
 import com.z7dream.manager.tool.recycler.RecyclerControl;
@@ -696,11 +696,11 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         } else if (isNear30Days) {
             getPresenter().getNear30DaysDataList(isRef);
         } else if (isQQ) {
-            getPresenter().getQQDataList();
+            getPresenter().getQQDataList(isRef);
         } else if (isWPS) {
-            getPresenter().getWPSDataList();
+            getPresenter().getWPSDataList(isRef);
         } else if (isWX) {
-            getPresenter().getWXDataList();
+            getPresenter().getWXDataList(isRef);
         } else if (isFolder) {
             getPresenter().getFolderDataList(nowPath);
         } else if (isStatistical) {

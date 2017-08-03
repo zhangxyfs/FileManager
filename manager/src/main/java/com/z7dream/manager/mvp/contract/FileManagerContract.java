@@ -27,11 +27,11 @@ public interface FileManagerContract {
 
         void getNear30DaysDataList(boolean isRef);
 
-        void getQQDataList();
+        void getQQDataList(boolean isRef);
 
-        void getWPSDataList();
+        void getWPSDataList(boolean isRef);
 
-        void getWXDataList();
+        void getWXDataList(boolean isRef);
 
         void getFolderDataList(String rootPath);
 

@@ -1,4 +1,4 @@
-package com.z7dream.manager.tool;
+package com.z7dream.lib.tool;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.z7dream.manager.base.mvp.BaseAppli;
 
 import java.io.File;
 
@@ -90,7 +89,7 @@ public class WPSUtils {
 
 
     public static boolean openWpsFile(Context context, String path) {
-        if (!isHasWPS()) {
+        if (!isHasWPS(context)) {
             OpenFileUtils.openFile(context, path);
             return false;
         }
@@ -128,10 +127,10 @@ public class WPSUtils {
     }
 
 
-    public static boolean isHasWPS() {
+    public static boolean isHasWPS(Context context) {
         boolean isHasWps = false;
         try {
-            PackageInfo packageInfo = BaseAppli.getContext().getPackageManager().getPackageInfo(WpsModel.PackageName.NORMAL, 0);
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(WpsModel.PackageName.NORMAL, 0);
             isHasWps = packageInfo != null;
         } catch (PackageManager.NameNotFoundException e) {
             Log.d(WPSUtils.class.getName(), "no wps");

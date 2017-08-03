@@ -178,12 +178,32 @@ public interface FileDaoImpl {
     List<FileInfo> getQQFileInfoList(EnumFileType enumFileType);
 
     /**
+     * 获取qq文件列表
+     *
+     * @param enumFileType 文件类型枚举
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> getQQFileInfoList(EnumFileType enumFileType, int page, int size);
+
+    /**
      * 获取微信文件列表
      *
      * @param enumFileType 文件类型枚举
      * @return
      */
     List<FileInfo> getWXFileInfoList(EnumFileType enumFileType);
+
+    /**
+     * 获取微信文件列表
+     *
+     * @param enumFileType 文件类型枚举
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> getWXFileInfoList(EnumFileType enumFileType, int page, int size);
 
     /**
      * 获取最近30天文件列表

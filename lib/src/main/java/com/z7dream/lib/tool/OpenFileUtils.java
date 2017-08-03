@@ -1,4 +1,4 @@
-package com.z7dream.manager.tool;
+package com.z7dream.lib.tool;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,9 +6,6 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.z7dream.lib.callback.Callback;
-import com.z7dream.lib.tool.FileType;
-import com.z7dream.lib.tool.FileUtils;
-import com.z7dream.manager.base.mvp.BaseAppli;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -26,7 +23,7 @@ public class OpenFileUtils {
         Intent intent = getFileIntent(context, filePath);
         if (intent != null)
             context.startActivity(intent);
-        else Toast.makeText(BaseAppli.getContext(), "没有可以打开文件的软件！", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(context, "没有可以打开文件的软件！", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -251,7 +248,7 @@ public class OpenFileUtils {
             case FileType.PPT:
             case FileType.WORD:
             case FileType.PDF:
-                WPSUtils.openWpsFile(BaseAppli.getContext(), filePath);
+                WPSUtils.openWpsFile(context, filePath);
                 break;
             case FileType.AUDIO:
                 callback.callListener(filePath);

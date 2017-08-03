@@ -66,4 +66,5 @@ dependencies {
     compile "com.android.support:support-v4:${support_v4_version}"
     compile "com.android.support:percent:${android_need_version}"
     compile "com.android.support:recyclerview-v7:${android_need_version}"
+    compile "com.google.code.gson:gson:${gson_need_version}"
 }

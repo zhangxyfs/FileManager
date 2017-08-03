@@ -33,8 +33,9 @@ import io.objectbox.query.QueryBuilder;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 
-import static com.z7dream.lib.db.bean.FileInfo_.filePath;
+import static com.z7dream.lib.tool.MagicExplorer.QQ_FILE_PATH;
 import static com.z7dream.lib.tool.MagicExplorer.QQ_PIC_PATH;
+import static com.z7dream.lib.tool.MagicExplorer.WX_FILE_PATH;
 import static com.z7dream.lib.tool.MagicExplorer.WX_PIC_PATH;
 
 
@@ -389,7 +390,7 @@ public class FileDaoManager implements FileDaoImpl {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
         }
         if (!TextUtils.isEmpty(likeStr)) {
-            queryBuilder.contains(filePath, likeStr);
+            queryBuilder.contains(FileInfo_.filePath, likeStr);
         }
         if (enumFileType == EnumFileType.PIC) {
             queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
@@ -415,7 +416,7 @@ public class FileDaoManager implements FileDaoImpl {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
         }
         if (!TextUtils.isEmpty(likeStr)) {
-            queryBuilder.contains(filePath, likeStr);
+            queryBuilder.contains(FileInfo_.filePath, likeStr);
         }
         if (enumFileType == EnumFileType.PIC) {
             queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
@@ -433,7 +434,9 @@ public class FileDaoManager implements FileDaoImpl {
     public List<FileInfo> getQQFileInfoList(EnumFileType enumFileType) {
         QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
                 .equal(FileInfo_.isFile, true)
-                .contains(filePath, QQ_PIC_PATH)
+                .contains(FileInfo_.filePath, QQ_PIC_PATH)
+                .or()
+                .contains(FileInfo_.filePath, QQ_FILE_PATH)
                 .orderDesc(FileInfo_.lastModifyTime);
 
         if (enumFileType != EnumFileType.ALL) {
@@ -441,6 +444,22 @@ public class FileDaoManager implements FileDaoImpl {
         }
 
         return queryBuilder.build().find();
+    }
+
+    @Override
+    public List<FileInfo> getQQFileInfoList(EnumFileType enumFileType, int page, int size) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.isFile, true)
+                .contains(FileInfo_.filePath, QQ_PIC_PATH)
+                .or()
+                .contains(FileInfo_.filePath, QQ_FILE_PATH)
+                .orderDesc(FileInfo_.lastModifyTime);
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+
+        return queryBuilder.build().find(page * size, size);
     }
 
     /**
@@ -453,7 +472,9 @@ public class FileDaoManager implements FileDaoImpl {
     public List<FileInfo> getWXFileInfoList(EnumFileType enumFileType) {
         QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
                 .equal(FileInfo_.isFile, true)
-                .contains(filePath, WX_PIC_PATH)
+                .contains(FileInfo_.filePath, WX_PIC_PATH)
+                .or()
+                .contains(FileInfo_.filePath, WX_FILE_PATH)
                 .orderDesc(FileInfo_.lastModifyTime);
 
         if (enumFileType != EnumFileType.ALL) {
@@ -461,6 +482,22 @@ public class FileDaoManager implements FileDaoImpl {
         }
 
         return queryBuilder.build().find();
+    }
+
+    @Override
+    public List<FileInfo> getWXFileInfoList(EnumFileType enumFileType, int page, int size) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.isFile, true)
+                .contains(FileInfo_.filePath, WX_PIC_PATH)
+                .or()
+                .contains(FileInfo_.filePath, WX_FILE_PATH)
+                .orderDesc(FileInfo_.lastModifyTime);
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+
+        return queryBuilder.build().find(page * size, size);
     }
 
     /**
