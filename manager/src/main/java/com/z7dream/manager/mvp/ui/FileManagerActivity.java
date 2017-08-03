@@ -612,6 +612,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                 switch (model.fileType) {
                     case FileType.PIC:
 //                    FilePicDisplayActivity.onlyDisplay(this, 1, 0, model.picPath);
+                        OpenFileUtils.openFile(this, model.picPath);
                         break;
                     case FileType.TXT:
                     case FileType.EXCEL:

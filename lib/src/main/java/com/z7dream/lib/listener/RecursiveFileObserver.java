@@ -178,6 +178,12 @@ public class RecursiveFileObserver extends FileObserver {
                 Log.i("RecursiveFileObserver", "MOVE_SELF: " + path);
                 break;
             case FileObserver.MOVED_FROM:
+                if (file.isDirectory()) {
+                    mObservers.get(path).stopWatching();
+                    mObservers.remove(path);
+                }
+                fileDaoUtils.removeFileInfo(file.getAbsolutePath());
+                
                 Log.i("RecursiveFileObserver", "MOVED_FROM: " + path);
                 break;
             case FileObserver.MOVED_TO:
