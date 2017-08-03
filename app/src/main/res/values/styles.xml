@@ -23,5 +23,43 @@
         <item name="android:textColorSecondary">@color/color_white</item>
 
         <item name="actionMenuTextColor">@android:color/white</item>
+
+        <item name="android:actionMenuTextAppearance">@style/BaseActionBar.MenuTextStyle</item>
+        <item name="android:windowAnimationStyle">@style/BaseAnimation</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+    </style>
+
+
+    <style name="BaseActionBar.MenuTextStyle" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="BaseAnimation">
+        <!--第一次创建新Activity是调用的动画-->
+        <item name="android:activityOpenEnterAnimation">@anim/home_fade_in</item>
+        <!--调用finish关闭该Activity是调用的动画-->
+        <item name="android:activityCloseExitAnimation">@anim/home_fade_out</item>
+        <!--activity还没有finish()下退出效果 -->
+        <item name="android:activityOpenExitAnimation">@anim/home_fade_out</item>
+        <!--上一个activity返回进入效果  -->
+        <item name="android:activityCloseEnterAnimation">@anim/home_fade_in</item>
+        <item name="android:taskOpenEnterAnimation">@null</item>
+        <item name="android:taskOpenExitAnimation">@null</item>
+        <item name="android:taskCloseEnterAnimation">@null</item>
+        <item name="android:taskCloseExitAnimation">@null</item>
+        <item name="android:taskToFrontEnterAnimation">@null</item>
+        <item name="android:taskToFrontExitAnimation">@null</item>
+        <item name="android:taskToBackEnterAnimation">@null</item>
+        <item name="android:taskToBackExitAnimation">@null</item>
+    </style>
+
+    <!--溢出菜单样式 -->
+    <style name="OverflowMenuStyle" parent="@style/Widget.AppCompat.Light.PopupMenu.Overflow">
+        <!-- <item name="overlapAnchor">false</item>-->
+        <!-- <item name="android:dropDownWidth">wrap_content</item>-->
+        <!--<item name="android:paddingRight">5dp</item>-->
+        <!--<item name="android:popupBackground">?attr/colorPrimary</item>-->
+        <item name="android:dropDownVerticalOffset">46dp</item>
+        <item name="android:dropDownHorizontalOffset">0dp</item>
     </style>
 </resources>

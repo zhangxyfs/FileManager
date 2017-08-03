@@ -10,6 +10,7 @@ import com.z7dream.lib.db.FileDaoImpl;
 import com.z7dream.lib.db.FileDaoManager;
 import com.z7dream.lib.db.bean.FileInfo;
 import com.z7dream.lib.db.bean.FileStarInfo;
+import com.z7dream.lib.model.FileConfig;
 import com.z7dream.lib.model.MagicFileInfo;
 import com.z7dream.lib.service.FileUpdatingService;
 import com.z7dream.lib.tool.EnumFileType;
@@ -201,6 +202,11 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     @Override
     public void getStatisticalDataList() {
 
+    }
+
+    @Override
+    public FileConfig getFileConfig() {
+        return FileUpdatingService.getConfigCallback().getConfig();
     }
 
     private Map<String, String> getStarMap() {

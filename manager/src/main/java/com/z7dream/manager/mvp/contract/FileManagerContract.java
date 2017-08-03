@@ -1,5 +1,6 @@
 package com.z7dream.manager.mvp.contract;
 
+import com.z7dream.lib.model.FileConfig;
 import com.z7dream.manager.base.mvp.presenter.BasePresenter;
 import com.z7dream.manager.base.mvp.view.BaseView;
 import com.z7dream.manager.mvp.ui.model.FileManagerListModel;
@@ -36,6 +37,8 @@ public interface FileManagerContract {
         void getFolderDataList(String rootPath);
 
         void getStatisticalDataList();
+
+        FileConfig getFileConfig();
     }
 
 

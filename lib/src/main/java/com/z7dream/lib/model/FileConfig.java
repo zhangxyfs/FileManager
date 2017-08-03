@@ -16,6 +16,16 @@ public class FileConfig {
      */
     public String fileBaseTitle;
 
+    /**
+     * 搜索按钮是否显示在toolbar上
+     */
+    public boolean isToolbarSearch;
+
+    /**
+     * 是否显示搜索按钮
+     */
+    public boolean isVisableSearch;
+
 
     public FileConfig() {
         userToken = "";

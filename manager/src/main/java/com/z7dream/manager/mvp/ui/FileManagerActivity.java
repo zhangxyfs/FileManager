@@ -24,7 +24,10 @@ import com.z7dream.lib.callback.Callback;
 import com.z7dream.lib.tool.CacheManager;
 import com.z7dream.lib.tool.FileType;
 import com.z7dream.lib.tool.FileUtils;
+import com.z7dream.lib.tool.MedaPlayUtil;
+import com.z7dream.lib.tool.OpenFileUtils;
 import com.z7dream.lib.tool.Utils;
+import com.z7dream.lib.tool.WPSUtils;
 import com.z7dream.manager.R;
 import com.z7dream.manager.R2;
 import com.z7dream.manager.base.mvp.BaseActivity;
@@ -34,9 +37,6 @@ import com.z7dream.manager.mvp.presenter.FileManagerPresenter;
 import com.z7dream.manager.mvp.ui.adapter.FileManagerListAdapter;
 import com.z7dream.manager.mvp.ui.listener.FileManagerListListener;
 import com.z7dream.manager.mvp.ui.model.FileManagerListModel;
-import com.z7dream.lib.tool.MedaPlayUtil;
-import com.z7dream.lib.tool.OpenFileUtils;
-import com.z7dream.lib.tool.WPSUtils;
 import com.z7dream.manager.tool.luban.Luban;
 import com.z7dream.manager.tool.luban.OnCompressListener;
 import com.z7dream.manager.tool.recycler.RecyclerControl;
@@ -100,7 +100,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     private boolean isNeedForward;
 
     private Map<Integer, Integer> checkPicMap, checkFileMap, checkMap;
-    private MenuItem choiceItem;
+    private MenuItem searchItem, choiceItem;
     private boolean isOpenCheck = false;
     private boolean isAllCheckClick = false;
     private boolean isCheckAllStar = true;//选中的是否全是星标
@@ -175,7 +175,11 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         isFolder = function == 6;
         isStatistical = function == 7;
 
-        if (fileType == FileType.PIC) {
+        if (fileType == FileType.PIC || getPresenter().getFileConfig().isToolbarSearch) {
+            ll_afm_search.setVisibility(View.GONE);
+        }
+
+        if (!getPresenter().getFileConfig().isVisableSearch) {
             ll_afm_search.setVisibility(View.GONE);
         }
 
@@ -468,90 +472,94 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        if (!isOpenCheck) {
-            choiceItem.setTitle(R.string.select_all_str);
-            isOpenCheck = true;
-            fileManagerListAdapter.setCheck(true);
-            fileManagerDialog.showPopup();
-            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) ll_afmo.getLayoutParams();
-            lp.setMargins(0, 0, 0, marginBottom);
-            ll_afmo.setLayoutParams(lp);
-        } else {
-            List<FileManagerListModel> list = fileManagerListAdapter.getList();
-            if (isAllCheckClick) {
+        if (item.getItemId() == R.id.firstBtn) {
+
+        } else if (item.getItemId() == R.id.secondBtn) {
+            if (!isOpenCheck) {
                 choiceItem.setTitle(R.string.select_all_str);
-                isAllCheckClick = false;
-                checkMap.clear();
-                checkPicMap.clear();
-                checkFileMap.clear();
-                for (int i = 0; i < list.size(); i++) {//取消全选
-                    if (list.get(i).isSelect)
-                        list.get(i).isSelect = false;
-                }
-            } else {//全选
-                choiceItem.setTitle(R.string.clear_select_all_str);
-                isAllCheckClick = true;
-
-                if (allMaxNum == 1) {
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).isFile) {
-                            checkMap.put(i, i);
-                            if (list.get(i).fileType == FileType.PIC) {
-                                checkPicMap.put(i, i);
-                            } else {
-                                checkFileMap.put(i, i);
-                            }
-                            list.get(i).isSelect = true;
-                            break;
-                        }
-                    }
-                } else {
-                    int alreadySelectPicNum = checkPicMap.size(), alreadySelectFileNum = checkFileMap.size();
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).isFile) {
-                            if (list.get(i).fileType == FileType.PIC) {
-                                if (alreadySelectPicNum < maxPicNum) {
-                                    list.get(i).isSelect = true;
-                                    checkPicMap.put(i, i);
-                                    alreadySelectPicNum++;
-                                }
-                            } else {
-                                if (alreadySelectFileNum < maxFileNum) {
-                                    list.get(i).isSelect = true;
-                                    checkFileMap.put(i, i);
-                                    alreadySelectFileNum++;
-                                }
-                            }
-                        }
-                        if (alreadySelectFileNum + alreadySelectPicNum == maxPicNum + maxFileNum)
-                            break;
-                    }
-                    checkMap.putAll(checkPicMap);
-                    checkMap.putAll(checkFileMap);
-                }
-            }
-            if (checkMap.size() > 0) {
-                if (allMaxNum < Integer.MAX_VALUE)
-                    setToolbarTitle(getString(R.string.file_manager_already_num_str, checkMap.size()));
-                fileManagerDialog.setRenameFocus(checkMap.size() == 1);
+                isOpenCheck = true;
+                fileManagerListAdapter.setCheck(true);
+                fileManagerDialog.showPopup();
+                CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) ll_afmo.getLayoutParams();
+                lp.setMargins(0, 0, 0, marginBottom);
+                ll_afmo.setLayoutParams(lp);
             } else {
-                setToolbarTitle(titleName);
-                fileManagerDialog.setRenameFocus(false);
-            }
-            fileManagerListAdapter.notifyDataSetChanged();
+                List<FileManagerListModel> list = fileManagerListAdapter.getList();
+                if (isAllCheckClick) {
+                    choiceItem.setTitle(R.string.select_all_str);
+                    isAllCheckClick = false;
+                    checkMap.clear();
+                    checkPicMap.clear();
+                    checkFileMap.clear();
+                    for (int i = 0; i < list.size(); i++) {//取消全选
+                        if (list.get(i).isSelect)
+                            list.get(i).isSelect = false;
+                    }
+                } else {//全选
+                    choiceItem.setTitle(R.string.clear_select_all_str);
+                    isAllCheckClick = true;
 
-            if (checkMap.size() > 0) {
-                for (Integer key : checkMap.keySet()) {
-                    FileManagerListModel model = fileManagerListAdapter.getList().get(key);
-                    isCheckAllStar = model.isStar;
-                    if (!isCheckAllStar) {
-                        break;
+                    if (allMaxNum == 1) {
+                        for (int i = 0; i < list.size(); i++) {
+                            if (list.get(i).isFile) {
+                                checkMap.put(i, i);
+                                if (list.get(i).fileType == FileType.PIC) {
+                                    checkPicMap.put(i, i);
+                                } else {
+                                    checkFileMap.put(i, i);
+                                }
+                                list.get(i).isSelect = true;
+                                break;
+                            }
+                        }
+                    } else {
+                        int alreadySelectPicNum = checkPicMap.size(), alreadySelectFileNum = checkFileMap.size();
+                        for (int i = 0; i < list.size(); i++) {
+                            if (list.get(i).isFile) {
+                                if (list.get(i).fileType == FileType.PIC) {
+                                    if (alreadySelectPicNum < maxPicNum) {
+                                        list.get(i).isSelect = true;
+                                        checkPicMap.put(i, i);
+                                        alreadySelectPicNum++;
+                                    }
+                                } else {
+                                    if (alreadySelectFileNum < maxFileNum) {
+                                        list.get(i).isSelect = true;
+                                        checkFileMap.put(i, i);
+                                        alreadySelectFileNum++;
+                                    }
+                                }
+                            }
+                            if (alreadySelectFileNum + alreadySelectPicNum == maxPicNum + maxFileNum)
+                                break;
+                        }
+                        checkMap.putAll(checkPicMap);
+                        checkMap.putAll(checkFileMap);
                     }
                 }
-                if (!isCheckAllStar) {
-                    fileManagerDialog.setStarState(true);
+                if (checkMap.size() > 0) {
+                    if (allMaxNum < Integer.MAX_VALUE)
+                        setToolbarTitle(getString(R.string.file_manager_already_num_str, checkMap.size()));
+                    fileManagerDialog.setRenameFocus(checkMap.size() == 1);
                 } else {
-                    fileManagerDialog.setStarState(false);
+                    setToolbarTitle(titleName);
+                    fileManagerDialog.setRenameFocus(false);
+                }
+                fileManagerListAdapter.notifyDataSetChanged();
+
+                if (checkMap.size() > 0) {
+                    for (Integer key : checkMap.keySet()) {
+                        FileManagerListModel model = fileManagerListAdapter.getList().get(key);
+                        isCheckAllStar = model.isStar;
+                        if (!isCheckAllStar) {
+                            break;
+                        }
+                    }
+                    if (!isCheckAllStar) {
+                        fileManagerDialog.setStarState(true);
+                    } else {
+                        fileManagerDialog.setStarState(false);
+                    }
                 }
             }
         }
@@ -840,10 +848,12 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.page_menu, menu);
-        choiceItem = menu.findItem(R.id.firstBtn);
-        MenuItem secItem = menu.findItem(R.id.secondBtn);
+        searchItem = menu.findItem(R.id.firstBtn);
+        choiceItem = menu.findItem(R.id.secondBtn);
         choiceItem.setTitle(R.string.choice_str);
-        secItem.setVisible(false);
+        searchItem.setIcon(R.drawable.ic_search);
+        searchItem.setVisible(getPresenter().getFileConfig().isToolbarSearch);
+
         return true;
     }
 

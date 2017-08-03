@@ -11,21 +11,19 @@ import com.z7dream.manager.base.mvp.BaseAppli;
  */
 
 public class Application extends BaseAppli {
-    private FileConfig fileConfig;
+    private static FileConfig mFileConfig;
 
     private FileConfigCallback configCallback = new FileConfigCallback() {
         @Override
         public FileConfig getConfig() {
-            fileConfig.userToken = "123";
-            fileConfig.fileBaseTitle = getString(R.string.mine_file_str);
-            return fileConfig;
+            return mFileConfig;
         }
     };
 
     @Override
     public void onCreate() {
         super.onCreate();
-        fileConfig = new FileConfig();
+        mFileConfig = new FileConfig();
     }
 
     @Override
@@ -36,5 +34,9 @@ public class Application extends BaseAppli {
     @Override
     public FileConfigCallback getFileConfigCallback() {
         return configCallback;
+    }
+
+    public static void setFileConfig(FileConfig fileConfig){
+        mFileConfig = fileConfig;
     }
 }
