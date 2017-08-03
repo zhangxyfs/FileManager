@@ -982,7 +982,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax, FUN_FOLDER
-                , isOpenForward, isNeedZip, false, R.drawable.ic_file_folder, requestCode);
+                , isOpenForward, isNeedZip, false, R.drawable.ic_file_myfiles, requestCode);
     }
 
     /**

@@ -32,7 +32,7 @@ public class RecursiveFileObserver extends FileObserver {
     private Callback<Integer> callback;
     private FileDaoImpl fileDaoUtils;
 
-    private Disposable startDisposable, stopDisposable, createDisposable, deleteDisposable;
+    private Disposable startDisposable, stopDisposable, createDisposable, moveDisposable, deleteDisposable;
 
     public RecursiveFileObserver(String path, Callback<Integer> callback, FileDaoImpl fileDaoUtils) {
         this(path, ALL_EVENTS, callback, fileDaoUtils);
@@ -181,6 +181,41 @@ public class RecursiveFileObserver extends FileObserver {
                 Log.i("RecursiveFileObserver", "MOVED_FROM: " + path);
                 break;
             case FileObserver.MOVED_TO:
+                moveDisposable = Observable.create((ObservableOnSubscribe<SingleFileObserver>) e -> {
+                    if (file.isDirectory()) {
+                        Stack<String> stack = new Stack<>();
+                        stack.push(path);
+                        while (!stack.isEmpty()) {
+                            String temp = stack.pop();
+                            if (mObservers.containsKey(temp)) {
+                                continue;
+                            } else {
+                                SingleFileObserver sfo = new SingleFileObserver(temp, mMask);
+                                e.onNext(sfo);
+                                mObservers.put(temp, sfo);
+                            }
+                            File tempPath = new File(temp);
+                            File[] files = tempPath.listFiles();
+                            if (null == files)
+                                continue;
+                            for (File f : files) {
+                                // 递归监听目录
+                                if (f.isDirectory() && FileUtils.isNeedToListener(f)) {
+                                    stack.push(f.getAbsolutePath());
+                                }
+                            }
+                        }
+                    }
+                    e.onComplete();
+                }).compose(RxSchedulersHelper.io())
+                        .doOnComplete(() -> {
+                            moveDisposable.dispose();
+                            moveDisposable = null;
+                        }).subscribe(FileObserver::startWatching, error -> {
+                        });
+
+                fileDaoUtils.addFileInfo(file);
+
                 Log.i("RecursiveFileObserver", "MOVED_TO: " + path);
                 break;
         }

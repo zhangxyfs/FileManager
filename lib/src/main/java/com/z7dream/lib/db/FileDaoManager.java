@@ -799,20 +799,21 @@ public class FileDaoManager implements FileDaoImpl {
         Observable.create((ObservableOnSubscribe<List<FileInfo>>) e -> {
             List<FileInfo> list = fileInfoBox.query().equal(FileInfo_.isFile, false).orderDesc(FileInfo_.lastModifyTime).build().find();
             List<Long> deleteFileInfoIdList = new ArrayList<>();
-            List<FileInfo> needUpdateFileidList = new ArrayList<>();
+            List<FileInfo> needUpdateFileInfoList = new ArrayList<>();
             for (FileInfo folderInfo : list) {
                 File file = new File(folderInfo.getFilePath());
                 if (!file.exists()) {
                     deleteFileInfoIdList.add(folderInfo.getId());
                 } else {
                     if (folderInfo.getLastModifyTime() != file.lastModified()) {//当前文件夹，时间不同，需要更新
-                        needUpdateFileidList.add(folderInfo);
-                        traverseChild(folderInfo.getFilePath(), deleteFileInfoIdList, needUpdateFileidList);
+                        needUpdateFileInfoList.add(folderInfo);
+                        traverseChild(folderInfo.getFilePath(), deleteFileInfoIdList, needUpdateFileInfoList);
+                        traverseChild(folderInfo.getFilePath());
                     }
                 }
             }
             fileInfoBox.removeByKeys(deleteFileInfoIdList);
-            e.onNext(needUpdateFileidList);
+            e.onNext(needUpdateFileInfoList);
             e.onComplete();
         }).compose(RxSchedulersHelper.io()).subscribe(list -> {
             boxStore.runInTx(() -> {
@@ -850,4 +851,40 @@ public class FileDaoManager implements FileDaoImpl {
             }
         }
     }
+
+    private void traverseChild(String parentPath) {
+        List<FileInfo> addList = new ArrayList<>();
+        File file = new File(parentPath);
+        File[] childFiles = file.listFiles();
+
+        List<FileInfo> childList = fileInfoBox.query().equal(FileInfo_.parentPath, parentPath).build().find();
+        Map<String, FileInfo> childMap = new HashMap<>();
+        for (int i = 0; i < childList.size(); i++) {
+            childMap.put(childList.get(i).getFilePath(), childList.get(i));
+        }
+
+        for (int i = 0; i < childFiles.length; i++) {
+            File f = childFiles[i];
+            if (childMap.get(f.getPath()) == null) {
+
+                if (f.isFile() && !isNeedFile(FileUtils.getExtensionName(f.getPath()))) {
+                    continue;
+                }
+
+                FileInfo fileInfo = new FileInfo();
+                fileInfo.setFileName(f.getName());
+                fileInfo.setFilePath(f.getAbsolutePath());
+                fileInfo.setParentPath(f.getParent());
+                fileInfo.setExtension(FileUtils.getExtensionName(fileInfo.getFileName()));
+                fileInfo.setLastModifyTime(f.lastModified());
+                fileInfo.setFileSize(f.length());
+                fileInfo.setIsFile(f.isFile());
+                fileInfo.setFileType(getFileType(fileInfo.getExtension()));
+
+                addList.add(fileInfo);
+            }
+        }
+        fileInfoBox.put(addList);
+    }
+
 }
