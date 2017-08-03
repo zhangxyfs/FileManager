@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (!b) {
-                    displayToolbarSearch.setChecked(b);
+                    displaySearch.setChecked(false);
                 }
             }
         });
@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    displaySearch.setChecked(b);
+                    displayToolbarSearch.setChecked(true);
                 }
             }
         });
@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 fileConfig.fileBaseTitle = setTitle.getText().toString();
-                fileConfig.isToolbarSearch = displaySearch.isChecked();
-                fileConfig.isVisableSearch = displayToolbarSearch.isChecked();
+                fileConfig.isVisableSearch = displaySearch.isChecked();
+                fileConfig.isToolbarSearch = displayToolbarSearch.isChecked();
                 Application.setFileConfig(fileConfig);
                 setCL.setVisibility(View.GONE);
                 Toast.makeText(MainActivity.this, "save complete.", Toast.LENGTH_SHORT).show();

@@ -9,6 +9,7 @@
         style="@style/ActionBarStyle"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        toolbar:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         toolbar:title=""
         toolbar:titleTextColor="@color/color_white" />
 </android.support.design.widget.AppBarLayout>

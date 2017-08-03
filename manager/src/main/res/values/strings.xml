@@ -31,4 +31,5 @@
     <string name="clear_select_all_str">全不选</string>
     <string name="olny_choice_n_pic_str">您只能选择%1$d个图片</string>
     <string name="olny_choice_n_file_str">您只能选择%1$d个文件</string>
+    <string name="search_hint_str"><![CDATA[搜索<文件名-或-路径>]]></string>
 </resources>

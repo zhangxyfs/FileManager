@@ -2,6 +2,9 @@ package com.z7dream.manager.mvp.ui;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -45,6 +49,7 @@ import com.z7dream.manager.widget.FileManagerDialog;
 import com.z7dream.manager.widget.TCheckBox;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +106,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
     private Map<Integer, Integer> checkPicMap, checkFileMap, checkMap;
     private MenuItem searchItem, choiceItem;
+    private SearchView searchView;
     private boolean isOpenCheck = false;
     private boolean isAllCheckClick = false;
     private boolean isCheckAllStar = true;//选中的是否全是星标
@@ -175,11 +181,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         isFolder = function == 6;
         isStatistical = function == 7;
 
-        if (fileType == FileType.PIC || getPresenter().getFileConfig().isToolbarSearch) {
-            ll_afm_search.setVisibility(View.GONE);
-        }
-
-        if (!getPresenter().getFileConfig().isVisableSearch) {
+        if (getPresenter().getFileConfig().isToolbarSearch || !getPresenter().getFileConfig().isVisableSearch) {
             ll_afm_search.setVisibility(View.GONE);
         }
 
@@ -847,14 +849,42 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.page_menu, menu);
+        getMenuInflater().inflate(R.menu.search_menu, menu);
         searchItem = menu.findItem(R.id.firstBtn);
         choiceItem = menu.findItem(R.id.secondBtn);
         choiceItem.setTitle(R.string.choice_str);
         searchItem.setIcon(R.drawable.ic_search);
-        searchItem.setVisible(getPresenter().getFileConfig().isToolbarSearch);
 
+        searchItem.setVisible(getPresenter().getFileConfig().isToolbarSearch);
+        if(getPresenter().getFileConfig().isToolbarSearch) {
+            searchView = (SearchView) searchItem.getActionView();
+            searchView.setIconifiedByDefault(false);
+            SearchManager mSearchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchableInfo info = mSearchManager.getSearchableInfo(getComponentName());
+            searchView.setSearchableInfo(info);
+
+            searchView.setOnSearchClickListener(view -> {
+                
+            });
+        }
         return true;
+    }
+
+    // 让菜单同时显示图标和文字
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equalsIgnoreCase("MenuBuilder")) {
+                try {
+                    Method method = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    method.setAccessible(true);
+                    method.invoke(menu, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
     }
 
 

@@ -19,16 +19,24 @@
         <!--Activity窗口的颜色-->
         <item name="android:windowBackground">@android:color/white</item>
 
+        <item name="searchViewStyle">@style/Widget.SearchView</item>
+
         <!--设置标题栏上按钮颜色-->
         <item name="android:textColorSecondary">@color/color_white</item>
-
         <item name="actionMenuTextColor">@android:color/white</item>
-
         <item name="android:actionMenuTextAppearance">@style/BaseActionBar.MenuTextStyle</item>
-        <item name="android:windowAnimationStyle">@style/BaseAnimation</item>
         <item name="actionOverflowMenuStyle">@style/OverflowMenuStyle</item>
+        <item name="android:windowAnimationStyle">@style/BaseAnimation</item>
     </style>
 
+    <style name="Widget.SearchView" parent="Widget.AppCompat.SearchView">
+        <!--修改搜索框提示文字-->
+        <item name="defaultQueryHint">搜索文件</item>
+        <!--修改打开搜索框的搜索按钮的图标-->
+        <item name="searchIcon">@null</item>
+        <!--修改搜索框左边的搜索按钮图标-->
+        <item name="searchHintIcon">@null</item>
+    </style>
 
     <style name="BaseActionBar.MenuTextStyle" parent="Base.TextAppearance.AppCompat.Widget.ActionBar.Menu">
         <item name="android:textSize">18sp</item>
@@ -43,14 +51,6 @@
         <item name="android:activityOpenExitAnimation">@anim/home_fade_out</item>
         <!--上一个activity返回进入效果  -->
         <item name="android:activityCloseEnterAnimation">@anim/home_fade_in</item>
-        <item name="android:taskOpenEnterAnimation">@null</item>
-        <item name="android:taskOpenExitAnimation">@null</item>
-        <item name="android:taskCloseEnterAnimation">@null</item>
-        <item name="android:taskCloseExitAnimation">@null</item>
-        <item name="android:taskToFrontEnterAnimation">@null</item>
-        <item name="android:taskToFrontExitAnimation">@null</item>
-        <item name="android:taskToBackEnterAnimation">@null</item>
-        <item name="android:taskToBackExitAnimation">@null</item>
     </style>
 
     <!--溢出菜单样式 -->

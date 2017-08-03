@@ -16,6 +16,14 @@
 
         <activity
             android:name=".mvp.ui.FileManagerActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+
+        <activity
+            android:name=".mvp.ui.FileSearchActivity"
             android:screenOrientation="portrait" />
     </application>
 
