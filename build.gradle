@@ -35,9 +35,9 @@ ext {
     rxandroid_need_version = '2.0.1'
     rxlifecycle_need_version = '2.1.0'//1.0
 
-    support_v4_version = '24.1.0'
-    android_need_version = '26.+'
+    support_v4_version = '26.0.0-alpha1'
+    android_need_version = '26.0.0-alpha1'
     gson_need_version = '2.4'
-    glide_need_version = '3.7.0'
+    glide_need_version = '4.0.0'//3.7.0/4.0.0
 }
 

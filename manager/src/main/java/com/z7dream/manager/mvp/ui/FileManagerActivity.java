@@ -6,11 +6,14 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -20,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -121,6 +125,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     private boolean isStatistical = false;//是否为统计导出文件
     private int fileType = FileType.ALL;//文件类型
     private boolean isNeedLoadMore = true;//是否要加载更多
+    private int masterColorResId;//主色调资源文件
 
     private boolean isNeedZip;//是否压缩
 
@@ -134,6 +139,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
     public static final String FUNCTION_VALUE = "function_value";
     public static final String FILE_TYPE = "file_type";
     public static final String IS_NEED_LOADMORE = "is_need_loadmore";
+    public static final String MASTER_COLOR_RES = "master_color_res";
 
     public static final int FUN_PIC = -1;
     public static final int FUN_NORMAL = 0;
@@ -170,6 +176,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             isNeedForward = getIntent().getBooleanExtra(FILE_IS_TOFORWARD, false);
             isNeedZip = getIntent().getBooleanExtra(FILE_IS_NEEDZIP, true);
             isNeedLoadMore = getIntent().getBooleanExtra(IS_NEED_LOADMORE, true);
+            masterColorResId = getIntent().getIntExtra(MASTER_COLOR_RES, R.drawable.ic_file_other);
         }
 
         isNormal = function == 0;
@@ -226,6 +233,20 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         progressDialog.setMessage("请稍后…");
         progressDialog.setCancelable(false);
         progressDialog.setCanceledOnTouchOutside(false);
+
+        Palette.Builder builder = Palette.from(BitmapFactory.decodeResource(getResources(), masterColorResId));
+        builder.generate(palette -> {
+            //获取到充满活力的这种色调
+            Palette.Swatch vibrant = palette.getVibrantSwatch();
+            //根据调色板Palette获取到图片中的颜色设置到toolbar和tab中背景，标题等，使整个UI界面颜色统一
+            mToolbar.setBackgroundColor(vibrant.getRgb());
+
+            if (Build.VERSION.SDK_INT >= 21) {
+                Window window = getWindow();
+                window.setStatusBarColor(colorBurn(vibrant.getRgb()));
+                window.setNavigationBarColor(colorBurn(vibrant.getRgb()));
+            }
+        });
     }
 
     @Override
@@ -856,7 +877,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         searchItem.setIcon(R.drawable.ic_search);
 
         searchItem.setVisible(getPresenter().getFileConfig().isToolbarSearch);
-        if(getPresenter().getFileConfig().isToolbarSearch) {
+        if (getPresenter().getFileConfig().isToolbarSearch) {
             searchView = (SearchView) searchItem.getActionView();
             searchView.setIconifiedByDefault(false);
             SearchManager mSearchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -864,7 +885,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             searchView.setSearchableInfo(info);
 
             searchView.setOnSearchClickListener(view -> {
-                
+
             });
         }
         return true;
@@ -895,12 +916,33 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         fileManagerDialog.destory();
     }
 
+    /**
+     * 颜色加深处理
+     *
+     * @param RGBValues RGB的值，由alpha（透明度）、red（红）、green（绿）、blue（蓝）构成，
+     *                  Android中我们一般使用它的16进制，
+     *                  例如："#FFAABBCC",最左边到最右每两个字母就是代表alpha（透明度）、
+     *                  red（红）、green（绿）、blue（蓝）。每种颜色值占一个字节(8位)，值域0~255
+     *                  所以下面使用移位的方法可以得到每种颜色的值，然后每种颜色值减小一下，在合成RGB颜色，颜色就会看起来深一些了
+     * @return
+     */
+    private int colorBurn(int RGBValues) {
+        int alpha = RGBValues >> 24;
+        int red = RGBValues >> 16 & 0xFF;
+        int green = RGBValues >> 8 & 0xFF;
+        int blue = RGBValues & 0xFF;
+        red = (int) Math.floor(red * (1 - 0.1));
+        green = (int) Math.floor(green * (1 - 0.1));
+        blue = (int) Math.floor(blue * (1 - 0.1));
+        return Color.rgb(red, green, blue);
+    }
+
     public static void openCollection(Activity context, String titleName
             , int picMax, int fileMax, int allMax
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_COLLECTION, isOpenForward, isNeedZip, true, requestCode);
+                , FUN_COLLECTION, isOpenForward, isNeedZip, true, R.drawable.ic_file_star, requestCode);
     }
 
     public static void open30Days(Activity context, String titleName
@@ -908,7 +950,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_NEAR30DAY, isOpenForward, isNeedZip, true, requestCode);
+                , FUN_NEAR30DAY, isOpenForward, isNeedZip, true, R.drawable.ic_file_near30day, requestCode);
     }
 
     public static void openQQ(Activity context, String titleName
@@ -916,7 +958,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_QQ, isOpenForward, isNeedZip, false, requestCode);
+                , FUN_QQ, isOpenForward, isNeedZip, false, R.drawable.ic_file_qq, requestCode);
     }
 
     public static void openWPS(Activity context, String titleName
@@ -924,7 +966,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_WPS, isOpenForward, isNeedZip, false, requestCode);
+                , FUN_WPS, isOpenForward, isNeedZip, false, R.drawable.ic_file_wps, requestCode);
     }
 
     public static void openWX(Activity context, String titleName
@@ -932,7 +974,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_WX, isOpenForward, isNeedZip, false, requestCode);
+                , FUN_WX, isOpenForward, isNeedZip, false, R.drawable.ic_file_wx, requestCode);
     }
 
     public static void openFolder(Activity context, String titleName
@@ -940,25 +982,27 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax, FUN_FOLDER
-                , isOpenForward, isNeedZip, false, requestCode);
+                , isOpenForward, isNeedZip, false, R.drawable.ic_file_folder, requestCode);
     }
 
     /**
      * 文件管理器
      *
      * @param activity
-     * @param title          标题
-     * @param fileType       文件类型
-     * @param picMax         图片最大值
-     * @param fileMax        文件最大值
-     * @param allMax         所有最大值
-     * @param function       类别
-     * @param isToForward    是否转发
-     * @param isNeedZip      是否压缩
-     * @param isNeedLoadMore 是否有加载更多
+     * @param title            标题
+     * @param fileType         文件类型
+     * @param picMax           图片最大值
+     * @param fileMax          文件最大值
+     * @param allMax           所有最大值
+     * @param function         类别
+     * @param isToForward      是否转发
+     * @param isNeedZip        是否压缩
+     * @param isNeedLoadMore   是否有加载更多
+     * @param masterColorResId 用于获取主色调的图片
      * @param requestCode
      */
-    public static void open(Activity activity, String title, int fileType, int picMax, int fileMax, int allMax, int function, boolean isToForward, boolean isNeedZip, boolean isNeedLoadMore, int requestCode) {
+    public static void open(Activity activity, String title, int fileType, int picMax, int fileMax, int allMax, int function,
+                            boolean isToForward, boolean isNeedZip, boolean isNeedLoadMore, int masterColorResId, int requestCode) {
         Intent intent = new Intent(activity, FileManagerActivity.class);
         intent.putExtra(FILE_TITLE_NAME, title);
         intent.putExtra(FILE_TYPE, fileType);
@@ -969,6 +1013,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         intent.putExtra(FILE_IS_TOFORWARD, isToForward);
         intent.putExtra(FILE_IS_NEEDZIP, isNeedZip);
         intent.putExtra(IS_NEED_LOADMORE, isNeedLoadMore);
+        intent.putExtra(MASTER_COLOR_RES,masterColorResId);
         activity.startActivityForResult(intent, requestCode);
     }
 }

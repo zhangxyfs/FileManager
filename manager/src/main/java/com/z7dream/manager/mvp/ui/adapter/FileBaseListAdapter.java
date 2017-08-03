@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.z7dream.lib.tool.Utils;
@@ -25,10 +26,12 @@ import java.util.Map;
 
 public class FileBaseListAdapter extends BaseAdapter<FileBaseListModel, FileBaseListListener, RecyclerView.ViewHolder> {
     private Map<Integer, List<FileBaseListModel>> companyChildMap;
+    private RequestOptions requestOptions;
 
     public FileBaseListAdapter(FileBaseListListener listener) {
         super(listener);
         companyChildMap = new HashMap<>();
+        requestOptions = new RequestOptions().placeholder(R.drawable.ic_default_company).error(R.drawable.ic_default_company);
     }
 
     public void setChildData(Map<Integer, List<FileBaseListModel>> map) {
@@ -114,8 +117,8 @@ public class FileBaseListAdapter extends BaseAdapter<FileBaseListModel, FileBase
 
         } else if (model.type == FileBaseListModel.CHILD_COMP) {
             FileBaseChildCompHolder fh = (FileBaseChildCompHolder) holder;
-            Glide.with(fh.context).load(model.icoUrl).override(fh.photoSize, fh.photoSize)
-                    .placeholder(R.drawable.ic_default_company).error(R.drawable.ic_default_company).into(fh.iv_ifbcc_photo);
+            requestOptions.override(fh.photoSize, fh.photoSize);
+            Glide.with(fh.context).load(model.icoUrl).apply(requestOptions).into(fh.iv_ifbcc_photo);
             fh.tv_ifbcc_title.setText(model.titleName);
 
         } else if (model.type == FileBaseListModel.CHILD_COMP_ITEM) {
