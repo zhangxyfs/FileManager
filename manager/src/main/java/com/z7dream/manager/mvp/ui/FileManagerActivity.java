@@ -53,6 +53,7 @@ import com.z7dream.manager.widget.FileManagerDialog;
 import com.z7dream.manager.widget.TCheckBox;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -179,14 +180,14 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             masterColorResId = getIntent().getIntExtra(MASTER_COLOR_RES, R.drawable.ic_file_other);
         }
 
-        isNormal = function == 0;
-        isCollection = function == 1;
-        isNear30Days = function == 2;
-        isQQ = function == 3;
-        isWPS = function == 4;
-        isWX = function == 5;
-        isFolder = function == 6;
-        isStatistical = function == 7;
+        isNormal = function == FUN_NORMAL;
+        isCollection = function == FUN_COLLECTION;
+        isNear30Days = function == FUN_NEAR30DAY;
+        isQQ = function == FUN_QQ;
+        isWPS = function == FUN_WPS;
+        isWX = function == FUN_WX;
+        isFolder = function == FUN_FOLDER;
+        isStatistical = function == FUN_STATISTICAL;
 
         if (getPresenter().getFileConfig().isToolbarSearch || !getPresenter().getFileConfig().isVisableSearch) {
             ll_afm_search.setVisibility(View.GONE);
@@ -596,7 +597,24 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
     @Override
     public void onItemClickListener(int position) {
-
+        getHandler().post(() -> {
+            FileManagerListModel model = fileManagerListAdapter.getList().get(position);
+            switch (model.fileType) {
+                case FileType.PIC:
+                    OpenFileUtils.openFile(this, model.picPath);
+                    break;
+                case FileType.TXT:
+                case FileType.EXCEL:
+                case FileType.PPT:
+                case FileType.WORD:
+                case FileType.PDF:
+                    WPSUtils.openWpsFile(this, model.picPath);
+                    break;
+                default:
+                    OpenFileUtils.openFile(this, model.picPath);
+                    break;
+            }
+        });
     }
 
     @Override
@@ -885,8 +903,26 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             SearchableInfo info = mSearchManager.getSearchableInfo(getComponentName());
             searchView.setSearchableInfo(info);
 
-            searchView.setOnSearchClickListener(view -> {
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    getPresenter().getSearchDataList(function, query);
 
+                    if (isNeedLoadMore)
+                        mRecyclerView.removeOnScrollListener(mRecyclerControl.getOnScrollListener());
+
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
+            setOnSearchViewCloseListener(searchView, param -> {
+                if (!param && isNeedLoadMore) {
+                    mRecyclerView.addOnScrollListener(mRecyclerControl.getOnScrollListener());
+                }
             });
         }
         return true;
@@ -915,6 +951,21 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         super.onDestroy();
         mRecyclerControl.destory();
         fileManagerDialog.destory();
+    }
+
+    private void setOnSearchViewCloseListener(SearchView searchView, Callback<Boolean> callback) {
+        SearchView.SearchAutoComplete view = null;
+        Class cls = searchView.getClass();
+        try {
+            Field field = cls.getDeclaredField("mSearchSrcTextView");
+            field.setAccessible(true);
+            view = (SearchView.SearchAutoComplete) field.get(searchView);
+            view.setOnFocusChangeListener((view1, b) -> callback.callListener(b));
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -1014,7 +1065,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         intent.putExtra(FILE_IS_TOFORWARD, isToForward);
         intent.putExtra(FILE_IS_NEEDZIP, isNeedZip);
         intent.putExtra(IS_NEED_LOADMORE, isNeedLoadMore);
-        intent.putExtra(MASTER_COLOR_RES,masterColorResId);
+        intent.putExtra(MASTER_COLOR_RES, masterColorResId);
         activity.startActivityForResult(intent, requestCode);
     }
 }

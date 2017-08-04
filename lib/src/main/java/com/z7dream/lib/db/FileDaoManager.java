@@ -508,19 +508,7 @@ public class FileDaoManager implements FileDaoImpl {
      */
     @Override
     public List<FileInfo> get30DaysFileInfoList(EnumFileType enumFileType) {
-        long nowTime = System.currentTimeMillis();
-        long needTime = nowTime - (30 * 24 * 60 * 60) * 1000L;
-
-        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
-                .equal(FileInfo_.isFile, true)
-                .greater(FileInfo_.lastModifyTime, needTime)
-                .notEqual(FileInfo_.extension, "")
-                .orderDesc(FileInfo_.lastModifyTime);
-
-        if (enumFileType != EnumFileType.ALL) {
-            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
-        }
-        return queryBuilder.build().find();
+        return get30DaysFileInfoList(enumFileType, -1, -1);
     }
 
     /**
@@ -533,6 +521,20 @@ public class FileDaoManager implements FileDaoImpl {
      */
     @Override
     public List<FileInfo> get30DaysFileInfoList(EnumFileType enumFileType, int page, int size) {
+        return get30DaysFileInfoList(enumFileType, null, page, size);
+    }
+
+    /**
+     * 获取最近30天文件列表
+     *
+     * @param enumFileType 文件类型枚举
+     * @param searchKey    关键字
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    @Override
+    public List<FileInfo> get30DaysFileInfoList(EnumFileType enumFileType, String searchKey, int page, int size) {
         long nowTime = System.currentTimeMillis();
         long needTime = nowTime - (30 * 24 * 60 * 60) * 1000L;
 
@@ -542,10 +544,18 @@ public class FileDaoManager implements FileDaoImpl {
                 .notEqual(FileInfo_.extension, "")
                 .orderDesc(FileInfo_.lastModifyTime);
 
+        if (!TextUtils.isEmpty(searchKey)) {
+            queryBuilder.contains(FileInfo_.fileName, searchKey);
+        }
+
         if (enumFileType != EnumFileType.ALL) {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
         }
-        return queryBuilder.build().find(page * size, size);
+        if (page == -1 || size == -1) {
+            return queryBuilder.build().find();
+        } else {
+            return queryBuilder.build().find(page * size, size);
+        }
     }
 
     /**

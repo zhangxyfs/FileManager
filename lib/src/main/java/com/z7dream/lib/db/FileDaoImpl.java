@@ -224,6 +224,17 @@ public interface FileDaoImpl {
     List<FileInfo> get30DaysFileInfoList(EnumFileType enumFileType, int page, int size);
 
     /**
+     * 获取最近30天文件列表
+     *
+     * @param enumFileType 文件类型枚举
+     * @param searchKey    关键字
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> get30DaysFileInfoList(EnumFileType enumFileType, String searchKey, int page, int size);
+
+    /**
      * 获取图片文件夹列表
      *
      * @param callback

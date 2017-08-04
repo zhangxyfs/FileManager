@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -61,17 +62,17 @@ public class MagicExplorer {
         }).flatMap(num -> {
             newNumbers[0] = num;
             return Observable.create((ObservableOnSubscribe<Long>) e -> {
-                MagicExplorer.getAllVoiceCount(context,e::onNext);
+                MagicExplorer.getAllVoiceCount(context, e::onNext);
             });
         }).flatMap(num -> {
             newNumbers[1] = num;
             return Observable.create((ObservableOnSubscribe<Long>) e -> {
-                MagicExplorer.getAllVideoCount(context,e::onNext);
+                MagicExplorer.getAllVideoCount(context, e::onNext);
             });
         }).flatMap(num -> {
             newNumbers[2] = num;
             return Observable.create((ObservableOnSubscribe<long[]>) e -> {
-                MagicExplorer.getAllFileByType(context,e::onNext);
+                MagicExplorer.getAllFileByType(context, e::onNext);
             });
         }).compose(RxSchedulersHelper.io())
                 .subscribe(nums -> {
@@ -382,5 +383,102 @@ public class MagicExplorer {
                         }
                     }
                 });
+    }
+
+
+    /**
+     * 根据路径获取文件列表
+     *
+     * @param searchKey 关键字，模糊搜索用（可以为null）
+     * @param callback  回掉接口，泛型：List<MagicFileInfo>
+     * @param rootPaths 路径，可以为多个
+     * @return Disposable
+     */
+    public static Disposable getFileList(String searchKey, Callback1<List<MagicFileInfo>> callback, String... rootPaths) {
+        return getFileList(searchKey, 0, callback, rootPaths);
+    }
+
+
+    /**
+     * 根据路径获取文件列表
+     *
+     * @param searchKey 关键字，模糊搜索用（可以为null）
+     * @param timeRange 时间范围 （如果为0，不以此为判断条件）
+     * @param callback  回掉接口，泛型：List<MagicFileInfo>
+     * @param rootPaths 路径，可以为多个
+     * @return Disposable
+     */
+    public static Disposable getFileList(String searchKey, long timeRange, Callback1<List<MagicFileInfo>> callback, String... rootPaths) {
+        boolean isHasSearch = !TextUtils.isEmpty(searchKey);
+        boolean isHasTimeRange = timeRange >= 1000;//范围搜索最少为1秒
+
+        long nowTime = System.currentTimeMillis();
+        long lestTime = nowTime - timeRange;
+
+        List<MagicFileInfo> returnList = new ArrayList<>();
+
+        Stack<String> rootStack = new Stack<>();
+
+        for (String rootPath : rootPaths) {//将根目录入栈
+            rootStack.push(rootPath);
+        }
+        return Flowable.create((FlowableOnSubscribe<File>) e -> {
+            while (!rootStack.isEmpty()) {
+                String temp = rootStack.pop();
+                File path = new File(temp);
+                File[] files = path.listFiles();
+                if (null == files)
+                    continue;
+                for (File f : files) {
+                    // 递归监听目录
+                    if (isNeedPathName(f.getName()))
+                        if (f.isDirectory()) {
+                            rootStack.push(f.getAbsolutePath());
+                        } else {
+                            if (isHasTimeRange) {
+                                if (f.lastModified() > lestTime && f.lastModified() < nowTime) {
+                                    e.onNext(f);
+                                }
+                            } else {
+                                e.onNext(f);
+                            }
+                        }
+                }
+            }
+            e.onComplete();
+        }, BackpressureStrategy.BUFFER).compose(RxSchedulersHelper.fio())
+                .doOnComplete(() -> {
+                    if (isHasSearch) {
+                        callback.callComplete();
+                    } else {
+                        callback.callListener(returnList);
+                    }
+                })
+                .subscribe(file -> {
+                    String exc = FileUtils.getExtensionName(file.getPath());
+                    if (!TextUtils.isEmpty(exc)) {
+                        MagicFileInfo info = new MagicFileInfo();
+                        info.fileName = file.getName();
+                        info.path = file.getPath();
+                        info.fileSize = file.length();
+                        info.modifyDate = file.lastModified();
+                        info.position = FileType.createFileType(exc);
+
+                        if (isHasSearch) {//如果有查询条件
+                            if (file.getPath().contains(searchKey)) {//匹配查询
+                                returnList.clear();
+                                returnList.add(info);
+                                callback.callListener(returnList);
+                            }
+                        } else {
+                            returnList.add(info);
+                        }
+                    }
+                }, error -> {
+                });
+    }
+
+    private static boolean isNeedPathName(String pathName) {
+        return !pathName.contains("nomedia") && !pathName.startsWith(".") && !pathName.equals("-1");
     }
 }

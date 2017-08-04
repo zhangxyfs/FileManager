@@ -36,9 +36,13 @@ public interface FileManagerContract {
 
         void getFolderDataList(String rootPath);
 
+        void getSearchDataList(int function, String searchKey);
+
         void getStatisticalDataList();
 
         FileConfig getFileConfig();
+
+        boolean isHasSearchData();
     }
 
 
