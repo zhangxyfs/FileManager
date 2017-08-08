@@ -47,10 +47,13 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     private int page = 0;
     private final int SIZE = 30;
     private boolean isHasSearchData = false;//是否有搜索后的数据
+    private boolean isUsedFileObserverDb = false;//是否使用文件监听数据库
+    private boolean isSearch = false;//是否搜索中
 
     public FileManagerPresenter(@NonNull Context context, @NonNull FileManagerContract.View view) {
         super(context, view);
         fileDaoManager = new FileDaoManager(context, FileUpdatingService.getBoxStore());
+        isUsedFileObserverDb = fileDaoManager.isPutFileInStorageSucc();
     }
 
     @Override
@@ -60,9 +63,9 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
         if (!isRef) {
             page++;
         }
-        if (fileDaoManager.isPutFileInStorageSucc()) {
+        if (isUsedFileObserverDb) {
             List<FileInfo> list = fileDaoManager.getFileInfoList(EnumFileType.getType(getView().getType()), page, SIZE);
-            newList.addAll(createFileModelList(list, starMap));
+            newList.addAll(createFileModelList(list, null, starMap));
         }
 
         getView().getDataListSucc(newList, isRef);
@@ -121,7 +124,7 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     @Override
     public void getCollectionDataList(boolean isRef) {
         List<FileManagerListModel> newList = new ArrayList<>();
-        if (fileDaoManager.isPutFileInStorageSucc()) {
+        if (isUsedFileObserverDb) {
             if (!isRef) {
                 page++;
             }
@@ -149,12 +152,12 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     public void getNear30DaysDataList(boolean isRef) {
         Map<String, String> starMap = getStarMap();
         List<FileManagerListModel> newList = new ArrayList<>();
-        if (fileDaoManager.isPutFileInStorageSucc()) {
+        if (isUsedFileObserverDb) {
             if (!isRef) {
                 page++;
             }
             List<FileInfo> list = fileDaoManager.get30DaysFileInfoList(EnumFileType.ALL, page, SIZE);
-            newList.addAll(createFileModelList(list, starMap));
+            newList.addAll(createFileModelList(list, null, starMap));
             getView().getDataListSucc(newList, isRef);
         } else {
             MagicExplorer.getFileList(null, (30 * 24 * 60 * 60) * 1000L, new Callback1<List<MagicFileInfo>>() {
@@ -176,12 +179,12 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     public void getQQDataList(boolean isRef) {
         Map<String, String> starMap = getStarMap();
         List<FileManagerListModel> newList = new ArrayList<>();
-        if (fileDaoManager.isPutFileInStorageSucc()) {
+        if (isUsedFileObserverDb) {
             if (!isRef) {
                 page++;
             }
             List<FileInfo> list = fileDaoManager.getQQFileInfoList(EnumFileType.ALL, page, SIZE);
-            newList.addAll(createFileModelList(list, starMap));
+            newList.addAll(createFileModelList(list, null, starMap));
             getView().getDataListSucc(newList, isRef);
         } else {
             MagicExplorer.getFileList(null, new Callback1<List<MagicFileInfo>>() {
@@ -218,12 +221,14 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     public void getWXDataList(boolean isRef) {
         Map<String, String> starMap = getStarMap();
         List<FileManagerListModel> newList = new ArrayList<>();
-        if (fileDaoManager.isPutFileInStorageSucc()) {
-            if (!isRef) {
+        if (isUsedFileObserverDb) {
+            if(isRef){
+                page = 0;
+            }else {
                 page++;
             }
             List<FileInfo> list = fileDaoManager.getWXFileInfoList(EnumFileType.ALL, page, SIZE);
-            newList.addAll(createFileModelList(list, starMap));
+            newList.addAll(createFileModelList(list, null, starMap));
             getView().getDataListSucc(newList, isRef);
         } else {
             MagicExplorer.getFileList(null, new Callback1<List<MagicFileInfo>>() {
@@ -249,11 +254,17 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     }
 
     @Override
-    public void getSearchDataList(int function, String searchKey) {
-        if (fileDaoManager.isPutFileInStorageSucc()) {
+    public void getSearchDataList(int function, String searchKey, boolean isRef) {
+        if (isUsedFileObserverDb) {
             if (function == FUN_NEAR30DAY) {
-                List<FileInfo> list = fileDaoManager.get30DaysFileInfoList(EnumFileType.ALL, searchKey, -1, -1);
-                getView().getDataListSucc(createFileModelList(list, getStarMap()), true);
+                if(isRef){
+                    page = 0;
+                }else {
+                    page++;
+                }
+
+                List<FileInfo> list = fileDaoManager.get30DaysFileInfoList(EnumFileType.ALL, searchKey, page, SIZE);
+                getView().getDataListSucc(createFileModelList(list, searchKey, getStarMap()), isRef);
             }
 
             return;
@@ -290,13 +301,13 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
             String[] paths = new String[searchPathList.size()];
             searchPathList.toArray(paths);
             getView().getAdapterList().clear();
-            final boolean[] isRef = {true};
+            final boolean[] newIsRef = {true};
 
             MagicExplorer.getFileList(searchKey, timeRange, new Callback1<List<MagicFileInfo>>() {
                 @Override
                 public void callListener(List<MagicFileInfo> param) {
-                    getView().getDataListSucc(createFileModelList(param), isRef[0]);
-                    isRef[0] = false;
+                    getView().getDataListSucc(createFileModelList(param), newIsRef[0]);
+                    newIsRef[0] = false;
                 }
 
                 @Override
@@ -314,6 +325,11 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     }
 
     @Override
+    public void setIsSearch(boolean isSearch) {
+        this.isSearch = isSearch;
+    }
+
+    @Override
     public FileConfig getFileConfig() {
         return FileUpdatingService.getConfigCallback().getConfig();
     }
@@ -321,6 +337,16 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     @Override
     public boolean isHasSearchData() {
         return isHasSearchData;
+    }
+
+    @Override
+    public boolean isUsedFileObserverDb() {
+        return isUsedFileObserverDb;
+    }
+
+    @Override
+    public boolean isSearch() {
+        return isSearch;
     }
 
     private Map<String, String> getStarMap() {
@@ -357,14 +383,18 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     }
 
 
-    private List<FileManagerListModel> createFileModelList(List<FileInfo> list, Map<String, String> starMap) {
+    private List<FileManagerListModel> createFileModelList(List<FileInfo> list, String keyWord, Map<String, String> starMap) {
         List<FileManagerListModel> newList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             FileManagerListModel model = new FileManagerListModel();
             model.type = getView().getType() == FileType.PIC ? FileManagerListModel.PIC : FileManagerListModel.OTHER;
             model.fileType = EnumFileType.getOldType(list.get(i).getFileType());
             model.picPath = list.get(i).getFilePath();
-            model.fileName = FileUtils.getFolderName(model.picPath);
+            if (TextUtils.isEmpty(keyWord)) {
+                model.fileName = FileUtils.getFolderName(model.picPath);
+            } else {
+                model.fileName = TextUtils.replace(FileUtils.getFolderName(model.picPath), new String[]{keyWord}, new String[]{"<font color='red'>" + keyWord + "</font>"}).toString();
+            }
             model.isStar = starMap.get(model.picPath) != null;
             model.isSelect = false;
             model.iconResId = EnumFileType.createIconResId(list.get(i).getFileType(), model.isFile);

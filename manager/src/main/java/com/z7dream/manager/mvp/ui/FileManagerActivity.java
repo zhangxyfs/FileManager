@@ -19,12 +19,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -738,23 +740,27 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
 
 
     @Override
-    public void onControlGetDataList(boolean isRef) throws InterruptedException {
-        if (isNormal) {
-            getPresenter().getDataList(isRef);
-        } else if (isCollection) {
-            getPresenter().getCollectionDataList(isRef);
-        } else if (isNear30Days) {
-            getPresenter().getNear30DaysDataList(isRef);
-        } else if (isQQ) {
-            getPresenter().getQQDataList(isRef);
-        } else if (isWPS) {
-            getPresenter().getWPSDataList(isRef);
-        } else if (isWX) {
-            getPresenter().getWXDataList(isRef);
-        } else if (isFolder) {
-            getPresenter().getFolderDataList(nowPath);
-        } else if (isStatistical) {
-            getPresenter().getStatisticalDataList();
+    public void onControlGetDataList(boolean isRef) {
+        if (getPresenter().isSearch()) {
+            getPresenter().getSearchDataList(function, searchView.getQuery().toString(), isRef);
+        } else {
+            if (isNormal) {
+                getPresenter().getDataList(isRef);
+            } else if (isCollection) {
+                getPresenter().getCollectionDataList(isRef);
+            } else if (isNear30Days) {
+                getPresenter().getNear30DaysDataList(isRef);
+            } else if (isQQ) {
+                getPresenter().getQQDataList(isRef);
+            } else if (isWPS) {
+                getPresenter().getWPSDataList(isRef);
+            } else if (isWX) {
+                getPresenter().getWXDataList(isRef);
+            } else if (isFolder) {
+                getPresenter().getFolderDataList(nowPath);
+            } else if (isStatistical) {
+                getPresenter().getStatisticalDataList();
+            }
         }
     }
 
@@ -906,11 +912,8 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
-                    getPresenter().getSearchDataList(function, query);
-
-                    if (isNeedLoadMore)
-                        mRecyclerView.removeOnScrollListener(mRecyclerControl.getOnScrollListener());
-
+                    getPresenter().getSearchDataList(function, query, true);
+                    getPresenter().setIsSearch(true);
                     return false;
                 }
 
@@ -920,8 +923,9 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                 }
             });
             setOnSearchViewCloseListener(searchView, param -> {
-                if (!param && isNeedLoadMore) {
-                    mRecyclerView.addOnScrollListener(mRecyclerControl.getOnScrollListener());
+                if (!param) {
+                    getPresenter().setIsSearch(false);
+                    onControlGetDataList(true);
                 }
             });
         }
@@ -960,7 +964,21 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             Field field = cls.getDeclaredField("mSearchSrcTextView");
             field.setAccessible(true);
             view = (SearchView.SearchAutoComplete) field.get(searchView);
-            view.setOnFocusChangeListener((view1, b) -> callback.callListener(b));
+            view.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+                @Override
+                public void onSystemUiVisibilityChange(int i) {
+                    Log.e("tag", ".......................");
+                }
+            });
+            view.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    Log.e("tag", "...............aaaaaaaaaaa");
+                }
+            });
+            view.setOnFocusChangeListener((view1, b) -> {
+                callback.callListener(b);
+            });
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
