@@ -19,14 +19,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -248,6 +247,23 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                 Window window = getWindow();
                 window.setStatusBarColor(colorBurn(vibrant.getRgb()));
                 window.setNavigationBarColor(colorBurn(vibrant.getRgb()));
+            }
+        });
+
+        mToolbar.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+            @Override
+            public void onChildViewAdded(View view, View view1) {
+                if (view1 instanceof SearchView) {
+                    getPresenter().setIsSearch(true);
+                }
+            }
+
+            @Override
+            public void onChildViewRemoved(View view, View view1) {
+                if (view1 instanceof SearchView) {
+                    getPresenter().setIsSearch(false);
+                    onControlGetDataList(true);
+                }
             }
         });
     }
@@ -913,19 +929,12 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     getPresenter().getSearchDataList(function, query, true);
-                    getPresenter().setIsSearch(true);
                     return false;
                 }
 
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     return false;
-                }
-            });
-            setOnSearchViewCloseListener(searchView, param -> {
-                if (!param) {
-                    getPresenter().setIsSearch(false);
-                    onControlGetDataList(true);
                 }
             });
         }
@@ -964,18 +973,6 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             Field field = cls.getDeclaredField("mSearchSrcTextView");
             field.setAccessible(true);
             view = (SearchView.SearchAutoComplete) field.get(searchView);
-            view.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-                @Override
-                public void onSystemUiVisibilityChange(int i) {
-                    Log.e("tag", ".......................");
-                }
-            });
-            view.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    Log.e("tag", "...............aaaaaaaaaaa");
-                }
-            });
             view.setOnFocusChangeListener((view1, b) -> {
                 callback.callListener(b);
             });
@@ -1061,7 +1058,6 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
      * @param activity
      * @param title            标题
      * @param fileType         文件类型
-     * @param picMax           图片最大值
      * @param fileMax          文件最大值
      * @param allMax           所有最大值
      * @param function         类别
@@ -1070,6 +1066,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
      * @param isNeedLoadMore   是否有加载更多
      * @param masterColorResId 用于获取主色调的图片
      * @param requestCode
+     * @`ram picMax           图片最大值
      */
     public static void open(Activity activity, String title, int fileType, int picMax, int fileMax, int allMax, int function,
                             boolean isToForward, boolean isNeedZip, boolean isNeedLoadMore, int masterColorResId, int requestCode) {
