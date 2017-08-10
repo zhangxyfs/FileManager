@@ -390,12 +390,13 @@ public class MagicExplorer {
      * 根据路径获取文件列表
      *
      * @param searchKey 关键字，模糊搜索用（可以为null）
+     * @param isStop    是否停止
      * @param callback  回掉接口，泛型：List<MagicFileInfo>
      * @param rootPaths 路径，可以为多个
      * @return Disposable
      */
-    public static Disposable getFileList(String searchKey, Callback1<List<MagicFileInfo>> callback, String... rootPaths) {
-        return getFileList(searchKey, 0, callback, rootPaths);
+    public static Disposable getFileList(String searchKey, boolean isStop, Callback1<List<MagicFileInfo>> callback, String... rootPaths) {
+        return getFileList(searchKey, isStop, 0, callback, rootPaths);
     }
 
 
@@ -408,7 +409,7 @@ public class MagicExplorer {
      * @param rootPaths 路径，可以为多个
      * @return Disposable
      */
-    public static Disposable getFileList(String searchKey, long timeRange, Callback1<List<MagicFileInfo>> callback, String... rootPaths) {
+    public static Disposable getFileList(String searchKey, boolean isStop, long timeRange, Callback1<List<MagicFileInfo>> callback, String... rootPaths) {
         boolean isHasSearch = !TextUtils.isEmpty(searchKey);
         boolean isHasTimeRange = timeRange >= 1000;//范围搜索最少为1秒
 
@@ -423,7 +424,7 @@ public class MagicExplorer {
             rootStack.push(rootPath);
         }
         return Flowable.create((FlowableOnSubscribe<File>) e -> {
-            while (!rootStack.isEmpty()) {
+            while (!rootStack.isEmpty() && !isStop) {
                 String temp = rootStack.pop();
                 File path = new File(temp);
                 File[] files = path.listFiles();

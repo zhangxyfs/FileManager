@@ -214,8 +214,10 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mRecyclerControl = new RecyclerControl(mSwipeRefreshLayout, mGridLayoutManager, this);
         mRecyclerControl.setSwipeRefreshLayoutEnable(false);
-        if (isNeedLoadMore)
+        if (isNeedLoadMore) {
             mRecyclerView.addOnScrollListener(mRecyclerControl.getOnScrollListener());
+            mRecyclerControl.setLoadState(RecyclerControl.LOAD_STATE.scrollEnd);
+        }
 
         checkPicMap = new HashMap<>();
         checkFileMap = new HashMap<>();
@@ -773,7 +775,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             } else if (isWX) {
                 getPresenter().getWXDataList(isRef);
             } else if (isFolder) {
-                getPresenter().getFolderDataList(nowPath);
+                getPresenter().getFolderDataList(nowPath, isRef);
             } else if (isStatistical) {
                 getPresenter().getStatisticalDataList();
             }
@@ -1025,7 +1027,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_QQ, isOpenForward, isNeedZip, false, R.drawable.ic_file_qq, requestCode);
+                , FUN_QQ, isOpenForward, isNeedZip, true, R.drawable.ic_file_qq, requestCode);
     }
 
     public static void openWPS(Activity context, String titleName
@@ -1041,7 +1043,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax
-                , FUN_WX, isOpenForward, isNeedZip, false, R.drawable.ic_file_wx, requestCode);
+                , FUN_WX, isOpenForward, isNeedZip, true, R.drawable.ic_file_wx, requestCode);
     }
 
     public static void openFolder(Activity context, String titleName
@@ -1049,7 +1051,7 @@ public class FileManagerActivity extends BaseActivity<FileManagerContract.Presen
             , boolean isOpenForward, boolean isNeedZip, int requestCode) {
         open(context, titleName, FileType.ALL
                 , picMax, fileMax, allMax, FUN_FOLDER
-                , isOpenForward, isNeedZip, false, R.drawable.ic_file_myfiles, requestCode);
+                , isOpenForward, isNeedZip, true, R.drawable.ic_file_myfiles, requestCode);
     }
 
     /**

@@ -620,6 +620,69 @@ public class FileDaoManager implements FileDaoImpl {
     }
 
     /**
+     * 获取某个目录下的所有文件
+     *
+     * @param enumFileType 文件类型枚举
+     * @param path         目标目录
+     * @return
+     */
+    @Override
+    public List<FileInfo> getFolderFileInfoList(EnumFileType enumFileType, String path) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.parentPath, path);
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+        return queryBuilder.build().find();
+    }
+
+    /**
+     * 获取某个目录下的所有文件
+     *
+     * @param enumFileType 文件类型枚举
+     * @param path         目标目录
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    @Override
+    public List<FileInfo> getFolderFileInfoList(EnumFileType enumFileType, String path, int page, int size) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.parentPath, path);
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+        return queryBuilder.build().find(page * size, size);
+    }
+
+    /**
+     * 获取某个目录下的所有文件
+     *
+     * @param enumFileType 文件类型枚举
+     * @param path         目标目录
+     * @param searchKey    关键字
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    @Override
+    public List<FileInfo> getFolderFileInfoList(EnumFileType enumFileType, String path, String searchKey, int page, int size) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.parentPath, path);
+
+        if (!TextUtils.isEmpty(searchKey)) {
+            queryBuilder.contains(FileInfo_.fileName, searchKey);
+        }
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+        return queryBuilder.build().find(page * size, size);
+    }
+
+    /**
      * 获取图片文件夹列表
      *
      * @param callback

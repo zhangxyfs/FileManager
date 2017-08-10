@@ -45,9 +45,9 @@ public interface FileDaoImpl {
     /**
      * 获取星标文件列表
      *
-     * @param likeStr      模糊查询
-     * @param page         页码
-     * @param size         数量
+     * @param likeStr 模糊查询
+     * @param page    页码
+     * @param size    数量
      * @return
      */
     List<FileStarInfo> getStarList(String likeStr, int page, int size);
@@ -265,6 +265,38 @@ public interface FileDaoImpl {
      * @return
      */
     List<FileInfo> get30DaysFileInfoList(EnumFileType enumFileType, String searchKey, int page, int size);
+
+    /**
+     * 获取某个目录下的所有文件
+     *
+     * @param enumFileType 文件类型枚举
+     * @param path         目标目录
+     * @return
+     */
+    List<FileInfo> getFolderFileInfoList(EnumFileType enumFileType, String path);
+
+    /**
+     * 获取某个目录下的所有文件
+     *
+     * @param enumFileType 文件类型枚举
+     * @param path         目标目录
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> getFolderFileInfoList(EnumFileType enumFileType, String path, int page, int size);
+
+    /**
+     * 获取某个目录下的所有文件
+     *
+     * @param enumFileType 文件类型枚举
+     * @param path         目标目录
+     * @param searchKey    关键字
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> getFolderFileInfoList(EnumFileType enumFileType, String path, String searchKey, int page, int size);
 
     /**
      * 获取图片文件夹列表

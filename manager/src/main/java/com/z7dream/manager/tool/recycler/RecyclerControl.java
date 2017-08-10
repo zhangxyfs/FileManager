@@ -17,9 +17,9 @@ import io.reactivex.disposables.Disposable;
 
 
 /**
- * Created by xiaoyu.zhang on 2016/6/30.
+ * 非侵入式的recyclerView 控制器。
+ * 可以对带有SwipeRefreshLayout 和 recyclerView 页面进行下拉刷新和上啦加载
  */
-
 public class RecyclerControl {
     private boolean isRefComplete = true, isLoadMoreComplete = true;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -31,10 +31,14 @@ public class RecyclerControl {
     private GestureDetector mGestureDetector;
     private GestureDetector.SimpleOnGestureListener simpleOnGestureListener;
     private boolean isSwipeRefreshLayoutEnable;
+    private LOAD_STATE load_state;
 
     public static final int[] COLORS = {0xff2196F3};
 
+
     /**
+     * 初始化
+     *
      * @param swipeRefreshLayout
      * @param layoutManager
      * @param onControlGetDataListListener
@@ -47,9 +51,16 @@ public class RecyclerControl {
 
         onScrollListener = new OnScrollListener();
         swipeRefreshLayout.setColorSchemeColors(COLORS);
-
+        load_state = LOAD_STATE.scrolling;
     }
 
+    /**
+     * 初始化
+     *
+     * @param swipeRefreshLayout
+     * @param gridLayoutManager
+     * @param onControlGetDataListListener
+     */
     public RecyclerControl(SwipeRefreshLayout swipeRefreshLayout,
                            GridLayoutManager gridLayoutManager, OnControlGetDataListListener onControlGetDataListListener) {
         this.swipeRefreshLayout = swipeRefreshLayout;
@@ -58,14 +69,31 @@ public class RecyclerControl {
 
         onScrollListener = new OnScrollListener();
         swipeRefreshLayout.setColorSchemeColors(COLORS);
+        load_state = LOAD_STATE.scrolling;
     }
 
-
+    /**
+     * 设置是否可以下拉刷新
+     *
+     * @param b
+     */
     public void setSwipeRefreshLayoutEnable(boolean b) {
         isSwipeRefreshLayoutEnable = b;
         swipeRefreshLayout.setEnabled(isSwipeRefreshLayoutEnable);
     }
 
+    /**
+     * 设置什么时候加载
+     *
+     * @param loadState {@link LOAD_STATE}
+     */
+    public void setLoadState(LOAD_STATE loadState) {
+        this.load_state = loadState;
+    }
+
+    /**
+     * 调用刷新
+     */
     public void onRefresh() {
         if (isRefComplete) {
             isRefComplete = false;
@@ -73,6 +101,11 @@ public class RecyclerControl {
         }
     }
 
+    /**
+     * 获取数据完成时调用
+     *
+     * @param isRef 是否为下拉刷新
+     */
     public void getDataComplete(boolean isRef) {
         if (isRef) {
             isRefComplete = true;
@@ -82,14 +115,27 @@ public class RecyclerControl {
         delayComplete();
     }
 
+    /**
+     * 判断是否刷新/加载结束
+     *
+     * @return
+     */
     public boolean isRefComplete() {
         return isRefComplete;
     }
 
+    /**
+     * 如果希望有上拉加载时使用
+     *
+     * @return
+     */
     public OnScrollListener getOnScrollListener() {
         return onScrollListener;
     }
 
+    /**
+     * 销毁，在onDestory中调用
+     */
     public void destory() {
         if (delay1Disposable != null && !delay1Disposable.isDisposed()) {
             delay1Disposable.dispose();
@@ -141,7 +187,7 @@ public class RecyclerControl {
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
 
-            if (isLoadMoreComplete) {
+            if (isLoadMoreComplete && newState == (load_state == LOAD_STATE.scrolling ? RecyclerView.SCROLL_STATE_DRAGGING : RecyclerView.SCROLL_STATE_IDLE)) {
                 int lastViewPos = -1;
                 if (linearLayoutManager != null)
                     lastViewPos = linearLayoutManager.findLastVisibleItemPosition();
@@ -168,6 +214,11 @@ public class RecyclerControl {
         }
     }
 
+    /**
+     *
+     * @param recyclerView
+     * @param listener
+     */
     public void openGestureDetector(RecyclerView recyclerView, GestureListener listener) {
         if (simpleOnGestureListener == null) {
             simpleOnGestureListener = new GestureDetector.SimpleOnGestureListener() {
@@ -199,10 +250,15 @@ public class RecyclerControl {
          *
          * @param isRef 是否是刷新
          */
-        void onControlGetDataList(boolean isRef) throws InterruptedException;
+        void onControlGetDataList(boolean isRef);
 
         void onScrollStateChanged(RecyclerView recyclerView, int newState);
 
         void onScrolled(RecyclerView recyclerView, int dx, int dy);
+    }
+
+    public enum LOAD_STATE {
+        scrolling,//滑动中
+        scrollEnd//滑动结束
     }
 }

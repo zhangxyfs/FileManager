@@ -34,7 +34,7 @@ public interface FileManagerContract {
 
         void getWXDataList(boolean isRef);
 
-        void getFolderDataList(String rootPath);
+        void getFolderDataList(String rootPath, boolean isRef);
 
         void getSearchDataList(int function, String searchKey, boolean isRef);
 
