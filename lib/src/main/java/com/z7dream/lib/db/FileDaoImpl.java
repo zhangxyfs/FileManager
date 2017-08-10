@@ -43,6 +43,16 @@ public interface FileDaoImpl {
     List<FileStarInfo> getStarList(int page, int size);
 
     /**
+     * 获取星标文件列表
+     *
+     * @param likeStr      模糊查询
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileStarInfo> getStarList(String likeStr, int page, int size);
+
+    /**
      * 添加星标文件
      *
      * @param filePathList
@@ -188,6 +198,17 @@ public interface FileDaoImpl {
     List<FileInfo> getQQFileInfoList(EnumFileType enumFileType, int page, int size);
 
     /**
+     * 获取qq文件列表
+     *
+     * @param enumFileType 文件类型枚举
+     * @param likeStr      模糊查询
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> getQQFileInfoList(EnumFileType enumFileType, String likeStr, int page, int size);
+
+    /**
      * 获取微信文件列表
      *
      * @param enumFileType 文件类型枚举
@@ -204,6 +225,17 @@ public interface FileDaoImpl {
      * @return
      */
     List<FileInfo> getWXFileInfoList(EnumFileType enumFileType, int page, int size);
+
+    /**
+     * 获取微信文件列表
+     *
+     * @param enumFileType 文件类型枚举
+     * @param likeStr      模糊查询
+     * @param page         页码
+     * @param size         数量
+     * @return
+     */
+    List<FileInfo> getWXFileInfoList(EnumFileType enumFileType, String likeStr, int page, int size);
 
     /**
      * 获取最近30天文件列表

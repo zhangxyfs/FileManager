@@ -105,6 +105,12 @@ public class FileUpdatingService extends Service {
         startService(null, context);
     }
 
+    public static void startService(Context context, boolean isStartFileUpdating, FileConfigCallback fileConfigCallback) {
+        setConfig(fileConfigCallback);
+        if (isStartFileUpdating)
+            startService(context);
+    }
+
     public static void setConfig(FileConfigCallback fileConfigCallback) {
         mFileConfigCallback = fileConfigCallback;
     }

@@ -32,9 +32,7 @@ import java.util.Map;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_COLLECTION;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_FOLDER;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_NEAR30DAY;
-import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_NORMAL;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_QQ;
-import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_WPS;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_WX;
 
 /**
@@ -128,22 +126,7 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
             if (!isRef) {
                 page++;
             }
-            List<FileStarInfo> list = fileDaoManager.getStarList(page, SIZE);
-            for (int i = 0; i < list.size(); i++) {
-                FileManagerListModel model = new FileManagerListModel();
-                model.type = getView().getType() == FileType.PIC ? FileManagerListModel.PIC : FileManagerListModel.OTHER;
-                model.fileType = getView().getType();
-                model.picPath = list.get(i).getFilePath();
-                model.fileName = FileUtils.getFolderName(model.picPath);
-                model.isStar = true;
-                model.isSelect = false;
-                String exc = FileUtils.getExtensionName(model.fileName);
-                model.iconResId = FileType.createIconResId(FileType.createFileType(exc));
-                File file = new File(model.picPath);
-                model.modifyStr = DateUtils.formatDate(file.lastModified(), "yyyy-MM-dd HH:mm:ss");
-                model.sizeStr = Formatter.formatFileSize(getContext(), file.length());
-                newList.add(model);
-            }
+            newList.addAll(createFileModelListByStar(fileDaoManager.getStarList(page, SIZE)));
         }
         getView().getDataListSucc(newList, isRef);
     }
@@ -163,7 +146,7 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
             MagicExplorer.getFileList(null, (30 * 24 * 60 * 60) * 1000L, new Callback1<List<MagicFileInfo>>() {
                 @Override
                 public void callListener(List<MagicFileInfo> param) {
-                    newList.addAll(createFileModelList(param));
+                    newList.addAll(createFileModelList(param, null));
                     getView().getDataListSucc(newList, true);
                 }
 
@@ -190,7 +173,7 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
             MagicExplorer.getFileList(null, new Callback1<List<MagicFileInfo>>() {
                 @Override
                 public void callListener(List<MagicFileInfo> param) {
-                    newList.addAll(createFileModelList(param));
+                    newList.addAll(createFileModelList(param, null));
                     getView().getDataListSucc(newList, true);
                 }
 
@@ -207,7 +190,7 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
         MagicExplorer.getWPSFileList(null, new Callback1<List<MagicFileInfo>>() {
             @Override
             public void callListener(List<MagicFileInfo> param) {
-                getView().getDataListSucc(createFileModelList(param), true);
+                getView().getDataListSucc(createFileModelList(param, null), true);
             }
 
             @Override
@@ -222,9 +205,9 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
         Map<String, String> starMap = getStarMap();
         List<FileManagerListModel> newList = new ArrayList<>();
         if (isUsedFileObserverDb) {
-            if(isRef){
+            if (isRef) {
                 page = 0;
-            }else {
+            } else {
                 page++;
             }
             List<FileInfo> list = fileDaoManager.getWXFileInfoList(EnumFileType.ALL, page, SIZE);
@@ -234,7 +217,7 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
             MagicExplorer.getFileList(null, new Callback1<List<MagicFileInfo>>() {
                 @Override
                 public void callListener(List<MagicFileInfo> param) {
-                    newList.addAll(createFileModelList(param));
+                    newList.addAll(createFileModelList(param, null));
                     getView().getDataListSucc(newList, true);
                 }
 
@@ -249,74 +232,54 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
     @Override
     public void getFolderDataList(String rootPath) {
         MagicExplorer.getFolderAndFileList(rootPath, param -> {
-            getView().getDataListSucc(createFileModelList(param), true);
+            getView().getDataListSucc(createFileModelList(param, null), true);
         });
     }
 
     @Override
     public void getSearchDataList(int function, String searchKey, boolean isRef) {
-        if (isUsedFileObserverDb) {
-            if (function == FUN_NEAR30DAY) {
-                if(isRef){
-                    page = 0;
-                }else {
-                    page++;
-                }
-
-                List<FileInfo> list = fileDaoManager.get30DaysFileInfoList(EnumFileType.ALL, searchKey, page, SIZE);
-                getView().getDataListSucc(createFileModelList(list, searchKey, getStarMap()), isRef);
-            }
-
-            return;
+        if (isRef) {
+            page = 0;
+        } else {
+            page++;
         }
         List<String> searchPathList = new ArrayList<>();
         long timeRange = 0;
-        switch (function) {
-            case FUN_NEAR30DAY:
+
+        List<FileInfo> needList = new ArrayList<>();
+
+        if (isUsedFileObserverDb) {
+            if (function == FUN_NEAR30DAY) {
+                needList.addAll(fileDaoManager.get30DaysFileInfoList(EnumFileType.ALL, searchKey, page, SIZE));
+            } else if (function == FUN_QQ) {
+                needList.addAll(fileDaoManager.getQQFileInfoList(EnumFileType.ALL, searchKey, page, SIZE));
+            } else if (function == FUN_WX) {
+                needList.addAll(fileDaoManager.getWXFileInfoList(EnumFileType.ALL, searchKey, page, SIZE));
+            }
+            getView().getDataListSucc(createFileModelList(needList, searchKey, getStarMap()), isRef);
+        } else {
+            if (!isRef) return;
+
+            if (function == FUN_NEAR30DAY) {
                 searchPathList.add(CacheManager.getSaveFilePath());
                 timeRange = (30 * 24 * 60 * 60) * 1000L;
-                break;
-            case FUN_QQ:
+            } else if (function == FUN_QQ) {
                 searchPathList.add(MagicExplorer.QQ_PIC_PATH);
                 searchPathList.add(MagicExplorer.QQ_FILE_PATH);
-                break;
-            case FUN_WX:
+            } else if (function == FUN_WX) {
                 searchPathList.add(MagicExplorer.WX_PIC_PATH);
                 searchPathList.add(MagicExplorer.WX_FILE_PATH);
-                break;
-            case FUN_FOLDER:
-                searchPathList.add(CacheManager.getSaveFilePath());
-                break;
-            case FUN_NORMAL:
-
-                break;
-            case FUN_COLLECTION:
-
-                break;
-            case FUN_WPS:
-
-                break;
+            }
         }
-        if (searchPathList.size() > 0) {
-            String[] paths = new String[searchPathList.size()];
-            searchPathList.toArray(paths);
-            getView().getAdapterList().clear();
-            final boolean[] newIsRef = {true};
-
-            MagicExplorer.getFileList(searchKey, timeRange, new Callback1<List<MagicFileInfo>>() {
-                @Override
-                public void callListener(List<MagicFileInfo> param) {
-                    getView().getDataListSucc(createFileModelList(param), newIsRef[0]);
-                    newIsRef[0] = false;
-                }
-
-                @Override
-                public void callComplete() {
-
-                }
-            }, paths);
+        if (function == FUN_FOLDER) {//文件夹
+            searchPathList.add(CacheManager.getSaveFilePath());
         }
+        if (searchPathList.size() > 0)
+            toMagicSearch(searchPathList, searchKey, timeRange);
 
+        if (function == FUN_COLLECTION) {//星标文件
+            getView().getDataListSucc(createFileModelListByStar(fileDaoManager.getStarList(searchKey, page, SIZE)), isRef);
+        }
     }
 
     @Override
@@ -353,8 +316,49 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
         return fileDaoManager.getStarMap();
     }
 
+    private void toMagicSearch(List<String> searchPathList, String searchKey, long timeRange) {
+        if (searchPathList.size() > 0) {
+            String[] paths = new String[searchPathList.size()];
+            searchPathList.toArray(paths);
+            getView().getAdapterList().clear();
+            final boolean[] newIsRef = {true};
 
-    private List<FileManagerListModel> createFileModelList(List<MagicFileInfo> returnList) {
+            MagicExplorer.getFileList(searchKey, timeRange, new Callback1<List<MagicFileInfo>>() {
+                @Override
+                public void callListener(List<MagicFileInfo> param) {
+                    getView().getDataListSucc(createFileModelList(param, searchKey), newIsRef[0]);
+                    newIsRef[0] = false;
+                }
+
+                @Override
+                public void callComplete() {
+
+                }
+            }, paths);
+        }
+    }
+
+    private List<FileManagerListModel> createFileModelListByStar(List<FileStarInfo> list) {
+        List<FileManagerListModel> newList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            FileManagerListModel model = new FileManagerListModel();
+            model.type = getView().getType() == FileType.PIC ? FileManagerListModel.PIC : FileManagerListModel.OTHER;
+            model.fileType = getView().getType();
+            model.picPath = list.get(i).getFilePath();
+            model.fileName = FileUtils.getFolderName(model.picPath);
+            model.isStar = true;
+            model.isSelect = false;
+            String exc = FileUtils.getExtensionName(model.fileName);
+            model.iconResId = FileType.createIconResId(FileType.createFileType(exc));
+            File file = new File(model.picPath);
+            model.modifyStr = DateUtils.formatDate(file.lastModified(), "yyyy-MM-dd HH:mm:ss");
+            model.sizeStr = Formatter.formatFileSize(getContext(), file.length());
+            newList.add(model);
+        }
+        return newList;
+    }
+
+    private List<FileManagerListModel> createFileModelList(List<MagicFileInfo> returnList, String keyWord) {
         Map<String, String> starMap = getStarMap();
         List<FileManagerListModel> list = new ArrayList<>();
         for (int i = 0; i < returnList.size(); i++) {
@@ -373,7 +377,11 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
                 fileName = FileUtils.getFolderName(fileName);
             }
             model.fileRealName = fileName;
-            model.fileName = fileName;
+            if (TextUtils.isEmpty(keyWord)) {
+                model.fileName = fileName;
+            } else {
+                model.fileName = TextUtils.replace(fileName, new String[]{keyWord}, new String[]{"<font color='red'>" + keyWord + "</font>"}).toString();
+            }
             model.modifyStr = DateUtils.formatDate(info.modifyDate, "yyyy-MM-dd HH:mm:ss");
             model.sizeStr = Formatter.formatFileSize(getContext(), info.fileSize);
             model.isFile = info.isFile;

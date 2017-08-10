@@ -26,9 +26,18 @@ public class FileConfig {
      */
     public boolean isVisableSearch;
 
+    /**
+     * 是否监听某种类型的文件（可自定义）
+     */
+    public NeedToListener needToListener;
+
 
     public FileConfig() {
         userToken = "";
         fileBaseTitle = "我的文件";
+    }
+
+    public interface NeedToListener {
+        boolean isNeedToListener(String filePath);
     }
 }

@@ -17,6 +17,8 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 
+import static com.z7dream.lib.tool.FileUtils.isCouldToListener;
+
 
 /**
  * 文件增删改查监听
@@ -62,7 +64,7 @@ public class RecursiveFileObserver extends FileObserver {
                         continue;
                     for (File f : files) {
                         // 递归监听目录
-                        if (f.isDirectory() && FileUtils.isNeedToListener(f)) {
+                        if (f.isDirectory() && FileUtils.isCouldToListener(f)) {
                             stack.push(f.getAbsolutePath());
                         }
                     }
@@ -135,7 +137,7 @@ public class RecursiveFileObserver extends FileObserver {
                                 continue;
                             for (File f : files) {
                                 // 递归监听目录
-                                if (f.isDirectory() && FileUtils.isNeedToListener(f)) {
+                                if (f.isDirectory() && FileUtils.isCouldToListener(f)) {
                                     stack.push(f.getAbsolutePath());
                                 }
                             }
@@ -183,7 +185,7 @@ public class RecursiveFileObserver extends FileObserver {
                     mObservers.remove(path);
                 }
                 fileDaoUtils.removeFileInfo(file.getAbsolutePath());
-                
+
                 Log.i("RecursiveFileObserver", "MOVED_FROM: " + path);
                 break;
             case FileObserver.MOVED_TO:
@@ -206,7 +208,7 @@ public class RecursiveFileObserver extends FileObserver {
                                 continue;
                             for (File f : files) {
                                 // 递归监听目录
-                                if (f.isDirectory() && FileUtils.isNeedToListener(f)) {
+                                if (f.isDirectory() && FileUtils.isCouldToListener(f)) {
                                     stack.push(f.getAbsolutePath());
                                 }
                             }

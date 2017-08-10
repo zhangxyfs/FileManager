@@ -97,6 +97,27 @@ public class FileDaoManager implements FileDaoImpl {
     }
 
     /**
+     * 获取星标文件列表
+     *
+     * @param likeStr 模糊查询
+     * @param page    页码
+     * @param size    数量
+     * @return
+     */
+    @Override
+    public List<FileStarInfo> getStarList(String likeStr, int page, int size) {
+        QueryBuilder<FileStarInfo> queryBuilder = fileStarInfoBox.query()
+                .equal(FileStarInfo_.userToken, getUserToken());
+
+        if (!TextUtils.isEmpty(likeStr)) {
+            queryBuilder.contains(FileStarInfo_.filePath, likeStr);
+        }
+
+        return queryBuilder.build().find(page * size, size);
+    }
+
+
+    /**
      * 添加星标
      *
      * @param filePathList
@@ -182,7 +203,7 @@ public class FileDaoManager implements FileDaoImpl {
                     continue;
                 for (File f : files) {
                     // 递归监听目录
-                    if (FileUtils.isNeedToListener(f)) {
+                    if (FileUtils.isCouldToListener(f)) {
                         if (f.isDirectory()) {
                             stack.push(f.getAbsolutePath());
                         }
@@ -462,6 +483,26 @@ public class FileDaoManager implements FileDaoImpl {
         return queryBuilder.build().find(page * size, size);
     }
 
+    @Override
+    public List<FileInfo> getQQFileInfoList(EnumFileType enumFileType, String likeStr, int page, int size) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.isFile, true)
+                .contains(FileInfo_.filePath, QQ_PIC_PATH)
+                .or()
+                .contains(FileInfo_.filePath, QQ_FILE_PATH)
+                .orderDesc(FileInfo_.lastModifyTime);
+
+        if (!TextUtils.isEmpty(likeStr)) {
+            queryBuilder.contains(FileInfo_.filePath, likeStr);
+        }
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+
+        return queryBuilder.build().find(page * size, size);
+    }
+
     /**
      * 获取微信文件列表
      *
@@ -492,6 +533,26 @@ public class FileDaoManager implements FileDaoImpl {
                 .or()
                 .contains(FileInfo_.filePath, WX_FILE_PATH)
                 .orderDesc(FileInfo_.lastModifyTime);
+
+        if (enumFileType != EnumFileType.ALL) {
+            queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
+        }
+
+        return queryBuilder.build().find(page * size, size);
+    }
+
+    @Override
+    public List<FileInfo> getWXFileInfoList(EnumFileType enumFileType, String likeStr, int page, int size) {
+        QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
+                .equal(FileInfo_.isFile, true)
+                .contains(FileInfo_.filePath, WX_PIC_PATH)
+                .or()
+                .contains(FileInfo_.filePath, WX_FILE_PATH)
+                .orderDesc(FileInfo_.lastModifyTime);
+
+        if (!TextUtils.isEmpty(likeStr)) {
+            queryBuilder.contains(FileInfo_.filePath, likeStr);
+        }
 
         if (enumFileType != EnumFileType.ALL) {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());

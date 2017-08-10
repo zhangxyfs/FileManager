@@ -16,6 +16,9 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.z7dream.lib.model.FileConfig;
+import com.z7dream.lib.service.FileUpdatingService;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -388,5 +391,14 @@ public class FileUtils {
             return true;
         else
             return true;
+    }
+
+    public static boolean isCouldToListener(File file) {
+        FileConfig.NeedToListener listener = FileUpdatingService.getConfigCallback().getConfig().needToListener;
+        if (listener == null) {
+            return isNeedToListener(file);
+        } else {
+            return listener.isNeedToListener(file.getAbsolutePath());
+        }
     }
 }
