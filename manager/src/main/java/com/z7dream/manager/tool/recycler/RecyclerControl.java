@@ -215,6 +215,7 @@ public class RecyclerControl {
     }
 
     /**
+     * 手势
      *
      * @param recyclerView
      * @param listener

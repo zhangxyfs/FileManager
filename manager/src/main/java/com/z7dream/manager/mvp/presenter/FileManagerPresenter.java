@@ -35,6 +35,7 @@ import static com.z7dream.lib.tool.MagicExplorer.getFileList;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_COLLECTION;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_FOLDER;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_NEAR30DAY;
+import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_NORMAL;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_QQ;
 import static com.z7dream.manager.mvp.ui.FileManagerActivity.FUN_WX;
 
@@ -273,7 +274,9 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
             } else if (function == FUN_WX) {
                 needList.addAll(fileDaoManager.getWXFileInfoList(EnumFileType.ALL, searchKey, page, SIZE));
             } else if (function == FUN_FOLDER) {
-
+                needList.addAll(fileDaoManager.getFolderFileInfoList(EnumFileType.ALL, searchKey, page, SIZE));
+            } else if (function == FUN_NORMAL) {
+                needList.addAll(fileDaoManager.getFileInfoList(EnumFileType.getType(getView().getType()), searchKey, page, SIZE));
             }
             getView().getDataListSucc(createFileModelList(needList, searchKey, getStarMap()), isRef);
         } else {
@@ -288,10 +291,11 @@ public class FileManagerPresenter extends BasePresenterImpl<FileManagerContract.
             } else if (function == FUN_WX) {
                 searchPathList.add(MagicExplorer.WX_PIC_PATH);
                 searchPathList.add(MagicExplorer.WX_FILE_PATH);
+            } else if (function == FUN_FOLDER) {
+                searchPathList.add(CacheManager.getSaveFilePath());
+            } else if (function == FUN_NORMAL) {
+
             }
-        }
-        if (function == FUN_FOLDER) {//文件夹
-            searchPathList.add(CacheManager.getSaveFilePath());
         }
         if (searchPathList.size() > 0)
             toMagicSearch(searchPathList, searchKey, timeRange);
