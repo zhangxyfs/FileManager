@@ -17,8 +17,6 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 
-import static com.z7dream.lib.tool.FileUtils.isCouldToListener;
-
 
 /**
  * 文件增删改查监听

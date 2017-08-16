@@ -363,13 +363,14 @@ public class FileDaoManager implements FileDaoImpl {
     @Override
     public List<FileInfo> getFileInfoList(EnumFileType enumFileType) {
         QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
-                .equal(FileInfo_.isFile, true);
+                .equal(FileInfo_.isFile, true)
+                .orderDesc(FileInfo_.lastModifyTime);
 
         if (enumFileType != EnumFileType.ALL) {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
         }
         if (enumFileType == EnumFileType.PIC) {
-            queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
+            queryBuilder.greater(FileInfo_.fileSize, 50 * 1024);//图片至少要大于10kb
         }
         return queryBuilder.build().find();
     }
@@ -385,13 +386,14 @@ public class FileDaoManager implements FileDaoImpl {
     @Override
     public List<FileInfo> getFileInfoList(EnumFileType enumFileType, int page, int size) {
         QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
-                .equal(FileInfo_.isFile, true);
+                .equal(FileInfo_.isFile, true)
+                .orderDesc(FileInfo_.lastModifyTime);
 
         if (enumFileType != EnumFileType.ALL) {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
         }
         if (enumFileType == EnumFileType.PIC) {
-            queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
+            queryBuilder.greater(FileInfo_.fileSize, 50 * 1024);//图片至少要大于10kb
         }
         return queryBuilder.build().find(page * size, size);
     }
@@ -405,7 +407,8 @@ public class FileDaoManager implements FileDaoImpl {
     @Override
     public List<FileInfo> getFileInfoList(EnumFileType enumFileType, String likeStr) {
         QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
-                .equal(FileInfo_.isFile, true);
+                .equal(FileInfo_.isFile, true)
+                .orderDesc(FileInfo_.lastModifyTime);
 
         if (enumFileType != EnumFileType.ALL) {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
@@ -414,7 +417,7 @@ public class FileDaoManager implements FileDaoImpl {
             queryBuilder.contains(FileInfo_.filePath, likeStr);
         }
         if (enumFileType == EnumFileType.PIC) {
-            queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
+            queryBuilder.greater(FileInfo_.fileSize, 50 * 1024);//图片至少要大于10kb
         }
         return queryBuilder.build().find();
     }
@@ -431,7 +434,8 @@ public class FileDaoManager implements FileDaoImpl {
     @Override
     public List<FileInfo> getFileInfoList(EnumFileType enumFileType, String likeStr, int page, int size) {
         QueryBuilder<FileInfo> queryBuilder = fileInfoBox.query()
-                .equal(FileInfo_.isFile, true);
+                .equal(FileInfo_.isFile, true)
+                .orderDesc(FileInfo_.lastModifyTime);
 
         if (enumFileType != EnumFileType.ALL) {
             queryBuilder.equal(FileInfo_.fileType, enumFileType.name());
@@ -440,7 +444,7 @@ public class FileDaoManager implements FileDaoImpl {
             queryBuilder.contains(FileInfo_.filePath, likeStr);
         }
         if (enumFileType == EnumFileType.PIC) {
-            queryBuilder.greater(FileInfo_.fileSize, 10 * 1024);//图片至少要大于10kb
+            queryBuilder.greater(FileInfo_.fileSize, 50 * 1024);//图片至少要大于10kb
         }
         return queryBuilder.build().find(page * size, size);
     }
