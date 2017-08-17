@@ -1,1 +1,1 @@
-include ':app', ':lib', ':manager'
+include ':demo', ':android_filemanager_lib', ':android_filemanager'

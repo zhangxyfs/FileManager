@@ -1,0 +1,106 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:2076006979788309698",
+      "lastPropertyId": "10:5033720538593635065",
+      "name": "FileInfo",
+      "properties": [
+        {
+          "id": "1:4427020450655343109",
+          "name": "id"
+        },
+        {
+          "id": "2:5509051864393657004",
+          "name": "fileName"
+        },
+        {
+          "id": "3:8554416657925958399",
+          "indexId": "1:4121721292053100632",
+          "name": "filePath"
+        },
+        {
+          "id": "4:6300190481171284461",
+          "indexId": "2:725461646528153432",
+          "name": "parentPath"
+        },
+        {
+          "id": "5:4635289384196752838",
+          "name": "extension"
+        },
+        {
+          "id": "6:6615874788573174156",
+          "name": "createTime"
+        },
+        {
+          "id": "7:8080646305973852958",
+          "indexId": "3:3481082638315501172",
+          "name": "lastModifyTime"
+        },
+        {
+          "id": "8:7197253033605292779",
+          "name": "fileSize"
+        },
+        {
+          "id": "9:5864760924362796644",
+          "name": "isFile"
+        },
+        {
+          "id": "10:5033720538593635065",
+          "indexId": "4:2996014202444121790",
+          "name": "fileType"
+        }
+      ]
+    },
+    {
+      "id": "2:4404564504204113120",
+      "lastPropertyId": "4:7448952529262736209",
+      "name": "FileStarInfo",
+      "properties": [
+        {
+          "id": "1:8014118563586736415",
+          "name": "id"
+        },
+        {
+          "id": "2:1535027710922901718",
+          "name": "userId"
+        },
+        {
+          "id": "4:7448952529262736209",
+          "name": "filePath"
+        }
+      ]
+    },
+    {
+      "id": "3:8445938811428502510",
+      "lastPropertyId": "3:1566957733833966912",
+      "name": "FileTypeInfo",
+      "properties": [
+        {
+          "id": "1:2276043860041447343",
+          "name": "id"
+        },
+        {
+          "id": "2:5484941805033395136",
+          "name": "typeName"
+        },
+        {
+          "id": "3:1566957733833966912",
+          "name": "format"
+        }
+      ]
+    }
+  ],
+  "lastEntityId": "3:8445938811428502510",
+  "lastIndexId": "4:2996014202444121790",
+  "lastSequenceId": "0:0",
+  "modelVersion": 2,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [
+    2442891915955214562
+  ],
+  "version": 1
+}

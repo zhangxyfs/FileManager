@@ -1,0 +1,158 @@
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+// load properties
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+// read properties
+//项目名称
+def projectName = properties.getProperty("project.name")
+//项目的groupId
+def projectGroupId = properties.getProperty("project.groupId")
+//项目的artifactId，这里需要跟项目的library名称一致，不然传到bintray的包和名字对不上会找不到
+def projectArtifactId = properties.getProperty("project.artifactId")
+//包类型，Android库是aar
+def projectPackaging = properties.getProperty("project.packaging")
+//library的版本号
+def projectVersionName = properties.getProperty("project.version")
+//网站地址
+def projectSiteUrl = properties.getProperty("project.siteUrl")
+//开源的git地址
+def projectGitUrl = properties.getProperty("project.gitUrl")
+//项目库的描述
+def projectDesc = properties.getProperty("project.desc")
+//开发者标识ID
+def developerId = properties.getProperty("developer.id")
+//开发者名称
+def developerName = properties.getProperty("developer.name")
+//开发者邮箱
+def developerEmail = properties.getProperty("developer.email")
+//这个就是刚才注册的bintray用户名
+def bintrayUser = properties.getProperty("bintray.user")
+//这个是前面提到的bintray上面的API Key
+def bintrayApikey = properties.getProperty("bintray.apikey")
+
+group = projectGroupId
+
+// This generates POM.xml with proper parameters
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging projectPackaging
+                groupId projectGroupId
+                artifactId projectArtifactId
+
+                name projectName
+                description projectDesc
+                version projectVersionName
+                url projectSiteUrl
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id developerId
+                        name developerName
+                        email developerEmail
+                    }
+                }
+                scm {
+                    connection projectGitUrl
+                    developerConnection projectGitUrl
+                    url projectSiteUrl
+                }
+            }
+        }
+    }
+}
+
+
+version = projectVersionName
+
+/*task javadoc(type: Javadoc) {
+    options.encoding = "utf-8"
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+*//**
+ * 这里将源码打包成 xxx-sources.jar
+ *//*
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+android.libraryVariants.all { variant ->
+    println variant.javaCompile.classpath.files
+    if (variant.name == 'release') { //我们只需 release 的 javadoc
+        task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
+            // title = ''
+            // description = ''
+            source = variant.javaCompile.source
+            classpath = files(variant.javaCompile.classpath.files, project.android.getBootClasspath())
+            options {
+                encoding "utf-8"
+                links "http://docs.oracle.com/javase/7/docs/api/"
+                linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
+            }
+            exclude '**//*BuildConfig.java'
+            exclude '**//*R.java'
+        }
+        task("javadoc${variant.name.capitalize()}Jar", type: Jar, dependsOn: "generate${variant.name.capitalize()}Javadoc") {
+            classifier = 'javadoc'
+            from tasks.getByName("generate${variant.name.capitalize()}Javadoc").destinationDir
+        }
+        artifacts {
+            archives tasks.getByName("javadoc${variant.name.capitalize()}Jar")
+        }
+    }
+}*/
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+// bintray configuration
+bintray {
+    user = bintrayUser
+    key = bintrayApikey
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = projectName
+        desc = projectDesc
+        websiteUrl = projectSiteUrl
+        vcsUrl = projectGitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+        publicDownloadNumbers = true
+    }
+}
