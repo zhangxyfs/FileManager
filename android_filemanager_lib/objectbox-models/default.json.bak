@@ -56,7 +56,7 @@
     },
     {
       "id": "2:4404564504204113120",
-      "lastPropertyId": "4:7448952529262736209",
+      "lastPropertyId": "5:2690222296391993214",
       "name": "FileStarInfo",
       "properties": [
         {
@@ -64,12 +64,12 @@
           "name": "id"
         },
         {
-          "id": "2:1535027710922901718",
-          "name": "userId"
-        },
-        {
           "id": "4:7448952529262736209",
           "name": "filePath"
+        },
+        {
+          "id": "5:2690222296391993214",
+          "name": "userToken"
         }
       ]
     },
@@ -100,7 +100,8 @@
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [
-    2442891915955214562
+    2442891915955214562,
+    1535027710922901718
   ],
   "version": 1
 }

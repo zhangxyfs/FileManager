@@ -52,7 +52,8 @@
           "indexId": "4:2996014202444121790",
           "name": "fileType"
         }
-      ]
+      ],
+      "relations": []
     },
     {
       "id": "2:4404564504204113120",
@@ -71,7 +72,8 @@
           "id": "5:2690222296391993214",
           "name": "userToken"
         }
-      ]
+      ],
+      "relations": []
     },
     {
       "id": "3:8445938811428502510",
@@ -90,18 +92,21 @@
           "id": "3:1566957733833966912",
           "name": "format"
         }
-      ]
+      ],
+      "relations": []
     }
   ],
   "lastEntityId": "3:8445938811428502510",
   "lastIndexId": "4:2996014202444121790",
+  "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
-  "modelVersion": 2,
+  "modelVersion": 3,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [
     2442891915955214562,
     1535027710922901718
   ],
+  "retiredRelationUids": [],
   "version": 1
 }

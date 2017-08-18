@@ -85,9 +85,8 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
-*//**
- * 这里将源码打包成 xxx-sources.jar
- *//*
+
+// 这里将源码打包成 xxx-sources.jar
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from android.sourceSets.main.java.srcDirs
@@ -110,8 +109,8 @@ android.libraryVariants.all { variant ->
                 links "http://docs.oracle.com/javase/7/docs/api/"
                 linksOffline "http://d.android.com/reference", "${android.sdkDirectory}/docs/reference"
             }
-            exclude '**//*BuildConfig.java'
-            exclude '**//*R.java'
+            exclude '*BuildConfig.java'
+            exclude '*R.java'
         }
         task("javadoc${variant.name.capitalize()}Jar", type: Jar, dependsOn: "generate${variant.name.capitalize()}Javadoc") {
             classifier = 'javadoc'
@@ -128,6 +127,8 @@ task sourcesJar(type: Jar) {
     classifier = 'sources'
 }
 task javadoc(type: Javadoc) {
+    options.encoding = "utf-8"
+    options.charSet = "utf-8"
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }

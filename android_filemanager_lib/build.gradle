@@ -15,6 +15,11 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+//        javaCompileOptions {
+//            annotationProcessorOptions {
+//                arguments = ['objectbox.targetGenDir': 'src/main/java/com/z7dream/android_filemanager_lib/db/models']
+//            }
+//        }
     }
     buildTypes {
         release {
@@ -53,6 +58,7 @@ dependencies {
     compile "com.jakewharton:butterknife:${butterknife_need_version}"
 
     compile "io.objectbox:objectbox-android:${ojectbox_need_version}"
+    compile "io.objectbox:objectbox-daocompat:${ojectbox_need_version}"
 
     compile "io.reactivex.rxjava2:rxjava:${rxjava_need_version}"
     compile "io.reactivex.rxjava2:rxandroid:${rxandroid_need_version}"
@@ -68,3 +74,5 @@ dependencies {
     compile "com.android.support:recyclerview-v7:${android_need_version}"
     compile "com.google.code.gson:gson:${gson_need_version}"
 }
+
+apply from: "../bintrayUpload.gradle"
